@@ -15,7 +15,11 @@ Este projeto precisa de **2 serviços** no Railway:
 ✅ Já está pronto! O projeto já tem:
 - `package.json` com scripts de build
 - API Python em `/api`
+- `nixpacks.toml` na raiz (para Next.js)
+- `nixpacks.toml` em `/api` (para Python)
 - Configurações necessárias
+
+**IMPORTANTE**: Os arquivos `nixpacks.toml` garantem que cada serviço use o ambiente correto (Node.js vs Python)
 
 ### 2. Criar Conta no Railway
 
@@ -34,8 +38,11 @@ Este projeto precisa de **2 serviços** no Railway:
 3.5. **Configure o serviço:**
    - Nome: `pdfutilities-web` (ou qualquer nome)
    - Root Directory: `/` (raiz)
-   - Build Command: `npm install && npm run build`
-   - Start Command: `npm start`
+   - Build Command: **DEIXE VAZIO** (o `nixpacks.toml` na raiz cuida disso)
+   - Start Command: **DEIXE VAZIO** (o `nixpacks.toml` na raiz cuida disso)
+   - **OU** configure manualmente:
+     - Build: `npm install && npm run build`
+     - Start: `npm start`
 
 ### 4. Criar o Segundo Serviço (API Python)
 
@@ -47,13 +54,16 @@ Este projeto precisa de **2 serviços** no Railway:
 
 4.3. **Configure o serviço Python:**
    - Nome: `pdfutilities-api` (ou qualquer nome)
-   - Root Directory: `/api` (pasta da API)
-   - Build Command: `pip install -r requirements.txt`
-   - Start Command: `python3 pdf_ocr_api.py`
+   - Root Directory: `/api` (pasta da API) ⚠️ **MUITO IMPORTANTE!**
+   - Build Command: **DEIXE VAZIO** (o `nixpacks.toml` em `/api` cuida disso)
+   - Start Command: **DEIXE VAZIO** (o `nixpacks.toml` em `/api` cuida disso)
+   - **OU** configure manualmente:
+     - Build: `pip install -r requirements.txt`
+     - Start: `python3 pdf_ocr_api.py`
 
 4.4. **Configurar Python no Railway:**
-   - Railway detecta automaticamente Python
-   - Mas você pode forçar: vá em Settings > Runtime > Python 3.13
+   - O arquivo `nixpacks.toml` em `/api` já configura Python 3.13
+   - Railway detectará automaticamente pelo `nixpacks.toml`
 
 ### 5. Configurar Variáveis de Ambiente
 
@@ -116,15 +126,21 @@ NEXT_PUBLIC_OCR_API_URL=https://pdfutilities-api-production.up.railway.app
 ## 🔧 Configurações Importantes
 
 ### Build Settings - Next.js:
-- **Build Command**: `npm install && npm run build`
-- **Start Command**: `npm start`
-- **Root Directory**: `/`
+- **Root Directory**: `/` (raiz do projeto)
+- **Build Command**: Deixe vazio (o `nixpacks.toml` na raiz cuida disso)
+- **Start Command**: Deixe vazio (o `nixpacks.toml` na raiz cuida disso)
+- **Ou configure manualmente:**
+  - Build: `npm install && npm run build`
+  - Start: `npm start`
 
 ### Build Settings - Python API:
-- **Build Command**: `pip install -r requirements.txt`
-- **Start Command**: `python3 pdf_ocr_api.py`
-- **Root Directory**: `/api`
-- **Python Version**: 3.13 (ou a mais recente)
+- **Root Directory**: `/api` (pasta da API)
+- **Build Command**: Deixe vazio (o `nixpacks.toml` em `/api` cuida disso)
+- **Start Command**: Deixe vazio (o `nixpacks.toml` em `/api` cuida disso)
+- **Ou configure manualmente:**
+  - Build: `pip install -r requirements.txt`
+  - Start: `python3 pdf_ocr_api.py`
+- **Python Version**: 3.13 (configurado no nixpacks.toml)
 
 ### Portas:
 - **Next.js**: Railway define automaticamente (variável `PORT`)
@@ -143,6 +159,10 @@ NEXT_PUBLIC_OCR_API_URL=https://pdfutilities-api-production.up.railway.app
 1. Verifique os logs no Railway
 2. Certifique-se que todas as dependências estão no `package.json` e `requirements.txt`
 3. Verifique se o Python está na versão correta
+4. **Se aparecer "npm: command not found" no serviço Python:**
+   - Verifique se o **Root Directory** está configurado como `/api`
+   - Verifique se o arquivo `nixpacks.toml` existe em `/api`
+   - Force um novo deploy após corrigir
 
 ### Anúncios não aparecem:
 1. Verifique se as variáveis do Google Ads estão configuradas
