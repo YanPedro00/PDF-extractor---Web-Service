@@ -41,7 +41,7 @@ export default function Home() {
           {/* Google Ad - Localização 1: Abaixo do texto do header */}
           <div className="mt-8 mb-8 flex justify-center">
             <GoogleAd 
-              adSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_1 || 'placeholder-1'} 
+              adSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_1 || '6280286471'} 
               adFormat="auto"
               className="min-h-[100px] w-full max-w-[728px]"
             />
@@ -213,7 +213,7 @@ export default function Home() {
         {/* Google Ad - Localização 2: Acima do footer */}
         <div className="mt-16 mb-8 flex justify-center">
           <GoogleAd 
-            adSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_2 || 'placeholder-2'} 
+            adSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_2 || '4093106837'} 
             adFormat="auto"
             className="min-h-[100px] w-full max-w-[728px]"
           />
