@@ -165,7 +165,12 @@ export async function convertPDFWithOCR(
     onProgress?.(5)
 
     // Tentar usar API Python primeiro (img2table + EasyOCR)
-    const apiUrl = process.env.NEXT_PUBLIC_OCR_API_URL || 'http://localhost:5003'
+    let apiUrl = process.env.NEXT_PUBLIC_OCR_API_URL || 'http://localhost:5003'
+    
+    // Garantir que a URL tenha protocolo
+    if (apiUrl && !apiUrl.startsWith('http://') && !apiUrl.startsWith('https://')) {
+      apiUrl = `https://${apiUrl}`
+    }
     
     try {
       onProgress?.(10)
@@ -173,7 +178,7 @@ export async function convertPDFWithOCR(
       // Verificar se API está disponível
       const healthCheck = await fetch(`${apiUrl}/health`, {
         method: 'GET',
-        signal: AbortSignal.timeout(2000), // Timeout de 2 segundos
+        signal: AbortSignal.timeout(3000), // Timeout de 3 segundos
       })
 
       if (healthCheck.ok) {

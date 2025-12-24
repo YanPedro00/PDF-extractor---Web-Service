@@ -39,7 +39,23 @@ export default function GoogleAd({
 
   useEffect(() => {
     if (!publisherId) {
-      console.warn('Google Ads Publisher ID não configurado. Configure NEXT_PUBLIC_GOOGLE_ADS_PUBLISHER_ID no .env.local')
+      // Silenciar warning em produção
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Google Ads Publisher ID não configurado. Configure NEXT_PUBLIC_GOOGLE_ADS_PUBLISHER_ID no .env.local')
+      }
+      return
+    }
+
+    // Verificar se o script já foi carregado
+    const existingScript = document.querySelector(`script[src*="adsbygoogle"]`)
+    if (existingScript) {
+      // Script já existe, apenas inicializar o anúncio
+      try {
+        // @ts-ignore - adsbygoogle é injetado pelo script do Google
+        (window.adsbygoogle = window.adsbygoogle || []).push({})
+      } catch (err) {
+        // Silenciar erros do Google Ads (são comuns durante aprovação)
+      }
       return
     }
 
@@ -48,6 +64,12 @@ export default function GoogleAd({
     script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${publisherId}`
     script.async = true
     script.crossOrigin = 'anonymous'
+    
+    // Silenciar erros de carregamento do script
+    script.onerror = () => {
+      // Erro silenciado - comum durante aprovação do AdSense
+    }
+    
     document.head.appendChild(script)
 
     // Inicializar anúncio após o script carregar
@@ -56,18 +78,10 @@ export default function GoogleAd({
         // @ts-ignore - adsbygoogle é injetado pelo script do Google
         (window.adsbygoogle = window.adsbygoogle || []).push({})
       } catch (err) {
-        console.error('Erro ao inicializar Google Ad:', err)
+        // Silenciar erros do Google Ads
       }
     }
-
-    return () => {
-      // Limpar script ao desmontar
-      const existingScript = document.querySelector(`script[src*="adsbygoogle"]`)
-      if (existingScript) {
-        // Não removemos o script pois pode ser usado por outros anúncios
-      }
-    }
-  }, [publisherId])
+  }, [publisherId, adSlot])
 
   if (!publisherId) {
     // Em desenvolvimento, mostrar placeholder
