@@ -35,76 +35,29 @@ export default function GoogleAd({
   style,
   className = ''
 }: GoogleAdProps) {
-  const publisherId = process.env.NEXT_PUBLIC_GOOGLE_ADS_PUBLISHER_ID
+  // O script do Google AdSense já está no <head> do layout com o client ID
+  // Usar o Publisher ID do script ou da variável de ambiente
+  const publisherId = process.env.NEXT_PUBLIC_GOOGLE_ADS_PUBLISHER_ID || 'ca-pub-1782940009467994'
 
   useEffect(() => {
-    if (!publisherId) {
-      // Silenciar warning em produção
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('Google Ads Publisher ID não configurado. Configure NEXT_PUBLIC_GOOGLE_ADS_PUBLISHER_ID no .env.local')
-      }
-      return
-    }
+    // O script do Google AdSense já está no <head> do layout
+    // Apenas inicializar o anúncio quando o componente montar
+    if (typeof window !== 'undefined') {
+      // Aguardar um pouco para garantir que o script foi carregado
+      const timer = setTimeout(() => {
+        try {
+          // @ts-ignore - adsbygoogle é injetado pelo script do Google
+          if (window.adsbygoogle) {
+            (window.adsbygoogle = window.adsbygoogle || []).push({})
+          }
+        } catch (err) {
+          // Silenciar erros do Google Ads (são comuns durante aprovação)
+        }
+      }, 100)
 
-    // Verificar se o script já foi carregado
-    const existingScript = document.querySelector(`script[src*="adsbygoogle"]`)
-    if (existingScript) {
-      // Script já existe, apenas inicializar o anúncio
-      try {
-        // @ts-ignore - adsbygoogle é injetado pelo script do Google
-        (window.adsbygoogle = window.adsbygoogle || []).push({})
-      } catch (err) {
-        // Silenciar erros do Google Ads (são comuns durante aprovação)
-      }
-      return
+      return () => clearTimeout(timer)
     }
-
-    // Carregar script do Google Ads
-    const script = document.createElement('script')
-    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${publisherId}`
-    script.async = true
-    script.crossOrigin = 'anonymous'
-    
-    // Silenciar erros de carregamento do script
-    script.onerror = () => {
-      // Erro silenciado - comum durante aprovação do AdSense
-    }
-    
-    document.head.appendChild(script)
-
-    // Inicializar anúncio após o script carregar
-    script.onload = () => {
-      try {
-        // @ts-ignore - adsbygoogle é injetado pelo script do Google
-        (window.adsbygoogle = window.adsbygoogle || []).push({})
-      } catch (err) {
-        // Silenciar erros do Google Ads
-      }
-    }
-  }, [publisherId, adSlot])
-
-  if (!publisherId) {
-    // Em desenvolvimento, mostrar placeholder
-    if (process.env.NODE_ENV === 'development') {
-      return (
-        <div 
-          className={`bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center ${className}`}
-          style={style}
-        >
-          <p className="text-gray-500 text-sm">
-            Google Ad Placeholder
-          </p>
-          <p className="text-gray-400 text-xs mt-2">
-            Ad Slot: {adSlot}
-          </p>
-          <p className="text-gray-400 text-xs">
-            Configure NEXT_PUBLIC_GOOGLE_ADS_PUBLISHER_ID no .env.local
-          </p>
-        </div>
-      )
-    }
-    return null
-  }
+  }, [adSlot])
 
   return (
     <div className={`google-ad-container ${className}`} style={style}>

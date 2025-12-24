@@ -21,6 +21,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
+      <head>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1782940009467994"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className={inter.className}>
         <Navbar />
         {children}
