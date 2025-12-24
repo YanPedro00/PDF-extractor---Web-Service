@@ -32,8 +32,8 @@ export async function mergePDFs(
 
     onProgress?.(95)
 
-    // Salvar arquivo
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' })
+    // Salvar arquivo - converter Uint8Array para ArrayBuffer se necessário
+    const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' })
     const fileName = `PDFs_Mesclados_${new Date().getTime()}.pdf`
     saveAs(blob, fileName)
 
@@ -67,7 +67,7 @@ export async function splitPDFAllPages(
       newPdf.addPage(copiedPage)
 
       const pdfBytes = await newPdf.save()
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' })
+      const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' })
       const fileName = file.name.replace('.pdf', `_pagina_${i + 1}.pdf`)
       saveAs(blob, fileName)
 
@@ -115,7 +115,7 @@ export async function splitPDFSelectedPages(
       newPdf.addPage(copiedPage)
 
       const pdfBytes = await newPdf.save()
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' })
+      const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' })
       const pageNum = pageIndex + 1
       const fileName = file.name.replace('.pdf', `_pagina_${pageNum}.pdf`)
       saveAs(blob, fileName)
