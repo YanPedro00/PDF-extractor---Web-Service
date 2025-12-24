@@ -116,9 +116,11 @@ def process_pdf():
         }), 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5003))  # Usar porta 5003 por padrão
+    # Railway fornece a porta via variável de ambiente PORT
+    port = int(os.environ.get('PORT', 5003))
     print("🚀 Iniciando servidor API de OCR...")
-    print(f"📝 Endpoint: http://localhost:{port}/process-pdf")
-    print(f"🌐 Health check: http://localhost:{port}/health")
-    app.run(host='0.0.0.0', port=port, debug=True)
+    print(f"📝 Endpoint: http://0.0.0.0:{port}/process-pdf")
+    print(f"🌐 Health check: http://0.0.0.0:{port}/health")
+    # Railway requer host 0.0.0.0 e debug=False em produção
+    app.run(host='0.0.0.0', port=port, debug=False)
 
