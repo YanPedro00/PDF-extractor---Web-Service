@@ -28,18 +28,18 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Header */}
-        <header className="text-center mb-12 mt-8">
-          <h1 className="text-5xl font-bold text-primary-600 mb-4">
+        <header className="text-center mb-8 sm:mb-12 mt-4 sm:mt-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-600 mb-3 sm:mb-4 px-2">
             PDFUtilities
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 px-2">
             Ferramentas completas para trabalhar com seus PDFs
           </p>
           
           {/* Google Ad - Localização 1: Abaixo do texto do header */}
-          <div className="mt-8 mb-8 flex justify-center">
+          <div className="mt-6 sm:mt-8 mb-6 sm:mb-8 flex justify-center px-2">
             <GoogleAd 
               adSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_1 || '6280286471'} 
               adFormat="auto"
@@ -51,16 +51,16 @@ export default function Home() {
         {/* Main Content */}
         <div className="max-w-6xl mx-auto">
           {!selectedMode ? (
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
               {/* Opção 1: PDF com texto selecionável */}
               <button
                 onClick={() => setSelectedMode('text')}
-                className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border-2 border-transparent hover:border-primary-500"
+                className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 sm:p-8 border-2 border-transparent hover:border-primary-500"
               >
                 <div className="text-center">
-                  <div className="mb-4">
+                  <div className="mb-3 sm:mb-4">
                     <svg
-                      className="w-16 h-16 mx-auto text-primary-600 group-hover:scale-110 transition-transform"
+                      className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-primary-600 group-hover:scale-110 transition-transform"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -73,10 +73,10 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+                  <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
                     PDF para Excel
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-sm sm:text-base text-gray-600">
                     Converta PDFs com texto selecionável para Excel de forma rápida.
                   </p>
                 </div>
@@ -85,12 +85,12 @@ export default function Home() {
               {/* Opção 2: PDF escaneado (OCR) */}
               <button
                 onClick={() => setSelectedMode('ocr')}
-                className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border-2 border-transparent hover:border-primary-500"
+                className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 sm:p-8 border-2 border-transparent hover:border-primary-500"
               >
                 <div className="text-center">
-                  <div className="mb-4">
+                  <div className="mb-3 sm:mb-4">
                     <svg
-                      className="w-16 h-16 mx-auto text-primary-600 group-hover:scale-110 transition-transform"
+                      className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-primary-600 group-hover:scale-110 transition-transform"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -109,10 +109,10 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-800 mb-2">
-                    PDF Escaneado (OCR)
+                  <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
+                    PDF para Excel (OCR)
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-sm sm:text-base text-gray-600">
                     Converta PDFs escaneados para Excel usando OCR avançado.
                   </p>
                 </div>
@@ -121,12 +121,12 @@ export default function Home() {
               {/* Opção 3: Juntar PDFs */}
               <button
                 onClick={() => setSelectedMode('merge')}
-                className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border-2 border-transparent hover:border-primary-500"
+                className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 sm:p-8 border-2 border-transparent hover:border-primary-500"
               >
                 <div className="text-center">
-                  <div className="mb-4">
+                  <div className="mb-3 sm:mb-4">
                     <svg
-                      className="w-16 h-16 mx-auto text-primary-600 group-hover:scale-110 transition-transform"
+                      className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-primary-600 group-hover:scale-110 transition-transform"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -139,10 +139,10 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+                  <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
                     Juntar PDFs
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-sm sm:text-base text-gray-600">
                     Una múltiplos arquivos PDF em um único documento.
                   </p>
                 </div>
@@ -151,12 +151,12 @@ export default function Home() {
               {/* Opção 4: Dividir PDF */}
               <button
                 onClick={() => setSelectedMode('split')}
-                className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border-2 border-transparent hover:border-primary-500"
+                className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 sm:p-8 border-2 border-transparent hover:border-primary-500"
               >
                 <div className="text-center">
-                  <div className="mb-4">
+                  <div className="mb-3 sm:mb-4">
                     <svg
-                      className="w-16 h-16 mx-auto text-primary-600 group-hover:scale-110 transition-transform"
+                      className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-primary-600 group-hover:scale-110 transition-transform"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -169,10 +169,10 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+                  <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
                     Dividir PDF
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-sm sm:text-base text-gray-600">
                     Extraia páginas específicas ou todas as páginas separadamente.
                   </p>
                 </div>
@@ -182,10 +182,10 @@ export default function Home() {
             <div>
               <button
                 onClick={() => setSelectedMode(null)}
-                className="mb-6 text-primary-600 hover:text-primary-700 font-medium flex items-center gap-2"
+                className="mb-4 sm:mb-6 text-primary-600 hover:text-primary-700 font-medium flex items-center gap-2 text-sm sm:text-base"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4 sm:w-5 sm:h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -211,7 +211,7 @@ export default function Home() {
         </div>
 
         {/* Google Ad - Localização 2: Acima do footer */}
-        <div className="mt-16 mb-8 flex justify-center">
+        <div className="mt-12 sm:mt-16 mb-6 sm:mb-8 flex justify-center px-2">
           <GoogleAd 
             adSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_2 || '4093106837'} 
             adFormat="auto"
@@ -220,7 +220,7 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <footer className="mt-8 text-center text-gray-500 text-sm">
+        <footer className="mt-6 sm:mt-8 text-center text-gray-500 text-xs sm:text-sm px-2">
           <p>PDFUtilities © 2025 - Ferramentas completas para trabalhar com PDFs</p>
         </footer>
       </div>

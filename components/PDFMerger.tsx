@@ -83,8 +83,8 @@ export default function PDFMerger() {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-8">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 md:p-8">
+      <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6 text-center">
         Juntar PDFs
       </h2>
 
@@ -92,7 +92,7 @@ export default function PDFMerger() {
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        className="border-2 border-dashed border-primary-300 rounded-lg p-12 text-center hover:border-primary-500 transition-colors cursor-pointer bg-primary-50 mb-6"
+        className="border-2 border-dashed border-primary-300 rounded-lg p-6 sm:p-8 md:p-12 text-center hover:border-primary-500 transition-colors cursor-pointer bg-primary-50 mb-4 sm:mb-6"
         onClick={() => fileInputRef.current?.click()}
       >
         <input
@@ -104,7 +104,7 @@ export default function PDFMerger() {
           className="hidden"
         />
         <svg
-          className="w-16 h-16 mx-auto text-primary-400 mb-4"
+          className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-primary-400 mb-3 sm:mb-4"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -116,36 +116,37 @@ export default function PDFMerger() {
             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
           />
         </svg>
-        <p className="text-gray-600 mb-2">
-          <span className="text-primary-600 font-semibold">Clique para adicionar PDFs</span> ou arraste os arquivos aqui
+        <p className="text-sm sm:text-base text-gray-600 mb-2">
+          <span className="text-primary-600 font-semibold">Clique para adicionar PDFs</span>
+          <span className="hidden sm:inline"> ou arraste os arquivos aqui</span>
         </p>
-        <p className="text-sm text-gray-500">Selecione múltiplos arquivos PDF</p>
+        <p className="text-xs sm:text-sm text-gray-500">Selecione múltiplos arquivos PDF</p>
       </div>
 
       {/* Lista de arquivos */}
       {files.length > 0 && (
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-3">
+        <div className="mb-4 sm:mb-6">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
             Arquivos selecionados ({files.length}):
           </h3>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {files.map((file, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg gap-2"
               >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-primary-600 font-semibold">{index + 1}.</span>
-                  <span className="text-gray-700 flex-1 truncate">{file.name}</span>
-                  <span className="text-sm text-gray-500">
+                <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                  <span className="text-primary-600 font-semibold text-sm sm:text-base flex-shrink-0">{index + 1}.</span>
+                  <span className="text-gray-700 flex-1 truncate text-xs sm:text-sm">{file.name}</span>
+                  <span className="text-xs sm:text-sm text-gray-500 flex-shrink-0">
                     ({(file.size / 1024 / 1024).toFixed(2)} MB)
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
                   {index > 0 && (
                     <button
                       onClick={() => handleReorder(index, 'up')}
-                      className="p-1 text-primary-600 hover:text-primary-700"
+                      className="p-1 sm:p-1.5 text-primary-600 hover:text-primary-700 text-sm sm:text-base"
                       title="Mover para cima"
                     >
                       ↑
@@ -154,7 +155,7 @@ export default function PDFMerger() {
                   {index < files.length - 1 && (
                     <button
                       onClick={() => handleReorder(index, 'down')}
-                      className="p-1 text-primary-600 hover:text-primary-700"
+                      className="p-1 sm:p-1.5 text-primary-600 hover:text-primary-700 text-sm sm:text-base"
                       title="Mover para baixo"
                     >
                       ↓
@@ -162,7 +163,7 @@ export default function PDFMerger() {
                   )}
                   <button
                     onClick={() => handleRemoveFile(index)}
-                    className="p-1 text-red-600 hover:text-red-700"
+                    className="p-1 sm:p-1.5 text-red-600 hover:text-red-700 text-base sm:text-lg"
                     title="Remover"
                   >
                     ✕
@@ -201,7 +202,7 @@ export default function PDFMerger() {
       <button
         onClick={handleMerge}
         disabled={files.length < 2 || isProcessing}
-        className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all ${
+        className={`w-full py-3 px-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base text-white transition-all ${
           files.length < 2 || isProcessing
             ? 'bg-gray-400 cursor-not-allowed'
             : 'bg-primary-600 hover:bg-primary-700 shadow-lg hover:shadow-xl'

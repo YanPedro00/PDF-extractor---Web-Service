@@ -72,8 +72,8 @@ export default function PDFUploader({ mode }: PDFUploaderProps) {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-8">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 md:p-8">
+      <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6 text-center">
         {mode === 'text' ? 'PDF com Texto Selecionável' : 'PDF Escaneado (OCR)'}
       </h2>
 
@@ -81,7 +81,7 @@ export default function PDFUploader({ mode }: PDFUploaderProps) {
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        className="border-2 border-dashed border-primary-300 rounded-lg p-12 text-center hover:border-primary-500 transition-colors cursor-pointer bg-primary-50"
+        className="border-2 border-dashed border-primary-300 rounded-lg p-6 sm:p-8 md:p-12 text-center hover:border-primary-500 transition-colors cursor-pointer bg-primary-50"
         onClick={() => fileInputRef.current?.click()}
       >
         <input
@@ -92,7 +92,7 @@ export default function PDFUploader({ mode }: PDFUploaderProps) {
           className="hidden"
         />
         <svg
-          className="w-16 h-16 mx-auto text-primary-400 mb-4"
+          className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-primary-400 mb-3 sm:mb-4"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -104,14 +104,18 @@ export default function PDFUploader({ mode }: PDFUploaderProps) {
             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
           />
         </svg>
-        <p className="text-gray-600 mb-2">
-          <span className="text-primary-600 font-semibold">Clique para fazer upload</span> ou arraste o arquivo aqui
+        <p className="text-sm sm:text-base text-gray-600 mb-2">
+          <span className="text-primary-600 font-semibold">Clique para fazer upload</span>
+          <span className="hidden sm:inline"> ou arraste o arquivo aqui</span>
         </p>
-        <p className="text-sm text-gray-500">Apenas arquivos PDF</p>
+        <p className="text-xs sm:text-sm text-gray-500">Apenas arquivos PDF</p>
         {file && (
-          <div className="mt-4 p-3 bg-primary-100 rounded-lg inline-block">
-            <p className="text-primary-800 font-medium">
-              📄 {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
+          <div className="mt-4 p-2 sm:p-3 bg-primary-100 rounded-lg inline-block max-w-full">
+            <p className="text-primary-800 font-medium text-xs sm:text-sm break-words">
+              📄 {file.name}
+            </p>
+            <p className="text-primary-700 text-xs mt-1">
+              ({(file.size / 1024 / 1024).toFixed(2)} MB)
             </p>
           </div>
         )}
@@ -144,7 +148,7 @@ export default function PDFUploader({ mode }: PDFUploaderProps) {
       <button
         onClick={handleConvert}
         disabled={!file || isProcessing}
-        className={`mt-6 w-full py-3 px-6 rounded-lg font-semibold text-white transition-all ${
+        className={`mt-4 sm:mt-6 w-full py-3 sm:py-3 px-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base text-white transition-all ${
           !file || isProcessing
             ? 'bg-gray-400 cursor-not-allowed'
             : 'bg-primary-600 hover:bg-primary-700 shadow-lg hover:shadow-xl'
