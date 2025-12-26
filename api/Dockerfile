@@ -18,7 +18,7 @@ COPY requirements.txt .
 # Instalar dependências Python
 # IMPORTANTE: Instalar opencv-contrib-python-headless ANTES de img2table
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip uninstall -y opencv-python opencv-contrib-python opencv-python-headless || true && \
+    pip uninstall -y opencv-python opencv-python-headless || true && \
     pip install --no-cache-dir opencv-contrib-python-headless>=4.8.0 && \
     python3 -c "import cv2; print(f'✅ OpenCV {cv2.__version__} instalado')" && \
     pip install --no-cache-dir flask==3.0.0 flask-cors==4.0.0 && \
