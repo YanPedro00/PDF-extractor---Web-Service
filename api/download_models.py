@@ -18,11 +18,11 @@ print("📥 Baixando modelos do PaddleOCR durante o build...")
 print("⏳ Isso pode levar alguns minutos, mas é melhor fazer durante o build do que na primeira requisição")
 
 try:
-    from img2table.ocr import PaddleOCR
+    from paddleocr import PaddleOCR
     
     print("🔍 Inicializando PaddleOCR para baixar modelos...")
-    # img2table.PaddleOCR tem API simplificada, usar apenas lang
-    ocr = PaddleOCR(lang="pt")
+    # PaddleOCR direto (não através do img2table)
+    ocr = PaddleOCR(lang="pt", use_angle_cls=True, use_gpu=False, show_log=True)
     
     print("✅ Modelos do PaddleOCR baixados com sucesso!")
     print("📦 Os modelos estão prontos para uso quando o container iniciar")
