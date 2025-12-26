@@ -25,13 +25,15 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir img2table>=1.4.2 && \
     pip install --no-cache-dir paddleocr>=2.7.0 paddlepaddle>=2.5.0 && \
     pip install --no-cache-dir pandas>=2.1.4 openpyxl>=3.1.2 && \
-    pip uninstall -y opencv-python opencv-contrib-python || true
+    pip uninstall -y opencv-python opencv-contrib-python || true && \
+    python3 -c "import cv2; print(f'✅ OpenCV {cv2.__version__} ainda disponível após instalação')"
 
 # Copiar código da aplicação
 COPY . .
 
-# Baixar modelos do PaddleOCR durante o build (após garantir que cv2 está instalado)
-RUN python3 download_models.py || echo "Aviso: Modelos serão baixados na primeira requisição"
+# Verificar cv2 novamente antes de baixar modelos
+RUN python3 -c "import cv2; print(f'✅ cv2 disponível: {cv2.__version__}')" && \
+    python3 download_models.py || echo "Aviso: Modelos serão baixados na primeira requisição"
 
 # Variáveis de ambiente para OpenCV headless
 ENV OPENCV_IO_ENABLE_OPENEXR=0
