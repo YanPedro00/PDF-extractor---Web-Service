@@ -155,7 +155,8 @@ function splitLineIntoColumns(line: string): string[] {
 
 /**
  * Converte PDF escaneado usando OCR para Excel
- * Tenta usar API Python (img2table + EasyOCR) primeiro, fallback para Tesseract.js
+ * Tenta usar API Python (img2table + PaddleOCR) primeiro, fallback para Tesseract.js
+ * PaddleOCR é 2-3x mais rápido e usa menos memória que EasyOCR
  */
 export async function convertPDFWithOCR(
   file: File,
@@ -164,7 +165,8 @@ export async function convertPDFWithOCR(
   try {
     onProgress?.(5)
 
-    // Tentar usar API Python primeiro (img2table + EasyOCR)
+    // Tentar usar API Python primeiro (img2table + PaddleOCR)
+    // PaddleOCR é mais rápido e eficiente que EasyOCR
     let apiUrl = process.env.NEXT_PUBLIC_OCR_API_URL || 'http://localhost:5003'
     
     // Garantir que a URL tenha protocolo
@@ -182,26 +184,49 @@ export async function convertPDFWithOCR(
       })
 
       if (healthCheck.ok) {
-        // API disponível, usar img2table + EasyOCR
+        // API disponível, usar img2table + PaddleOCR
+        // PaddleOCR oferece melhor performance e precisão para tabelas
         onProgress?.(20)
 
         const formData = new FormData()
         formData.append('file', file)
 
-        const response = await fetch(`${apiUrl}/process-pdf`, {
-          method: 'POST',
-          body: formData,
-        })
+        // Criar AbortController para timeout de 15 minutos (900000ms)
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 15 * 60 * 1000) // 15 minutos
 
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || 'Erro na API de OCR')
-        }
+        try {
+          const response = await fetch(`${apiUrl}/process-pdf`, {
+            method: 'POST',
+            body: formData,
+            signal: controller.signal,
+          })
 
-        const result = await response.json()
+          clearTimeout(timeoutId)
 
-        if (result.success && result.excel_base64) {
-          onProgress?.(90)
+          if (!response.ok) {
+            // Tentar ler erro da resposta
+            let errorMessage = 'Erro na API de OCR'
+            try {
+              const errorData = await response.json()
+              errorMessage = errorData.error || errorMessage
+            } catch (e) {
+              // Se não conseguir ler JSON, usar status
+              if (response.status === 499) {
+                errorMessage = 'Timeout: O processamento está demorando muito. Tente com um PDF menor ou divida o arquivo.'
+              } else if (response.status === 502) {
+                errorMessage = 'Erro no servidor: A API não conseguiu processar o arquivo. Tente novamente.'
+              } else {
+                errorMessage = `Erro ${response.status}: ${response.statusText}`
+              }
+            }
+            throw new Error(errorMessage)
+          }
+
+          const result = await response.json()
+
+          if (result.success && result.excel_base64) {
+            onProgress?.(90)
 
           // Converter base64 para blob
           const binaryString = atob(result.excel_base64)
@@ -214,16 +239,32 @@ export async function convertPDFWithOCR(
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           })
 
-          const fileName = result.filename || file.name.replace('.pdf', '_OCR.xlsx')
-          saveAs(blob, fileName)
+            const fileName = result.filename || file.name.replace('.pdf', '_OCR.xlsx')
+            saveAs(blob, fileName)
 
-          onProgress?.(100)
-          return
+            onProgress?.(100)
+            return
+          }
+        } catch (fetchError: any) {
+          clearTimeout(timeoutId)
+          
+          // Se foi timeout, lançar erro específico
+          if (fetchError.name === 'AbortError' || controller.signal.aborted) {
+            throw new Error('Timeout: O processamento está demorando mais de 15 minutos. Tente com um PDF menor ou divida o arquivo em partes.')
+          }
+          
+          // Re-lançar outros erros
+          throw fetchError
         }
       }
-    } catch (apiError) {
-      // Se API não estiver disponível, usar fallback Tesseract.js
+    } catch (apiError: any) {
+      // Se API não estiver disponível ou der erro, usar fallback Tesseract.js
       console.warn('API Python não disponível, usando Tesseract.js:', apiError)
+      
+      // Se foi erro de timeout, não usar fallback (já lançou erro acima)
+      if (apiError.message && apiError.message.includes('Timeout')) {
+        throw apiError
+      }
     }
 
     // Fallback: usar Tesseract.js (implementação anterior)

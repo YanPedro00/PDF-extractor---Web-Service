@@ -1,6 +1,8 @@
 # API de OCR para PDFUtilities
 
-API Python usando Flask para processar PDFs escaneados com img2table + EasyOCR.
+API Python usando Flask para processar PDFs escaneados com img2table + **PaddleOCR**.
+
+**PaddleOCR** é 2-3x mais rápido e usa menos memória que EasyOCR, sendo ideal para extração de tabelas de PDFs escaneados.
 
 ## Instalação
 

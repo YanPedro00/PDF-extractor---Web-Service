@@ -41,8 +41,16 @@ export default function PDFUploader({ mode }: PDFUploaderProps) {
           setProgress(30 + progressValue * 0.7)
         })
       } else {
+        // OCR pode demorar muito tempo para PDFs grandes
+        const fileSizeMB = file.size / 1024 / 1024
+        if (fileSizeMB > 10) {
+          setError(`⚠️ Arquivo grande (${fileSizeMB.toFixed(1)}MB). O processamento OCR pode levar vários minutos. Por favor, aguarde...`)
+        }
+        
         setProgress(10)
         await convertPDFWithOCR(file, (progressValue) => {
+          // Progresso pode ficar em 20-30% durante o OCR (processamento na API)
+          // Isso é normal, pois o OCR acontece no servidor
           setProgress(10 + progressValue * 0.9)
         })
       }

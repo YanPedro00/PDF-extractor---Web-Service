@@ -1,20 +1,25 @@
 import os
-import ssl
-import urllib.request
 from img2table.document import PDF
-from img2table.ocr import EasyOCR
+from img2table.ocr import PaddleOCR
 import pandas as pd
 
-# Desabilitar verificação SSL temporariamente para downloads do EasyOCR
-# (necessário apenas para o download inicial dos modelos)
-ssl._create_default_https_context = ssl._create_unverified_context
-
 def pdf_para_excel_ocr(pdf_path, output_name="resultado_extraido.xlsx"):
+    """
+    Converte PDF escaneado para Excel usando img2table + PaddleOCR
+    
+    PaddleOCR é 2-3x mais rápido e usa menos memória que EasyOCR,
+    sendo ideal para extração de tabelas de PDFs escaneados.
+    """
     print(f"--- Iniciando processamento de: {pdf_path} ---")
     
-    # CORREÇÃO: Removido o argumento 'gpu'. 
-    # O img2table gerencia a instância do EasyOCR internamente.
-    ocr = EasyOCR(lang=["pt", "en"])
+    # Inicializar PaddleOCR
+    # use_angle_cls=True detecta rotação de texto (importante para PDFs escaneados)
+    ocr = PaddleOCR(
+        lang="pt",  # Português
+        use_angle_cls=True,
+        use_gpu=False,  # False para CPU, True se tiver GPU
+        show_log=False
+    )
     
     # Carrega o documento PDF
     doc = PDF(src=pdf_path)

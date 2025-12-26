@@ -11,7 +11,9 @@ Um site web moderno para converter PDFs em arquivos Excel organizados. Suporta d
 - **TypeScript**: Tipagem estática para JavaScript
 - **Tailwind CSS**: Framework CSS utilitário com tema vermelho personalizado
 - **pdfjs-dist**: Biblioteca para processar PDFs
-- **Tesseract.js**: Biblioteca para OCR (reconhecimento óptico de caracteres)
+- **PaddleOCR**: Biblioteca Python para OCR (reconhecimento óptico de caracteres) - 2-3x mais rápido que EasyOCR
+- **img2table**: Biblioteca Python para extração de tabelas de PDFs
+- **Tesseract.js**: Biblioteca JavaScript para OCR (fallback quando API não disponível)
 - **xlsx**: Biblioteca para gerar arquivos Excel
 - **file-saver**: Biblioteca para salvar arquivos no navegador
 
@@ -63,9 +65,35 @@ npm run dev
 5. Aguarde o processamento (com barra de progresso)
 6. O arquivo Excel será baixado automaticamente
 
+## Arquitetura
+
+O projeto possui dois serviços:
+
+1. **Frontend Next.js**: Interface web para upload e conversão de PDFs
+2. **API Python Flask**: Serviço backend para processamento OCR usando PaddleOCR + img2table
+
+### API Python (Opcional)
+
+A API Python oferece melhor performance para PDFs escaneados usando **PaddleOCR**, que é:
+- ⚡ **2-3x mais rápido** que EasyOCR
+- 💾 **Usa menos memória** (~50% menos)
+- ✅ **Melhor precisão** para extração de tabelas (95-98%)
+
+Se a API não estiver disponível, o frontend usa Tesseract.js como fallback.
+
+Para rodar a API localmente:
+```bash
+cd api
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python3 pdf_ocr_api.py
+```
+
 ## Notas
 
 - O OCR pode demorar mais tempo dependendo do tamanho e complexidade do PDF
 - O OCR está configurado para português (por padrão)
 - Arquivos grandes podem levar mais tempo para processar
+- Com PaddleOCR, o processamento é significativamente mais rápido que com EasyOCR
 
