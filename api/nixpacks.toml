@@ -5,12 +5,16 @@ nixPkgs = ["python313"]
 cmds = [
   "python3 -m pip install --upgrade pip",
   "pip install -r requirements.txt",
+  "chmod +x setup_opencv.sh && ./setup_opencv.sh",
   "python3 download_models.py"
 ]
 
 [start]
 cmd = "python3 pdf_ocr_api.py"
 
+# Variáveis de ambiente para OpenCV funcionar sem GUI (headless)
 [variables]
 PORT = "5003"
+OPENCV_IO_ENABLE_OPENEXR = "0"
+QT_QPA_PLATFORM = "offscreen"
 

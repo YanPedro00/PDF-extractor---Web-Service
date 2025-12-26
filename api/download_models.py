@@ -3,6 +3,12 @@
 Script para baixar modelos do PaddleOCR durante o build
 Isso garante que os modelos estejam prontos quando o container iniciar
 """
+# Configurar variáveis de ambiente ANTES de qualquer import
+import os
+os.environ['OPENCV_IO_ENABLE_OPENEXR'] = '0'
+os.environ['QT_QPA_PLATFORM'] = 'offscreen'
+os.environ['DISPLAY'] = ':99'
+
 import sys
 
 print("📥 Baixando modelos do PaddleOCR durante o build...")

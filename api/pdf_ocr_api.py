@@ -7,7 +7,13 @@ PaddleOCR oferece alta performance para extração de tabelas:
 - Baixo uso de memória (~500MB-1GB)
 - Alta precisão para tabelas (95-98%)
 """
+# CRÍTICO: Configurar variáveis de ambiente ANTES de qualquer import
+# Isso evita erro de libGL.so.1 no Railway
 import os
+os.environ['OPENCV_IO_ENABLE_OPENEXR'] = '0'
+os.environ['QT_QPA_PLATFORM'] = 'offscreen'
+os.environ['DISPLAY'] = ':99'  # Dummy display para OpenCV headless
+
 import tempfile
 import base64
 from flask import Flask, request, jsonify, send_file
