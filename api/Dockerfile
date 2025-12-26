@@ -31,8 +31,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copiar código da aplicação
 COPY . .
 
-# Verificar cv2 novamente antes de baixar modelos
+# Verificar cv2 e img2table antes de baixar modelos
 RUN python3 -c "import cv2; print(f'✅ cv2 disponível: {cv2.__version__}')" && \
+    python3 -c "from img2table.ocr import PaddleOCR; print('✅ img2table pode importar PaddleOCR')" && \
     python3 download_models.py || echo "Aviso: Modelos serão baixados na primeira requisição"
 
 # Variáveis de ambiente para OpenCV headless
