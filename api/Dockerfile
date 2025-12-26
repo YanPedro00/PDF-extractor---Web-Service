@@ -22,11 +22,14 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
     pip uninstall -y opencv-python opencv-contrib-python || true
 
+# Verificar se cv2 está instalado corretamente
+RUN python3 -c "import cv2; print(f'OpenCV {cv2.__version__} instalado com sucesso')" || echo "Aviso: cv2 não pôde ser importado"
+
 # Copiar código da aplicação
 COPY . .
 
-# Baixar modelos do PaddleOCR durante o build
-RUN python3 download_models.py || true
+# Baixar modelos do PaddleOCR durante o build (após garantir que cv2 está instalado)
+RUN python3 download_models.py || echo "Aviso: Modelos serão baixados na primeira requisição"
 
 # Variáveis de ambiente para OpenCV headless
 ENV OPENCV_IO_ENABLE_OPENEXR=0
