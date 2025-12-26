@@ -13,6 +13,8 @@ import os
 os.environ['OPENCV_IO_ENABLE_OPENEXR'] = '0'
 os.environ['QT_QPA_PLATFORM'] = 'offscreen'
 os.environ['DISPLAY'] = ':99'  # Dummy display para OpenCV headless
+# Forçar OpenCV a não carregar bibliotecas GUI
+os.environ['OPENCV_HEADLESS'] = '1'
 
 import tempfile
 import base64

@@ -1,3 +1,4 @@
+opencv-python-headless>=4.8.0  # DEVE ser instalado primeiro para evitar conflito com opencv-python
 flask==3.0.0
 flask-cors==4.0.0
 img2table>=1.4.2
@@ -5,5 +6,4 @@ paddleocr>=2.7.0
 paddlepaddle>=2.5.0
 pandas>=2.1.4
 openpyxl>=3.1.2
-opencv-python-headless>=4.8.0  # Versão headless do OpenCV (não precisa de libGL)
 
