@@ -23,7 +23,7 @@ try:
     print("🔍 Inicializando PaddleOCR para baixar modelos...")
     ocr = PaddleOCR(
         lang="pt",
-        use_angle_cls=True,
+        
         use_gpu=False,
         show_log=True  # Mostrar progresso do download
     )

@@ -62,7 +62,7 @@ def get_ocr():
         print("🚀 Inicializando PaddleOCR (modelos já baixados durante o build)...")
         ocr_instance = PaddleOCR(
             lang="pt",  # Português
-            use_angle_cls=True,  # Detecção de rotação (importante para PDFs escaneados)
+            
             use_gpu=False,  # False para CPU, True se tiver GPU
             show_log=False  # Reduz logs verbosos
         )
