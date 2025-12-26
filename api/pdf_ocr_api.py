@@ -66,7 +66,7 @@ def get_ocr():
         # PaddleOCR direto (não através do img2table)
         ocr_instance = PaddleOCR(
             lang="pt",
-            use_angle_cls=True,  # Detecta rotação de texto
+            use_textline_orientation=True,  # Detecta rotação de texto
             use_gpu=False,  # CPU mode
             show_log=False
         )

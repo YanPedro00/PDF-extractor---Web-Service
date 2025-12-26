@@ -1,8 +1,12 @@
 # API de OCR para PDFUtilities
 
-API Python usando Flask para processar PDFs escaneados com img2table + **PaddleOCR**.
+API Python usando Flask para processar PDFs escaneados com **PaddleOCR**.
 
-**PaddleOCR** é 2-3x mais rápido e usa menos memória que EasyOCR, sendo ideal para extração de tabelas de PDFs escaneados.
+**PaddleOCR** oferece alta performance para extração de texto:
+- Processamento rápido (12-15 páginas/minuto)
+- Baixo uso de memória (~500MB-1GB)
+- Alta precisão para OCR (95-98%)
+- Extrai TODO o texto do PDF, não apenas tabelas
 
 ## Instalação
 
@@ -18,7 +22,7 @@ pip install -r requirements.txt
 python pdf_ocr_api.py
 ```
 
-A API estará disponível em `http://localhost:5002` (ou porta definida na variável PORT)
+A API estará disponível em `http://localhost:5003` (ou porta definida na variável PORT)
 
 ## Endpoints
 
@@ -26,7 +30,7 @@ A API estará disponível em `http://localhost:5002` (ou porta definida na vari�
 Verifica se a API está funcionando.
 
 ### POST /process-pdf
-Processa um PDF e retorna Excel em base64.
+Processa um PDF e retorna Excel em base64 com TODO o texto extraído.
 
 **Request:**
 - Content-Type: multipart/form-data
@@ -41,12 +45,13 @@ Processa um PDF e retorna Excel em base64.
 }
 ```
 
+O Excel terá uma planilha por página do PDF, com o texto extraído de cada página.
+
 ## Configuração no Frontend
 
 A aplicação Next.js tentará usar esta API automaticamente. Se a API não estiver disponível, usará Tesseract.js como fallback.
 
 Para configurar a URL da API, adicione no `.env.local`:
 ```
-NEXT_PUBLIC_OCR_API_URL=http://localhost:5002
+NEXT_PUBLIC_OCR_API_URL=http://localhost:5003
 ```
-
