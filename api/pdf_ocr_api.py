@@ -137,14 +137,15 @@ def process_pdf():
                 if pix.n == 4:  # RGBA
                     img_array = img_array[:, :, :3]  # Remover canal alpha
                 
-                # Extrair texto usando PaddleOCR
-                result = ocr.ocr(img_array, cls=True)
+                result = ocr.predict(img_array)
                 
                 # Processar resultados do OCR
+                # O método predict retorna: [[[bbox], (text, confidence)], ...]
                 page_text_lines = []
-                if result and result[0]:
-                    for line in result[0]:
+                if result:
+                    for line in result:
                         if line and len(line) >= 2:
+                            # line[0] é o bbox, line[1] é (text, confidence)
                             text_info = line[1]
                             if text_info and len(text_info) >= 2:
                                 text = text_info[0]  # Texto extraído
