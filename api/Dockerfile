@@ -16,14 +16,16 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Instalar dependências Python
+# IMPORTANTE: Instalar opencv-contrib-python-headless ANTES de img2table
 RUN pip install --no-cache-dir --upgrade pip && \
     pip uninstall -y opencv-python opencv-contrib-python opencv-python-headless || true && \
     pip install --no-cache-dir opencv-contrib-python-headless>=4.8.0 && \
-    pip install --no-cache-dir -r requirements.txt && \
+    python3 -c "import cv2; print(f'✅ OpenCV {cv2.__version__} instalado')" && \
+    pip install --no-cache-dir flask==3.0.0 flask-cors==4.0.0 && \
+    pip install --no-cache-dir img2table>=1.4.2 && \
+    pip install --no-cache-dir paddleocr>=2.7.0 paddlepaddle>=2.5.0 && \
+    pip install --no-cache-dir pandas>=2.1.4 openpyxl>=3.1.2 && \
     pip uninstall -y opencv-python opencv-contrib-python || true
-
-# Verificar se cv2 está instalado corretamente
-RUN python3 -c "import cv2; print(f'OpenCV {cv2.__version__} instalado com sucesso')" || echo "Aviso: cv2 não pôde ser importado"
 
 # Copiar código da aplicação
 COPY . .
