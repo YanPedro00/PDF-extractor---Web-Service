@@ -11,18 +11,23 @@ os.environ['DISPLAY'] = ':99'
 os.environ['OPENCV_HEADLESS'] = '1'
 os.environ['OPENCV_AVOID_OPENGL'] = '1'
 os.environ['OPENCV_SKIP_OPENCL'] = '1'
+
 import sys
+
 print("📥 Baixando modelos do PaddleOCR durante o build...")
 print("⏳ Isso pode levar alguns minutos, mas é melhor fazer durante o build do que na primeira requisição")
+
 try:
     from img2table.ocr import PaddleOCR
-    print("🔍 Inicializando PaddleOCR para baixar modelos...")
-    ocr = PaddleOCR(
-        lang="pt",
-        use_gpu=False,
+    
     print("🔍 Inicializando PaddleOCR para baixar modelos...")
     # img2table.PaddleOCR tem API simplificada, usar apenas lang
     ocr = PaddleOCR(lang="pt")
+    
+    print("✅ Modelos do PaddleOCR baixados com sucesso!")
+    print("📦 Os modelos estão prontos para uso quando o container iniciar")
+    
+except Exception as e:
     print(f"❌ Erro ao baixar modelos: {e}")
     print("⚠️  Os modelos serão baixados na primeira requisição (pode demorar)")
     sys.exit(0)  # Não falhar o build, apenas avisar
