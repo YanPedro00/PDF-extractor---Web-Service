@@ -51,3 +51,4 @@ EXPOSE 5003
 # Comando para iniciar a aplicação
 CMD ["python3", "pdf_ocr_api.py"]
 
+# Build: Fri Dec 26 13:57:09 -04 2025
