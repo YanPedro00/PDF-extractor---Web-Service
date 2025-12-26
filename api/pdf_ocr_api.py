@@ -12,9 +12,10 @@ PaddleOCR oferece alta performance para extração de tabelas:
 import os
 os.environ['OPENCV_IO_ENABLE_OPENEXR'] = '0'
 os.environ['QT_QPA_PLATFORM'] = 'offscreen'
-os.environ['DISPLAY'] = ':99'  # Dummy display para OpenCV headless
-# Forçar OpenCV a não carregar bibliotecas GUI
+os.environ['DISPLAY'] = ':99'
 os.environ['OPENCV_HEADLESS'] = '1'
+os.environ['OPENCV_AVOID_OPENGL'] = '1'
+os.environ['OPENCV_SKIP_OPENCL'] = '1'
 
 import tempfile
 import base64

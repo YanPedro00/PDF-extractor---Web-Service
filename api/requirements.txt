@@ -1,4 +1,4 @@
-opencv-python-headless>=4.8.0  # DEVE ser instalado primeiro para evitar conflito com opencv-python
+opencv-contrib-python-headless>=4.8.0  # img2table requer opencv-contrib-python-headless, não opencv-python-headless
 flask==3.0.0
 flask-cors==4.0.0
 img2table>=1.4.2
