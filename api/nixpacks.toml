@@ -1,0 +1,26 @@
+[phases.setup]
+nixPkgs = ["python313"]
+aptPkgs = ["libgl1-mesa-glx", "libglib2.0-0", "libsm6", "libxext6", "libxrender-dev"]
+
+[phases.install]
+cmds = [
+  "python3 -m pip install --upgrade pip",
+  "pip uninstall -y opencv-python opencv-contrib-python || true",
+  "pip install --no-cache-dir opencv-contrib-python-headless>=4.8.0",
+  "pip install -r requirements.txt",
+  "pip uninstall -y opencv-python opencv-contrib-python || true",
+  "python3 download_models.py || true"
+]
+
+[start]
+cmd = "python3 pdf_ocr_api.py"
+
+[variables]
+PORT = "5003"
+OPENCV_IO_ENABLE_OPENEXR = "0"
+QT_QPA_PLATFORM = "offscreen"
+OPENCV_HEADLESS = "1"
+OPENCV_AVOID_OPENGL = "1"
+OPENCV_SKIP_OPENCL = "1"
+DISPLAY = ":99"
+
