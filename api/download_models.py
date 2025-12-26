@@ -20,11 +20,9 @@ try:
     ocr = PaddleOCR(
         lang="pt",
         use_gpu=False,
-        show_log=True  # Mostrar progresso do download
-    )
-    print("✅ Modelos do PaddleOCR baixados com sucesso!")
-    print("📦 Os modelos estão prontos para uso quando o container iniciar")
-except Exception as e:
+    print("🔍 Inicializando PaddleOCR para baixar modelos...")
+    # img2table.PaddleOCR tem API simplificada, usar apenas lang
+    ocr = PaddleOCR(lang="pt")
     print(f"❌ Erro ao baixar modelos: {e}")
     print("⚠️  Os modelos serão baixados na primeira requisição (pode demorar)")
     sys.exit(0)  # Não falhar o build, apenas avisar

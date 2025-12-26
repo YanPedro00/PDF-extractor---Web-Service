@@ -59,13 +59,9 @@ def get_ocr():
     global ocr_instance
     if ocr_instance is None:
         print("🚀 Inicializando PaddleOCR (modelos já baixados durante o build)...")
-        ocr_instance = PaddleOCR(
-            lang="pt",  # Português
-            
-            use_gpu=False,  # False para CPU, True se tiver GPU
-            show_log=False  # Reduz logs verbosos
-        )
-        print("✅ PaddleOCR inicializado com sucesso!")
+        print("🚀 Inicializando PaddleOCR (modelos já baixados durante o build)...")
+        # img2table.PaddleOCR tem API simplificada, usar apenas lang
+        ocr_instance = PaddleOCR(lang="pt")
     return ocr_instance
 
 @app.route('/health', methods=['GET'])
