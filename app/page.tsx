@@ -8,6 +8,8 @@ import GoogleAd from '@/components/GoogleAd'
 
 export default function Home() {
   const [selectedMode, setSelectedMode] = useState<'text' | 'ocr' | 'merge' | 'split' | null>(null)
+  const [contentReady, setContentReady] = useState(false)
+  const [hasSubstantialContent, setHasSubstantialContent] = useState(false)
 
   // Listener para mudanças vindas da navbar
   useEffect(() => {
@@ -26,6 +28,26 @@ export default function Home() {
     }
   }, [])
 
+  // Verificar se há conteúdo suficiente para exibir anúncios
+  useEffect(() => {
+    // Aguardar um pouco para garantir que o conteúdo foi renderizado
+    const timer = setTimeout(() => {
+      setContentReady(true)
+      
+      // Verificar se há conteúdo substancial na página
+      // Anúncios só devem aparecer quando há conteúdo suficiente
+      if (selectedMode === null) {
+        // Na página inicial, temos 4 cards de ferramentas + descrições
+        setHasSubstantialContent(true)
+      } else {
+        // Quando uma ferramenta está selecionada, há conteúdo interativo
+        setHasSubstantialContent(true)
+      }
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [selectedMode])
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
@@ -34,24 +56,59 @@ export default function Home() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-600 mb-3 sm:mb-4 px-2">
             PDFUtilities
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-600 px-2">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 px-2 mb-4">
             Ferramentas completas para trabalhar com seus PDFs
           </p>
           
-          {/* Google Ad - Localização 1: Abaixo do texto do header */}
-          <div className="mt-6 sm:mt-8 mb-6 sm:mb-8 flex justify-center px-2">
-            <GoogleAd 
-              adSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_1 || '6280286471'} 
-              adFormat="auto"
-              className="min-h-[100px] w-full max-w-[728px]"
-            />
+          {/* Descrição adicional para aumentar o valor do conteúdo */}
+          <div className="max-w-3xl mx-auto px-2 mb-6 sm:mb-8">
+            <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+              Transforme seus documentos PDF de forma rápida e eficiente. Nossa plataforma oferece 
+              ferramentas profissionais para converter PDFs para Excel, juntar múltiplos arquivos 
+              ou dividir documentos. Suportamos PDFs com texto selecionável e documentos escaneados 
+              através de tecnologia OCR avançada.
+            </p>
           </div>
+          
+          {/* Google Ad - Localização 1: Abaixo do texto do header - Só renderiza se houver conteúdo suficiente */}
+          {contentReady && hasSubstantialContent && (
+            <div className="mt-6 sm:mt-8 mb-6 sm:mb-8 flex justify-center px-2">
+              <GoogleAd 
+                adSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_1 || '6280286471'} 
+                adFormat="auto"
+                className="min-h-[100px] w-full max-w-[728px]"
+                shouldRender={contentReady && hasSubstantialContent}
+              />
+            </div>
+          )}
         </header>
 
         {/* Main Content */}
         <div className="max-w-6xl mx-auto">
           {!selectedMode ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+            <>
+              {/* Seção de instruções para adicionar mais conteúdo de valor */}
+              <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4">
+                  Como usar nossas ferramentas
+                </h2>
+                <div className="space-y-3 text-sm sm:text-base text-gray-700">
+                  <div className="flex items-start gap-3">
+                    <span className="text-primary-600 font-bold flex-shrink-0">1.</span>
+                    <p>Escolha a ferramenta que melhor atende às suas necessidades abaixo.</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-primary-600 font-bold flex-shrink-0">2.</span>
+                    <p>Faça upload do seu arquivo PDF ou arraste-o para a área indicada.</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-primary-600 font-bold flex-shrink-0">3.</span>
+                    <p>Aguarde o processamento e baixe o resultado final.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
               {/* Opção 1: PDF com texto selecionável */}
               <button
                 onClick={() => setSelectedMode('text')}
@@ -177,7 +234,33 @@ export default function Home() {
                   </p>
                 </div>
               </button>
-            </div>
+              </div>
+
+              {/* Informações adicionais sobre as ferramentas */}
+              <div className="bg-primary-50 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8">
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
+                  Por que escolher o PDFUtilities?
+                </h3>
+                <ul className="space-y-2 text-sm sm:text-base text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary-600 mt-1">✓</span>
+                    <span>Processamento rápido e seguro - seus arquivos nunca saem do seu navegador</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary-600 mt-1">✓</span>
+                    <span>Suporte para PDFs escaneados com tecnologia OCR de última geração</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary-600 mt-1">✓</span>
+                    <span>Interface intuitiva e fácil de usar, sem necessidade de instalação</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary-600 mt-1">✓</span>
+                    <span>100% gratuito e sem limites de uso</span>
+                  </li>
+                </ul>
+              </div>
+            </>
           ) : (
             <div>
               <button
@@ -210,14 +293,17 @@ export default function Home() {
           )}
         </div>
 
-        {/* Google Ad - Localização 2: Acima do footer */}
-        <div className="mt-12 sm:mt-16 mb-6 sm:mb-8 flex justify-center px-2">
-          <GoogleAd 
-            adSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_2 || '4093106837'} 
-            adFormat="auto"
-            className="min-h-[100px] w-full max-w-[728px]"
-          />
-        </div>
+        {/* Google Ad - Localização 2: Acima do footer - Só renderiza se houver conteúdo suficiente */}
+        {contentReady && hasSubstantialContent && (
+          <div className="mt-12 sm:mt-16 mb-6 sm:mb-8 flex justify-center px-2">
+            <GoogleAd 
+              adSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_2 || '4093106837'} 
+              adFormat="auto"
+              className="min-h-[100px] w-full max-w-[728px]"
+              shouldRender={contentReady && hasSubstantialContent}
+            />
+          </div>
+        )}
 
         {/* Footer */}
         <footer className="mt-6 sm:mt-8 text-center text-gray-500 text-xs sm:text-sm px-2">

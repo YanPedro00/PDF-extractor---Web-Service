@@ -1,12 +1,13 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 interface GoogleAdProps {
   adSlot: string
   adFormat?: 'auto' | 'rectangle' | 'vertical' | 'horizontal'
   style?: React.CSSProperties
   className?: string
+  shouldRender?: boolean // Nova prop para controlar renderização baseada em conteúdo
 }
 
 /**
@@ -33,31 +34,49 @@ export default function GoogleAd({
   adSlot, 
   adFormat = 'auto',
   style,
-  className = ''
+  className = '',
+  shouldRender = true // Por padrão, renderiza se não especificado
 }: GoogleAdProps) {
   // O script do Google AdSense já está no <head> do layout com o client ID
   // Usar o Publisher ID do script ou da variável de ambiente
   const publisherId = process.env.NEXT_PUBLIC_GOOGLE_ADS_PUBLISHER_ID || 'ca-pub-1782940009467994'
+  const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
+    // Só renderizar anúncios se shouldRender for true e após um pequeno delay
+    // para garantir que o conteúdo principal já foi carregado
+    if (!shouldRender) {
+      setIsReady(false)
+      return
+    }
+
     // O script do Google AdSense já está no <head> do layout
-    // Apenas inicializar o anúncio quando o componente montar
+    // Aguardar um pouco para garantir que o conteúdo principal foi renderizado
     if (typeof window !== 'undefined') {
-      // Aguardar um pouco para garantir que o script foi carregado
+      // Delay maior para garantir que o conteúdo está visível
       const timer = setTimeout(() => {
-        try {
-          // @ts-ignore - adsbygoogle é injetado pelo script do Google
-          if (window.adsbygoogle) {
-            (window.adsbygoogle = window.adsbygoogle || []).push({})
+        setIsReady(true)
+        // Aguardar mais um pouco antes de inicializar o anúncio
+        setTimeout(() => {
+          try {
+            // @ts-ignore - adsbygoogle é injetado pelo script do Google
+            if (window.adsbygoogle) {
+              (window.adsbygoogle = window.adsbygoogle || []).push({})
+            }
+          } catch (err) {
+            // Silenciar erros do Google Ads (são comuns durante aprovação)
           }
-        } catch (err) {
-          // Silenciar erros do Google Ads (são comuns durante aprovação)
-        }
-      }, 100)
+        }, 200)
+      }, 500)
 
       return () => clearTimeout(timer)
     }
-  }, [adSlot])
+  }, [adSlot, shouldRender])
+
+  // Não renderizar se shouldRender for false ou se ainda não estiver pronto
+  if (!shouldRender || !isReady) {
+    return null
+  }
 
   return (
     <div className={`google-ad-container ${className}`} style={style}>
