@@ -54,7 +54,6 @@ def get_ocr():
     
     Configurações:
     - lang: idioma (pt = português)
-    - use_angle_cls: detecta rotação de texto (importante para PDFs escaneados)
     - use_gpu: False para CPU (True se tiver GPU disponível)
     """
     global ocr_instance
