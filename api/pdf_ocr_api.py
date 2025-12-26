@@ -67,8 +67,6 @@ def get_ocr():
         ocr_instance = PaddleOCR(
             lang="pt",
             use_textline_orientation=True,  # Detecta rotação de texto
-            use_gpu=False,  # CPU mode
-            show_log=False
         )
     return ocr_instance
 

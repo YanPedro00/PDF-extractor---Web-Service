@@ -22,7 +22,7 @@ try:
     
     print("🔍 Inicializando PaddleOCR para baixar modelos...")
     # PaddleOCR direto (não através do img2table)
-    ocr = PaddleOCR(lang="pt", use_textline_orientation=True, use_gpu=False)
+    ocr = PaddleOCR(lang="pt", use_textline_orientation=True)
     
     print("✅ Modelos do PaddleOCR baixados com sucesso!")
     print("📦 Os modelos estão prontos para uso quando o container iniciar")
