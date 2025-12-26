@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxrender1 \
     && rm -rf /var/lib/apt/lists/*
 
+    libgomp1 \
 # Definir diretório de trabalho
 WORKDIR /app
 
