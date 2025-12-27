@@ -27,7 +27,7 @@ export default function PrivacidadePage() {
               <section>
                 <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3">1. Introdução</h2>
                 <p className="text-gray-700 leading-relaxed">
-                  O PDFUtilities ("nós", "nosso" ou "nos") está comprometido em proteger sua privacidade. 
+                  O PDFUtilities (&quot;nós&quot;, &quot;nosso&quot; ou &quot;nos&quot;) está comprometido em proteger sua privacidade. 
                   Esta Política de Privacidade explica como coletamos, usamos e protegemos suas informações quando você 
                   utiliza nosso site e ferramentas.
                 </p>

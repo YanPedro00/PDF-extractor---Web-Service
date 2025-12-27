@@ -93,7 +93,7 @@ export default function JuntarPage() {
                 <li className="flex items-start gap-3">
                   <span className="bg-primary-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">4</span>
                   <div>
-                    <strong>Junte os PDFs:</strong> Clique no botão "Juntar PDFs" e aguarde alguns segundos. 
+                    <strong>Junte os PDFs:</strong> Clique no botão &quot;Juntar PDFs&quot; e aguarde alguns segundos. 
                     O download iniciará automaticamente.
                   </div>
                 </li>

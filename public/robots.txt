@@ -8,6 +8,7 @@ Allow: /converter
 Allow: /ocr
 Allow: /juntar
 Allow: /dividir
+Allow: /comprimir
 
 # Páginas institucionais
 Allow: /sobre

@@ -20,6 +20,7 @@ export default function PDFSplitter() {
     if (file) {
       loadPageCount()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file])
 
   const loadPageCount = async () => {

@@ -27,7 +27,7 @@ export default function TermosPage() {
               <section>
                 <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3">1. Aceitação dos Termos</h2>
                 <p className="text-gray-700 leading-relaxed">
-                  Ao acessar e usar o PDFUtilities ("Site"), você concorda em cumprir e estar vinculado aos seguintes 
+                  Ao acessar e usar o PDFUtilities (&quot;Site&quot;), você concorda em cumprir e estar vinculado aos seguintes 
                   Termos de Uso. Se você não concorda com qualquer parte destes termos, não deve usar nosso Site.
                 </p>
               </section>
@@ -90,7 +90,7 @@ export default function TermosPage() {
               <section>
                 <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3">6. Isenção de Garantias</h2>
                 <p className="text-gray-700 leading-relaxed mb-3">
-                  O Site é fornecido "COMO ESTÁ" e "CONFORME DISPONÍVEL" sem garantias de qualquer tipo, expressas ou implícitas, incluindo, mas não limitado a:
+                  O Site é fornecido &quot;COMO ESTÁ&quot; e &quot;CONFORME DISPONÍVEL&quot; sem garantias de qualquer tipo, expressas ou implícitas, incluindo, mas não limitado a:
                 </p>
                 <ul className="list-disc pl-6 text-gray-700 space-y-2">
                   <li>Garantias de comercialização ou adequação a um propósito específico</li>
@@ -170,7 +170,7 @@ export default function TermosPage() {
                 <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3">13. Alterações aos Termos</h2>
                 <p className="text-gray-700 leading-relaxed">
                   Reservamo-nos o direito de modificar estes Termos a qualquer momento. Publicaremos quaisquer alterações 
-                  nesta página e atualizaremos a data da "Última atualização" no topo. Seu uso continuado do Site após 
+                  nesta página e atualizaremos a data da &quot;Última atualização&quot; no topo. Seu uso continuado do Site após 
                   tais modificações constitui sua aceitação dos novos Termos.
                 </p>
               </section>

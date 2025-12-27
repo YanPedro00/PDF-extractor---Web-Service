@@ -43,6 +43,11 @@ export default function Footer() {
                   Dividir PDF
                 </Link>
               </li>
+              <li>
+                <Link href="/comprimir" className="text-gray-600 hover:text-primary-600 transition-colors">
+                  Comprimir PDF
+                </Link>
+              </li>
             </ul>
           </div>
 

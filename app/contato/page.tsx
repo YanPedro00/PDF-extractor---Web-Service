@@ -193,14 +193,14 @@ export default function ContatoPage() {
                 <div>
                   <h3 className="font-semibold text-gray-800 mb-1">Como posso reportar um bug?</h3>
                   <p className="text-sm text-gray-600">
-                    Selecione "Problema técnico" no formulário acima e descreva o problema em detalhes, 
+                    Selecione &quot;Problema técnico&quot; no formulário acima e descreva o problema em detalhes, 
                     incluindo qual ferramenta você estava usando e o que aconteceu.
                   </p>
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-800 mb-1">Posso sugerir novas funcionalidades?</h3>
                   <p className="text-sm text-gray-600">
-                    Sim! Adoramos ouvir sugestões dos nossos usuários. Use a opção "Sugestão de melhoria" 
+                    Sim! Adoramos ouvir sugestões dos nossos usuários. Use a opção &quot;Sugestão de melhoria&quot; 
                     e conte-nos sua ideia.
                   </p>
                 </div>

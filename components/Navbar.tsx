@@ -13,6 +13,7 @@ export default function Navbar() {
     { href: '/ocr', name: 'PDF Escaneado' },
     { href: '/juntar', name: 'Juntar PDFs' },
     { href: '/dividir', name: 'Dividir PDF' },
+    { href: '/comprimir', name: 'Comprimir PDF' },
   ]
 
   const isActive = (href: string) => pathname === href
@@ -26,6 +27,7 @@ export default function Navbar() {
             href="/"
             className="flex items-center gap-2 sm:gap-3 cursor-pointer hover:opacity-80 transition-opacity"
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/logo.png"
               alt="PDFUtilities Logo"

@@ -1,11 +1,11 @@
 'use client'
 
-import PDFSplitter from '@/components/PDFSplitter'
+import PDFCompressor from '@/components/PDFCompressor'
 import Link from 'next/link'
 import GoogleAd from '@/components/GoogleAd'
 import { useState, useEffect } from 'react'
 
-export default function DividirPage() {
+export default function ComprimirPage() {
   const [contentReady, setContentReady] = useState(false)
 
   useEffect(() => {
@@ -30,11 +30,11 @@ export default function DividirPage() {
           {/* Descrição da ferramenta */}
           <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
-              Dividir PDF - Extrair Páginas Específicas
+              Comprimir PDF - Reduzir Tamanho de Arquivo
             </h1>
             <p className="text-base sm:text-lg text-gray-700 mb-4 leading-relaxed">
-              Divida arquivos PDF grandes em páginas individuais ou extraia apenas as páginas que você precisa. 
-              Perfeito para separar documentos, compartilhar páginas específicas ou organizar arquivos.
+              Reduza o tamanho dos seus arquivos PDF sem perder qualidade significativa. Perfeito para enviar por email, 
+              economizar espaço de armazenamento ou fazer upload em sites com limite de tamanho.
             </p>
 
             <div className="bg-primary-50 rounded-lg p-4 mb-4">
@@ -44,23 +44,23 @@ export default function DividirPage() {
               <ul className="space-y-2 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-2">
                   <span className="text-primary-600 mt-1 flex-shrink-0">•</span>
-                  <span><strong>Extrair páginas específicas:</strong> Pegue apenas as páginas que você precisa de um documento grande</span>
+                  <span><strong>Enviar por email:</strong> PDFs muito grandes podem ser rejeitados por servidores de email (limite geralmente 25MB)</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary-600 mt-1 flex-shrink-0">•</span>
-                  <span><strong>Separar capítulos:</strong> Divida livros ou manuais em capítulos individuais</span>
+                  <span><strong>Upload em formulários:</strong> Sites e sistemas online frequentemente têm limites de tamanho de arquivo</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary-600 mt-1 flex-shrink-0">•</span>
-                  <span><strong>Compartilhar documentos:</strong> Extraia páginas específicas para compartilhar sem enviar o arquivo completo</span>
+                  <span><strong>Economizar espaço:</strong> Libere espaço de armazenamento no seu computador ou nuvem</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary-600 mt-1 flex-shrink-0">•</span>
-                  <span><strong>Organizar arquivos:</strong> Separe faturas, contratos ou relatórios em arquivos individuais</span>
+                  <span><strong>Compartilhamento rápido:</strong> Arquivos menores são mais rápidos para transferir e baixar</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary-600 mt-1 flex-shrink-0">•</span>
-                  <span><strong>Reduzir tamanho:</strong> Crie arquivos menores extraindo apenas as páginas necessárias</span>
+                  <span><strong>Arquivamento:</strong> Comprima documentos antigos que precisam ser mantidos mas raramente acessados</span>
                 </li>
               </ul>
             </div>
@@ -73,32 +73,33 @@ export default function DividirPage() {
                 <li className="flex items-start gap-3">
                   <span className="bg-primary-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">1</span>
                   <div>
-                    <strong>Faça upload do PDF:</strong> Clique para selecionar ou arraste seu arquivo PDF para a área de upload. 
-                    A ferramenta mostrará quantas páginas o documento possui.
+                    <strong>Faça upload do PDF:</strong> Selecione o arquivo PDF que deseja comprimir. 
+                    A ferramenta mostrará o tamanho original do arquivo.
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="bg-primary-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">2</span>
                   <div>
-                    <strong>Escolha o modo de divisão:</strong>
+                    <strong>Escolha o nível de compressão:</strong>
                     <ul className="mt-2 space-y-1 ml-4">
-                      <li>• <strong>Extrair todas as páginas:</strong> Cada página vira um PDF separado</li>
-                      <li>• <strong>Selecionar páginas:</strong> Escolha manualmente quais páginas extrair</li>
+                      <li>• <strong>Baixa Compressão (Alta Qualidade):</strong> ~15% de redução - Mantém máxima qualidade visual</li>
+                      <li>• <strong>Compressão Recomendada (Balanceada):</strong> ~40% de redução - Boa qualidade e boa compressão</li>
+                      <li>• <strong>Extrema Compressão (Máxima Redução):</strong> ~60% de redução - Prioriza menor tamanho</li>
                     </ul>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="bg-primary-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">3</span>
                   <div>
-                    <strong>Selecione as páginas (modo seleção):</strong> Clique nos números das páginas que deseja extrair. 
-                    Páginas selecionadas ficam destacadas em azul. Use &quot;Selecionar todas&quot; para marcar todas de uma vez.
+                    <strong>Comprima e baixe:</strong> Clique em &quot;Comprimir PDF&quot; e aguarde alguns segundos. 
+                    O arquivo comprimido será baixado automaticamente.
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="bg-primary-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">4</span>
                   <div>
-                    <strong>Extrair páginas:</strong> Clique no botão para processar. Se você selecionou múltiplas páginas, 
-                    um arquivo ZIP será baixado contendo todos os PDFs individuais.
+                    <strong>Verifique o resultado:</strong> Compare o tamanho antes e depois. 
+                    Se necessário, teste outro nível de compressão.
                   </div>
                 </li>
               </ol>
@@ -106,32 +107,32 @@ export default function DividirPage() {
 
             <div className="bg-yellow-50 rounded-lg p-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                💡 Dicas e recursos:
+                💡 Dicas para melhor compressão:
               </h2>
               <ul className="space-y-2 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
-                  <span><strong>Modo flexível:</strong> Extraia todas as páginas de uma vez ou escolha apenas as que precisa.</span>
+                  <span><strong>PDFs com muitas imagens:</strong> Geralmente têm melhor taxa de compressão, podendo reduzir até 70-80%.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
-                  <span><strong>Seleção múltipla:</strong> Clique em quantas páginas quiser - não há limite.</span>
+                  <span><strong>PDFs escaneados:</strong> Documentos escaneados em alta resolução são os que mais se beneficiam da compressão.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
-                  <span><strong>Preserva qualidade:</strong> As páginas extraídas mantêm a mesma qualidade do PDF original.</span>
+                  <span><strong>Teste primeiro:</strong> Use compressão média primeiro. Se o arquivo ainda for grande, tente alta compressão.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
-                  <span><strong>Download em ZIP:</strong> Múltiplas páginas são automaticamente compactadas em um arquivo ZIP.</span>
+                  <span><strong>Verifique a qualidade:</strong> Sempre abra o PDF comprimido para verificar se a qualidade está aceitável.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
-                  <span><strong>Nomes automáticos:</strong> Cada PDF extraído é nomeado com o número da página original (ex: pagina_1.pdf).</span>
+                  <span><strong>PDFs já otimizados:</strong> Alguns PDFs já estão comprimidos - nesses casos a redução será menor.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
-                  <span><strong>Processamento local:</strong> Tudo acontece no seu navegador - máxima privacidade e segurança.</span>
+                  <span><strong>Processamento local:</strong> Tudo acontece no seu navegador - seus arquivos não são enviados para nenhum servidor.</span>
                 </li>
               </ul>
             </div>
@@ -149,7 +150,7 @@ export default function DividirPage() {
             </div>
           )}
           
-          <PDFSplitter />
+          <PDFCompressor />
 
           {/* Seção de perguntas frequentes */}
           <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mt-6">
@@ -158,38 +159,54 @@ export default function DividirPage() {
             </h2>
             <div className="space-y-4">
               <div>
-                <h3 className="font-semibold text-gray-800 mb-1">Posso extrair páginas não sequenciais?</h3>
+                <h3 className="font-semibold text-gray-800 mb-1">Quanto posso reduzir o tamanho do meu PDF?</h3>
                 <p className="text-sm sm:text-base text-gray-600">
-                  Sim! No modo &quot;Selecionar páginas&quot;, você pode escolher qualquer combinação de páginas. 
-                  Por exemplo, você pode extrair as páginas 1, 5, 7 e 12 do mesmo documento.
+                  Depende do conteúdo do PDF. PDFs com muitas imagens em alta resolução podem ser reduzidos em 50-70%. 
+                  PDFs com muito texto terão menor taxa de compressão (10-30%). Nossa ferramenta mostra a redução exata após o processo.
                 </p>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-800 mb-1">Como recebo as páginas extraídas?</h3>
+                <h3 className="font-semibold text-gray-800 mb-1">A compressão afeta a qualidade do PDF?</h3>
                 <p className="text-sm sm:text-base text-gray-600">
-                  Se você extrair apenas uma página, receberá um arquivo PDF. Se extrair múltiplas páginas, 
-                  receberá um arquivo ZIP contendo todos os PDFs individuais nomeados sequencialmente.
+                  A compressão baixa mantém qualidade quase idêntica ao original. A média tem perda imperceptível para a maioria dos usos. 
+                  A alta compressão pode ter leve perda de qualidade em imagens, mas o texto permanece nítido e legível.
                 </p>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-800 mb-1">Há limite de páginas no PDF?</h3>
+                <h3 className="font-semibold text-gray-800 mb-1">Posso comprimir PDFs protegidos por senha?</h3>
                 <p className="text-sm sm:text-base text-gray-600">
-                  Não há limite técnico, mas PDFs muito grandes (centenas de páginas) podem levar mais tempo para processar. 
-                  A ferramenta funciona melhor com documentos de até 200 páginas.
+                  Não. PDFs protegidos por senha precisam ser desbloqueados primeiro. Você pode usar ferramentas de 
+                  remoção de senha do PDF antes de comprimir.
                 </p>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-800 mb-1">A extração afeta a qualidade?</h3>
+                <h3 className="font-semibold text-gray-800 mb-1">Posso descomprimir o PDF depois?</h3>
                 <p className="text-sm sm:text-base text-gray-600">
-                  Não! As páginas extraídas são cópias exatas das originais, mantendo 100% da qualidade, 
-                  incluindo textos, imagens, links e formatação.
+                  Não. A compressão de PDF remove dados permanentemente para reduzir o tamanho. Por isso, 
+                  recomendamos sempre manter uma cópia do arquivo original antes de comprimir.
                 </p>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-800 mb-1">Posso dividir PDFs protegidos por senha?</h3>
+                <h3 className="font-semibold text-gray-800 mb-1">Qual nível de compressão devo escolher?</h3>
                 <p className="text-sm sm:text-base text-gray-600">
-                  A ferramenta funciona apenas com PDFs desprotegidos. Se seu PDF tem senha, 
-                  você precisará desbloqueá-lo primeiro usando outra ferramenta.
+                  Para a maioria dos casos, recomendamos a <strong>Compressão Recomendada</strong> - oferece excelente redução de tamanho (40%) 
+                  mantendo boa qualidade visual. Use <strong>Baixa Compressão</strong> para apresentações e documentos profissionais onde 
+                  qualidade é essencial. Use <strong>Extrema Compressão</strong> quando você precisa do menor tamanho possível, como para 
+                  limites de upload ou envio de muitos arquivos.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-1">Há limite de tamanho de arquivo?</h3>
+                <p className="text-sm sm:text-base text-gray-600">
+                  Como o processamento ocorre localmente no seu navegador, o limite depende da memória do seu dispositivo. 
+                  Recomendamos até 50MB para melhor performance. Arquivos maiores podem levar mais tempo ou travar o navegador.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-1">Meus dados estão seguros?</h3>
+                <p className="text-sm sm:text-base text-gray-600">
+                  Sim! Todo o processamento acontece localmente no seu navegador. Seus arquivos nunca são enviados 
+                  para nenhum servidor, garantindo total privacidade.
                 </p>
               </div>
             </div>
@@ -199,3 +216,4 @@ export default function DividirPage() {
     </main>
   )
 }
+

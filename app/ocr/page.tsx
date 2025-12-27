@@ -150,7 +150,7 @@ export default function OCRPage() {
                 <h3 className="font-semibold text-gray-800 mb-1">O que é OCR?</h3>
                 <p className="text-sm sm:text-base text-gray-600">
                   OCR (Optical Character Recognition) é uma tecnologia que converte imagens de texto em texto editável. 
-                  É como "ensinar" o computador a "ler" documentos escaneados ou fotografados.
+                  É como &quot;ensinar&quot; o computador a &quot;ler&quot; documentos escaneados ou fotografados.
                 </p>
               </div>
               <div>

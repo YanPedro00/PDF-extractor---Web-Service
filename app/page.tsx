@@ -55,6 +55,16 @@ export default function Home() {
       ),
       title: 'Dividir PDF',
       description: 'Extraia páginas específicas ou todas as páginas separadamente.'
+    },
+    {
+      href: '/comprimir',
+      icon: (
+        <svg className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-primary-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+      ),
+      title: 'Comprimir PDF',
+      description: 'Reduza o tamanho do PDF mantendo a qualidade.'
     }
   ]
 
@@ -117,7 +127,7 @@ export default function Home() {
           </div>
 
           {/* Grid de Ferramentas */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
             {tools.map((tool) => (
               <Link
                 key={tool.href}
