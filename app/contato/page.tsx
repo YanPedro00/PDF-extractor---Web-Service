@@ -14,7 +14,7 @@ export default function ContatoPage() {
     e.preventDefault()
     
     // Criar mailto link
-    const mailtoLink = `mailto:contato@pdfutilities.com?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(
+    const mailtoLink = `mailto:pdf.utilities00@gmail.com?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(
       `Nome: ${nome}\nEmail: ${email}\n\nMensagem:\n${mensagem}`
     )}`
     
@@ -65,10 +65,10 @@ export default function ContatoPage() {
                     <svg className="w-6 h-6 text-primary-600 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                    <div>
-                      <h3 className="font-semibold text-gray-800">Email</h3>
-                      <p className="text-gray-600 text-sm">contato@pdfutilities.com</p>
-                    </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800">Email</h3>
+                    <p className="text-gray-600 text-sm">pdf.utilities00@gmail.com</p>
+                  </div>
                   </div>
 
                   <div className="flex items-start gap-3">

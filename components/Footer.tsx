@@ -66,8 +66,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="mailto:contato@pdfutilities.com" className="text-gray-600 hover:text-primary-600 transition-colors">
-                  Email: contato@pdfutilities.com
+                <a href="mailto:pdf.utilities00@gmail.com" className="text-gray-600 hover:text-primary-600 transition-colors">
+                  Email: pdf.utilities00@gmail.com
                 </a>
               </li>
             </ul>
