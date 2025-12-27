@@ -5,10 +5,7 @@ aptPkgs = ["libgl1-mesa-glx", "libglib2.0-0", "libsm6", "libxext6", "libxrender-
 [phases.install]
 cmds = [
   "python3 -m pip install --upgrade pip",
-  "pip uninstall -y opencv-python opencv-contrib-python || true",
-  "pip install --no-cache-dir opencv-contrib-python-headless>=4.8.0",
   "pip install -r requirements.txt",
-  "pip uninstall -y opencv-python opencv-contrib-python || true",
   "python3 download_models.py || true"
 ]
 
@@ -23,4 +20,3 @@ OPENCV_HEADLESS = "1"
 OPENCV_AVOID_OPENGL = "1"
 OPENCV_SKIP_OPENCL = "1"
 DISPLAY = ":99"
-

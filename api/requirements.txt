@@ -1,10 +1,17 @@
-opencv-contrib-python-headless>=4.8.0
+# API Flask
 flask==3.0.0
 flask-cors==4.0.0
-paddleocr>=2.7.0
-paddlepaddle>=2.5.0
+
+# Processamento de dados e Excel
 pandas>=2.1.4
 openpyxl>=3.1.2
+
+# PDF e OCR
 PyMuPDF>=1.23.0
-numpy>=1.24.0
 img2table>=1.4.2
+
+# Nota: img2table automaticamente instala:
+# - paddleocr
+# - paddlepaddle
+# - opencv-python
+# Não é necessário listá-los explicitamente

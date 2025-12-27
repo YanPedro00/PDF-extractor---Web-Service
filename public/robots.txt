@@ -1,0 +1,20 @@
+# robots.txt para PDFUtilities
+
+User-agent: *
+Allow: /
+
+# Páginas principais
+Allow: /converter
+Allow: /ocr
+Allow: /juntar
+Allow: /dividir
+
+# Páginas institucionais
+Allow: /sobre
+Allow: /contato
+Allow: /privacidade
+Allow: /termos
+
+# Sitemap
+Sitemap: https://pdfutilities.com/sitemap.xml
+

@@ -1,37 +1,30 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const pathname = usePathname()
   
   const tools = [
-    { id: 'text', name: 'PDF para Excel' },
-    { id: 'ocr', name: 'PDF Escaneado' },
-    { id: 'merge', name: 'Juntar PDFs' },
-    { id: 'split', name: 'Dividir PDF' },
+    { href: '/converter', name: 'PDF para Excel' },
+    { href: '/ocr', name: 'PDF Escaneado' },
+    { href: '/juntar', name: 'Juntar PDFs' },
+    { href: '/dividir', name: 'Dividir PDF' },
   ]
 
-  const handleToolClick = (toolId: string) => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    window.dispatchEvent(new CustomEvent('changeTool', { detail: toolId }))
-    setIsMenuOpen(false) // Fechar menu mobile após clicar
-  }
-
-  const handleHomeClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    window.dispatchEvent(new CustomEvent('changeTool', { detail: null }))
-    setIsMenuOpen(false)
-  }
+  const isActive = (href: string) => pathname === href
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Logo e Nome */}
-          <div 
+          <Link 
+            href="/"
             className="flex items-center gap-2 sm:gap-3 cursor-pointer hover:opacity-80 transition-opacity"
-            onClick={handleHomeClick}
           >
             <img
               src="/logo.png"
@@ -41,18 +34,22 @@ export default function Navbar() {
               className="sm:w-10 sm:h-10 object-contain"
             />
             <span className="text-lg sm:text-2xl font-bold text-primary-600">PDFUtilities</span>
-          </div>
+          </Link>
 
           {/* Menu Desktop - Ferramentas */}
           <div className="hidden md:flex items-center gap-1 lg:gap-3">
             {tools.map((tool) => (
-              <button
-                key={tool.id}
-                onClick={() => handleToolClick(tool.id)}
-                className="px-3 lg:px-4 py-2 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors font-medium text-sm lg:text-base"
+              <Link
+                key={tool.href}
+                href={tool.href}
+                className={`px-3 lg:px-4 py-2 rounded-lg transition-colors font-medium text-sm lg:text-base ${
+                  isActive(tool.href)
+                    ? 'bg-primary-50 text-primary-600'
+                    : 'text-gray-700 hover:bg-primary-50 hover:text-primary-600'
+                }`}
               >
                 {tool.name}
-              </button>
+              </Link>
             ))}
           </div>
 
@@ -92,13 +89,18 @@ export default function Navbar() {
           <div className="md:hidden border-t border-gray-200 bg-white">
             <div className="flex flex-col py-2">
               {tools.map((tool) => (
-                <button
-                  key={tool.id}
-                  onClick={() => handleToolClick(tool.id)}
-                  className="px-4 py-3 text-left text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors font-medium text-sm"
+                <Link
+                  key={tool.href}
+                  href={tool.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`px-4 py-3 text-left transition-colors font-medium text-sm ${
+                    isActive(tool.href)
+                      ? 'bg-primary-50 text-primary-600'
+                      : 'text-gray-700 hover:bg-primary-50 hover:text-primary-600'
+                  }`}
                 >
                   {tool.name}
-                </button>
+                </Link>
               ))}
             </div>
           </div>
@@ -107,4 +109,3 @@ export default function Navbar() {
     </nav>
   )
 }
-
