@@ -1,57 +1,70 @@
+import ssl
 import os
-from img2table.document import PDF
-from img2table.ocr import PaddleOCR
+import re
 import pandas as pd
+from img2table.document import PDF
+from img2table.ocr import PaddleOCR  # Agora usando Paddle!
+from openpyxl.utils import get_column_letter
 
-def pdf_para_excel_ocr(pdf_path, output_name="resultado_extraido.xlsx"):
-    """
-    Converte PDF escaneado para Excel usando img2table + PaddleOCR
+# 1. Correção SSL para Mac (necessário para baixar os modelos do Paddle)
+ssl._create_default_https_context = ssl._create_unverified_context
+
+def limpar_caracteres_xml(texto):
+    """Protege o Excel e preserva os acentos latinos."""
+    if not isinstance(texto, str):
+        texto = str(texto) if texto is not None else ""
+    # Regex para manter apenas caracteres seguros para o XML do Excel
+    return re.sub(r'[^\x09\x0A\x0D\x20-\x7E\xA0-\xFF]', '', texto)
+
+def ajustar_colunas(writer, sheet_name, df):
+    """Auto-ajusta a largura das colunas para um Excel organizado."""
+    worksheet = writer.sheets[sheet_name]
+    for i, col in enumerate(df.columns):
+        column_len = df[col].astype(str).str.len().max()
+        column_len = max(column_len, len(str(col))) + 2
+        worksheet.column_dimensions[get_column_letter(i + 1)].width = min(column_len, 60)
+
+def extrair_com_paddle(pdf_path, output_name="matriz_paddle_final.xlsx"):
+    print(f"--- Iniciando Extração de Alta Precisão (PaddleOCR) ---")
     
-    PaddleOCR é 2-3x mais rápido e usa menos memória que EasyOCR,
-    sendo ideal para extração de tabelas de PDFs escaneados.
-    """
-    print(f"--- Iniciando processamento de: {pdf_path} ---")
+    # 2. Inicializa o PaddleOCR com suporte a Português
+    # O PaddleOCR baixará os modelos (~100MB) na primeira execução
+    ocr = PaddleOCR(lang="pt")
     
-    # Inicializar PaddleOCR
-    # use_angle_cls=True detecta rotação de texto (importante para PDFs escaneados)
-    ocr = PaddleOCR(
-        lang="pt",  # Português
-        use_angle_cls=True,
-        use_gpu=False,  # False para CPU, True se tiver GPU
-        show_log=False
-    )
-    
-    # Carrega o documento PDF
+    # 3. Carrega o PDF
     doc = PDF(src=pdf_path)
     
-    # Extrai as tabelas
-    # implicit_rows=True é fundamental para PDFs digitalizados
+    # 4. Extração de tabelas (Alta sensibilidade)
     tabelas_extraidas = doc.extract_tables(
         ocr=ocr, 
         implicit_rows=True, 
         borderless_tables=True,
-        min_confidence=50
+        min_confidence=45
     )
     
     if not tabelas_extraidas:
-        print("Nenhuma tabela encontrada. Verifique se o PDF possui linhas ou estrutura tabular clara.")
+        print("Aviso: Nenhuma tabela encontrada. Tente reduzir o 'min_confidence'.")
         return
 
-    # Processa e salva em Excel
+    # 5. Geração do arquivo Excel profissional
     with pd.ExcelWriter(output_name, engine='openpyxl') as writer:
         for pagina_idx, tabelas in tabelas_extraidas.items():
             for tab_idx, tabela in enumerate(tabelas):
-                df = tabela.df
+                # Limpa e sanitiza os dados
+                df = tabela.df.map(limpar_caracteres_xml)
+                
                 sheet_name = f"Pag_{pagina_idx + 1}_Tab_{tab_idx + 1}"
                 df.to_excel(writer, sheet_name=sheet_name[:31], index=False, header=False)
                 
-    print(f"\n✅ Concluído! O arquivo '{output_name}' foi gerado.")
+                # Aplica o ajuste visual de colunas
+                ajustar_colunas(writer, sheet_name[:31], df)
+                
+    print(f"\n✅ Concluído com Sucesso! Arquivo gerado: {output_name}")
 
 if __name__ == "__main__":
-    # Certifique-se de que o nome do arquivo está correto
-    arquivo_alvo = "matriz-ES-2025-2.pdf"
+    arquivo_alvo = "INVOICETESTE.pdf"
     
     if os.path.exists(arquivo_alvo):
-        pdf_para_excel_ocr(arquivo_alvo)
+        extrair_com_paddle(arquivo_alvo)
     else:
-        print(f"Erro: O arquivo '{arquivo_alvo}' não foi encontrado no diretório atual.")
+        print(f"Erro: O arquivo '{arquivo_alvo}' não foi encontrado.")

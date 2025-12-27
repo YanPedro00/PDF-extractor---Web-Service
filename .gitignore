@@ -34,3 +34,24 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+api/venv/
+api/env/
+api/ENV/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Validation files
+validation/*.xlsx
+validation/*.pdf
+
+# Backup files
+*_backup.py
+*_old.py
