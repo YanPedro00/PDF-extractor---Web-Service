@@ -147,7 +147,7 @@ export async function getPDFPageCount(file: File): Promise<number> {
 }
 
 /**
- * Comprime um PDF reduzindo o tamanho do arquivo
+ * Comprime um PDF reduzindo o tamanho do arquivo usando API Python
  */
 export async function compressPDF(
   file: File,
@@ -157,40 +157,51 @@ export async function compressPDF(
   try {
     onProgress?.(10)
 
-    const arrayBuffer = await file.arrayBuffer()
-    const pdf = await PDFDocument.load(arrayBuffer)
+    // Criar FormData para enviar para API
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('compression_level', compressionLevel)
 
-    onProgress?.(30)
+    onProgress?.(20)
 
-    // pdf-lib não oferece compressão de imagens nativa,
-    // mas podemos reprocessar o PDF para otimização básica
-    const optimizedPdf = await PDFDocument.create()
-    
-    // Copiar todas as páginas
-    const pages = await optimizedPdf.copyPages(pdf, pdf.getPageIndices())
-    pages.forEach((page) => optimizedPdf.addPage(page))
+    // Enviar para API Python
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5003'
+    const response = await fetch(`${API_URL}/compress-pdf`, {
+      method: 'POST',
+      body: formData,
+    })
 
     onProgress?.(60)
 
-    // Salvar com diferentes níveis de compressão através de opções
-    const saveOptions = {
-      useObjectStreams: true, // Comprime estruturas do PDF
-      addDefaultPage: false,
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Erro ao comprimir PDF')
     }
 
-    const pdfBytes = await optimizedPdf.save(saveOptions)
+    const data = await response.json()
 
-    onProgress?.(90)
+    onProgress?.(80)
 
-    // Salvar arquivo comprimido
-    const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' })
-    const fileName = file.name.replace('.pdf', '_comprimido.pdf')
-    saveAs(blob, fileName)
+    // Converter base64 para blob
+    const pdfData = atob(data.pdf)
+    const pdfArray = new Uint8Array(pdfData.length)
+    for (let i = 0; i < pdfData.length; i++) {
+      pdfArray[i] = pdfData.charCodeAt(i)
+    }
+
+    const blob = new Blob([pdfArray], { type: 'application/pdf' })
+    saveAs(blob, data.filename)
 
     onProgress?.(100)
+
+    // Retornar estatísticas para o componente mostrar
+    console.log(`Compressão concluída: ${data.reduction_percentage}% de redução`)
+    console.log(`Original: ${(data.original_size / 1024).toFixed(2)} KB`)
+    console.log(`Comprimido: ${(data.compressed_size / 1024).toFixed(2)} KB`)
+    
   } catch (error) {
     console.error('Erro ao comprimir PDF:', error)
-    throw new Error('Erro ao comprimir PDF. Verifique se o arquivo está correto.')
+    throw new Error(error instanceof Error ? error.message : 'Erro ao comprimir PDF. Verifique se o arquivo está correto.')
   }
 }
 

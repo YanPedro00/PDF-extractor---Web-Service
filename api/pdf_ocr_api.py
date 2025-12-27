@@ -258,12 +258,113 @@ def process_pdf():
         return jsonify({"error": f"Erro ao processar PDF: {error_msg}"}), 500
 
 
+@app.route('/compress-pdf', methods=['POST', 'OPTIONS'])
+def compress_pdf():
+    """Comprime um PDF reduzindo o tamanho do arquivo"""
+    if request.method == 'OPTIONS':
+        return '', 204
+    
+    try:
+        print("\n" + "="*60)
+        print("📦 INICIANDO COMPRESSÃO DE PDF")
+        print("="*60)
+        
+        # Validar request
+        if 'file' not in request.files:
+            return jsonify({'error': 'Nenhum arquivo enviado'}), 400
+        
+        pdf_file = request.files['file']
+        compression_level = request.form.get('compression_level', 'medium')
+        
+        if pdf_file.filename == '':
+            return jsonify({'error': 'Nome de arquivo vazio'}), 400
+        
+        if not pdf_file.filename.lower().endswith('.pdf'):
+            return jsonify({'error': 'Apenas arquivos PDF são aceitos'}), 400
+        
+        print(f"📄 Arquivo: {pdf_file.filename}")
+        print(f"🔧 Nível de compressão: {compression_level}")
+        
+        # Salvar PDF temporário
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_input:
+            pdf_file.save(temp_input.name)
+            input_path = temp_input.name
+        
+        # Criar arquivo de saída
+        output_path = tempfile.mktemp(suffix='_compressed.pdf')
+        
+        try:
+            import fitz  # PyMuPDF
+            
+            # Abrir PDF
+            doc = fitz.open(input_path)
+            original_size = os.path.getsize(input_path)
+            print(f"📊 Tamanho original: {original_size / 1024:.2f} KB")
+            
+            # Configurar níveis de compressão
+            compression_settings = {
+                'low': {'deflate': 1, 'garbage': 1},
+                'medium': {'deflate': 4, 'garbage': 3},
+                'high': {'deflate': 9, 'garbage': 4}
+            }
+            
+            settings = compression_settings.get(compression_level, compression_settings['medium'])
+            
+            # Salvar com compressão
+            doc.save(
+                output_path,
+                garbage=settings['garbage'],
+                deflate=True,
+                deflate_images=True,
+                deflate_fonts=True,
+                clean=True
+            )
+            doc.close()
+            
+            # Verificar redução
+            compressed_size = os.path.getsize(output_path)
+            reduction = ((original_size - compressed_size) / original_size) * 100
+            
+            print(f"📊 Tamanho comprimido: {compressed_size / 1024:.2f} KB")
+            print(f"💾 Redução: {reduction:.1f}%")
+            
+            # Ler arquivo comprimido
+            with open(output_path, 'rb') as f:
+                pdf_data = f.read()
+            
+            # Converter para base64
+            pdf_base64 = base64.b64encode(pdf_data).decode('utf-8')
+            
+            return jsonify({
+                'success': True,
+                'pdf': pdf_base64,
+                'filename': pdf_file.filename.replace('.pdf', '_comprimido.pdf'),
+                'original_size': original_size,
+                'compressed_size': compressed_size,
+                'reduction_percentage': round(reduction, 1)
+            })
+            
+        finally:
+            # Limpar arquivos temporários
+            if os.path.exists(input_path):
+                os.remove(input_path)
+            if os.path.exists(output_path):
+                os.remove(output_path)
+        
+    except Exception as e:
+        print(f"❌ Erro ao comprimir PDF: {e}")
+        import traceback
+        print(traceback.format_exc())
+        return jsonify({'error': f'Erro ao comprimir PDF: {str(e)}'}), 500
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5003))
     print("\n" + "="*60)
     print("🚀 API OCR SIMPLIFICADA - IMG2TABLE")
     print("="*60)
-    print(f"📝 Endpoint: http://0.0.0.0:{port}/process-pdf")
+    print(f"📝 Endpoint OCR: http://0.0.0.0:{port}/process-pdf")
+    print(f"📦 Endpoint Compressão: http://0.0.0.0:{port}/compress-pdf")
     print(f"🌐 Health: http://0.0.0.0:{port}/health")
     print("🔧 Engine: img2table (PaddleOCR)")
     print("\n✨ Características:")
@@ -271,6 +372,7 @@ if __name__ == '__main__':
     print("  ✅ Zero duplicação (motor único)")
     print("  ✅ Ideal para faturas, notas fiscais, listas")
     print("  ✅ Cada página = 1 aba no Excel")
+    print("  ✅ Compressão real de PDF com PyMuPDF")
     print("="*60 + "\n")
     
     app.run(host='0.0.0.0', port=port, debug=False)

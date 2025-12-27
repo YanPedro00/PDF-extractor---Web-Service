@@ -39,7 +39,7 @@ export default function ComprimirPage() {
 
             <div className="bg-primary-50 rounded-lg p-4 mb-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                ✨ Quando usar esta ferramenta:
+                Quando usar esta ferramenta:
               </h2>
               <ul className="space-y-2 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-2">
@@ -67,7 +67,7 @@ export default function ComprimirPage() {
 
             <div className="bg-blue-50 rounded-lg p-4 mb-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                📋 Como usar:
+                Como usar:
               </h2>
               <ol className="space-y-3 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-3">
@@ -107,31 +107,31 @@ export default function ComprimirPage() {
 
             <div className="bg-yellow-50 rounded-lg p-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                💡 Dicas para melhor compressão:
+                Dicas para melhor compressão:
               </h2>
               <ul className="space-y-2 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>PDFs com muitas imagens:</strong> Geralmente têm melhor taxa de compressão, podendo reduzir até 70-80%.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>PDFs escaneados:</strong> Documentos escaneados em alta resolução são os que mais se beneficiam da compressão.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Teste primeiro:</strong> Use compressão média primeiro. Se o arquivo ainda for grande, tente alta compressão.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Verifique a qualidade:</strong> Sempre abra o PDF comprimido para verificar se a qualidade está aceitável.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>PDFs já otimizados:</strong> Alguns PDFs já estão comprimidos - nesses casos a redução será menor.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Processamento local:</strong> Tudo acontece no seu navegador - seus arquivos não são enviados para nenhum servidor.</span>
                 </li>
               </ul>
@@ -155,7 +155,7 @@ export default function ComprimirPage() {
           {/* Seção de perguntas frequentes */}
           <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mt-6">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
-              ❓ Perguntas Frequentes
+              Perguntas Frequentes
             </h2>
             <div className="space-y-4">
               <div>

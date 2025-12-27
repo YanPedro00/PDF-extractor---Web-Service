@@ -39,7 +39,7 @@ export default function DividirPage() {
 
             <div className="bg-primary-50 rounded-lg p-4 mb-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                ✨ Quando usar esta ferramenta:
+                Quando usar esta ferramenta:
               </h2>
               <ul className="space-y-2 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-2">
@@ -67,7 +67,7 @@ export default function DividirPage() {
 
             <div className="bg-blue-50 rounded-lg p-4 mb-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                📋 Como usar:
+                Como usar:
               </h2>
               <ol className="space-y-3 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-3">
@@ -106,31 +106,31 @@ export default function DividirPage() {
 
             <div className="bg-yellow-50 rounded-lg p-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                💡 Dicas e recursos:
+                Dicas e recursos:
               </h2>
               <ul className="space-y-2 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Modo flexível:</strong> Extraia todas as páginas de uma vez ou escolha apenas as que precisa.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Seleção múltipla:</strong> Clique em quantas páginas quiser - não há limite.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Preserva qualidade:</strong> As páginas extraídas mantêm a mesma qualidade do PDF original.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Download em ZIP:</strong> Múltiplas páginas são automaticamente compactadas em um arquivo ZIP.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Nomes automáticos:</strong> Cada PDF extraído é nomeado com o número da página original (ex: pagina_1.pdf).</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Processamento local:</strong> Tudo acontece no seu navegador - máxima privacidade e segurança.</span>
                 </li>
               </ul>
@@ -154,7 +154,7 @@ export default function DividirPage() {
           {/* Seção de perguntas frequentes */}
           <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mt-6">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
-              ❓ Perguntas Frequentes
+              Perguntas Frequentes
             </h2>
             <div className="space-y-4">
               <div>

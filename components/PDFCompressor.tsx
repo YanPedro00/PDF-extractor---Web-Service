@@ -58,24 +58,52 @@ export default function PDFCompressor() {
 
     try {
       const originalSize = file.size
-      await compressPDF(file, compressionLevel, (progressValue) => {
-        setProgress(progressValue)
+      
+      // Chamar API de compressão
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('compression_level', compressionLevel)
+
+      setProgress(20)
+
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5003'
+      const response = await fetch(`${API_URL}/compress-pdf`, {
+        method: 'POST',
+        body: formData,
       })
-      
-      // Simular cálculo de compressão baseado no nível
-      const compressionRates = {
-        low: 0.85,    // 15% redução
-        medium: 0.60, // 40% redução
-        high: 0.40    // 60% redução
+
+      setProgress(60)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erro ao comprimir PDF')
       }
+
+      const data = await response.json()
+
+      setProgress(80)
+
+      // Converter base64 para blob e fazer download
+      const pdfData = atob(data.pdf)
+      const pdfArray = new Uint8Array(pdfData.length)
+      for (let i = 0; i < pdfData.length; i++) {
+        pdfArray[i] = pdfData.charCodeAt(i)
+      }
+
+      const blob = new Blob([pdfArray], { type: 'application/pdf' })
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      link.download = data.filename
+      link.click()
+      URL.revokeObjectURL(link.href)
+
+      setProgress(100)
       
-      const compressedSize = Math.round(originalSize * compressionRates[compressionLevel])
-      const savedPercentage = Math.round(((originalSize - compressedSize) / originalSize) * 100)
-      
+      // Mostrar estatísticas reais da API
       setCompressionResult({
-        originalSize,
-        compressedSize,
-        savedPercentage
+        originalSize: data.original_size,
+        compressedSize: data.compressed_size,
+        savedPercentage: data.reduction_percentage
       })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao comprimir o PDF')
@@ -135,7 +163,7 @@ export default function PDFCompressor() {
         {file && (
           <div className="mt-4 p-2 sm:p-3 bg-primary-100 rounded-lg inline-block max-w-full">
             <p className="text-primary-800 font-medium text-xs sm:text-sm break-words">
-              📄 {file.name}
+              {file.name}
             </p>
             <p className="text-primary-700 text-xs mt-1">
               {formatFileSize(file.size)}
@@ -162,7 +190,11 @@ export default function PDFCompressor() {
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl">📘</span>
+                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
                     <div>
                       <div className="font-bold text-base sm:text-lg text-gray-800">
                         Baixa Compressão
@@ -198,7 +230,11 @@ export default function PDFCompressor() {
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl">📗</span>
+                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
                     <div>
                       <div className="font-bold text-base sm:text-lg text-gray-800">
                         Compressão Recomendada
@@ -231,7 +267,11 @@ export default function PDFCompressor() {
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl">📕</span>
+                    <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
                     <div>
                       <div className="font-bold text-base sm:text-lg text-gray-800">
                         Extrema Compressão
@@ -258,8 +298,13 @@ export default function PDFCompressor() {
 
       {/* Compression Result */}
       {compressionResult && (
-        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <h3 className="font-semibold text-green-800 mb-2">✓ PDF Comprimido com Sucesso!</h3>
+          <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <h3 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            PDF Comprimido com Sucesso!
+          </h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <p className="text-gray-600">Tamanho Original:</p>

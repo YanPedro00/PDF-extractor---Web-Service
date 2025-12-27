@@ -39,7 +39,7 @@ export default function JuntarPage() {
 
             <div className="bg-primary-50 rounded-lg p-4 mb-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                ✨ Casos de uso comuns:
+                Casos de uso comuns:
               </h2>
               <ul className="space-y-2 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-2">
@@ -67,7 +67,7 @@ export default function JuntarPage() {
 
             <div className="bg-blue-50 rounded-lg p-4 mb-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                📋 Como usar:
+                Como usar:
               </h2>
               <ol className="space-y-3 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-3">
@@ -102,27 +102,27 @@ export default function JuntarPage() {
 
             <div className="bg-yellow-50 rounded-lg p-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                💡 Dicas e recursos:
+                Dicas e recursos:
               </h2>
               <ul className="space-y-2 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Sem limite de arquivos:</strong> Junte quantos PDFs precisar, de 2 a centenas de documentos.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Processamento local:</strong> Tudo acontece no seu navegador - seus arquivos não são enviados para nenhum servidor.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Preserva qualidade:</strong> A qualidade original dos PDFs é mantida, incluindo imagens e formatação.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Rápido e eficiente:</strong> O processo é instantâneo para a maioria dos documentos.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>A ordem importa:</strong> O primeiro arquivo da lista será o primeiro no PDF final, e assim por diante.</span>
                 </li>
               </ul>
@@ -146,7 +146,7 @@ export default function JuntarPage() {
           {/* Seção de perguntas frequentes */}
           <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mt-6">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
-              ❓ Perguntas Frequentes
+              Perguntas Frequentes
             </h2>
             <div className="space-y-4">
               <div>

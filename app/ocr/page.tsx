@@ -39,7 +39,7 @@ export default function OCRPage() {
 
             <div className="bg-primary-50 rounded-lg p-4 mb-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                ✨ Quando usar esta ferramenta:
+                Quando usar esta ferramenta:
               </h2>
               <ul className="space-y-2 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-2">
@@ -67,7 +67,7 @@ export default function OCRPage() {
 
             <div className="bg-blue-50 rounded-lg p-4 mb-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                📋 Como funciona:
+                Como funciona:
               </h2>
               <ol className="space-y-3 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-3">
@@ -99,27 +99,27 @@ export default function OCRPage() {
 
             <div className="bg-yellow-50 rounded-lg p-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                💡 Dicas para melhores resultados:
+                Dicas para melhores resultados:
               </h2>
               <ul className="space-y-2 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Qualidade da imagem:</strong> Use documentos escaneados em alta resolução (mínimo 300 DPI) para melhor precisão.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Iluminação:</strong> Garanta que o documento esteja bem iluminado e sem sombras ao escanear.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Alinhamento:</strong> Documentos alinhados (não tortos) produzem resultados mais precisos.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Tempo de processamento:</strong> OCR pode levar alguns minutos, especialmente para arquivos grandes. Por favor, aguarde pacientemente.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span><strong>Idioma:</strong> Nossa ferramenta está otimizada para reconhecer texto em português, mas também funciona com outros idiomas.</span>
                 </li>
               </ul>
@@ -143,7 +143,7 @@ export default function OCRPage() {
           {/* Seção de perguntas frequentes */}
           <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mt-6">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
-              ❓ Perguntas Frequentes
+              Perguntas Frequentes
             </h2>
             <div className="space-y-4">
               <div>

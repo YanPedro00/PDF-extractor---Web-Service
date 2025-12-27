@@ -120,7 +120,7 @@ export default function PDFUploader({ mode }: PDFUploaderProps) {
         {file && (
           <div className="mt-4 p-2 sm:p-3 bg-primary-100 rounded-lg inline-block max-w-full">
             <p className="text-primary-800 font-medium text-xs sm:text-sm break-words">
-              📄 {file.name}
+              {file.name}
             </p>
             <p className="text-primary-700 text-xs mt-1">
               ({(file.size / 1024 / 1024).toFixed(2)} MB)

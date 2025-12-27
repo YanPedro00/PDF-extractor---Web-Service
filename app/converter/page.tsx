@@ -39,7 +39,7 @@ export default function ConverterPage() {
 
             <div className="bg-primary-50 rounded-lg p-4 mb-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                ✨ Quando usar esta ferramenta:
+                Quando usar esta ferramenta
               </h2>
               <ul className="space-y-2 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-2">
@@ -63,7 +63,7 @@ export default function ConverterPage() {
 
             <div className="bg-blue-50 rounded-lg p-4 mb-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                📋 Como funciona:
+                Como funciona
               </h2>
               <ol className="space-y-3 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-3">
@@ -89,23 +89,23 @@ export default function ConverterPage() {
 
             <div className="bg-yellow-50 rounded-lg p-4">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
-                💡 Dicas importantes:
+                Dicas importantes
               </h2>
               <ul className="space-y-2 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span>Esta ferramenta é <strong>rápida e precisa</strong> para PDFs com texto selecionável.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span>Se o seu PDF é uma <strong>imagem escaneada</strong>, use nossa ferramenta de <Link href="/ocr" className="text-primary-600 hover:underline font-semibold">PDF Escaneado (OCR)</Link>.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span>PDFs com <strong>múltiplas páginas</strong> são suportados - cada página vira uma aba no Excel.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-yellow-600 mt-1 flex-shrink-0">⚡</span>
+                  <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
                   <span>A ferramenta <strong>preserva a estrutura</strong> das tabelas, mantendo linhas e colunas organizadas.</span>
                 </li>
               </ul>
@@ -129,7 +129,7 @@ export default function ConverterPage() {
           {/* Seção de perguntas frequentes */}
           <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mt-6">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
-              ❓ Perguntas Frequentes
+              Perguntas Frequentes
             </h2>
             <div className="space-y-4">
               <div>
