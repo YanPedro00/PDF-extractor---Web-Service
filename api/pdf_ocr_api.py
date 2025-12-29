@@ -26,6 +26,8 @@ import re
 import sys
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # Importar dependências críticas no início para detectar erros cedo
 try:
@@ -44,13 +46,39 @@ except ImportError as e:
     sys.exit(1)
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "OPTIONS"], "allow_headers": "*"}})
+
+# Configuração de CORS segura
+# Permitir apenas domínios específicos
+ALLOWED_ORIGINS = [
+    'https://*.up.railway.app',  # Railway (wildcard para subdomínios)
+    'http://localhost:3000',      # Desenvolvimento local
+    'http://localhost:5173',      # Vite local
+]
+
+CORS(app, resources={
+    r"/*": {
+        "origins": ALLOWED_ORIGINS,
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"],
+        "supports_credentials": False
+    }
+})
+
+# Rate Limiting para prevenir abuso
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["200 per hour"],  # Limite global
+    storage_uri="memory://",
+    strategy="fixed-window"
+)
 
 @app.after_request
 def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    # Headers de segurança adicionais
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
     return response
 
 
@@ -80,16 +108,20 @@ def clean_text(text):
 
 
 @app.route('/health', methods=['GET'])
+@limiter.exempt  # Health check sem limite
 def health():
     """Endpoint de health check"""
     return jsonify({"status": "ok"})
 
 
 @app.route('/process-pdf', methods=['POST'])
+@limiter.limit("10 per hour")  # Máximo 10 conversões por hora por IP
 def process_pdf():
     """
     Processa PDF usando APENAS img2table
     Versão SIMPLIFICADA e ROBUSTA
+    
+    Rate Limit: 10 requisições por hora por IP
     """
     try:
         # Validações
@@ -108,8 +140,14 @@ def process_pdf():
         if file_size > 50 * 1024 * 1024:
             return jsonify({"error": f"Arquivo muito grande. Máximo: 50MB"}), 400
         
+        # Anonimizar nome do arquivo nos logs por segurança
+        import hashlib
+        file_hash = hashlib.sha256(file.filename.encode()).hexdigest()[:12]
+        
         print(f"\n{'='*60}")
-        print(f"📄 Processando: {file.filename} ({file_size / 1024 / 1024:.2f}MB)")
+        print(f"📄 Processando: {file_hash} ({file_size / 1024 / 1024:.2f}MB)")
+        print(f"📂 Tipo: {file.content_type}")
+        print(f"🌐 IP: {get_remote_address()}")
         print(f"{'='*60}")
         
         # Salvar temporário
@@ -278,8 +316,13 @@ def process_pdf():
 
 
 @app.route('/compress-pdf', methods=['POST', 'OPTIONS'])
+@limiter.limit("20 per hour")  # Máximo 20 compressões por hora por IP
 def compress_pdf():
-    """Comprime um PDF reduzindo o tamanho do arquivo"""
+    """
+    Comprime um PDF reduzindo o tamanho do arquivo
+    
+    Rate Limit: 20 requisições por hora por IP
+    """
     if request.method == 'OPTIONS':
         return '', 204
     
@@ -301,8 +344,13 @@ def compress_pdf():
         if not pdf_file.filename.lower().endswith('.pdf'):
             return jsonify({'error': 'Apenas arquivos PDF são aceitos'}), 400
         
-        print(f"📄 Arquivo: {pdf_file.filename}")
+        # Anonimizar nome do arquivo nos logs
+        import hashlib
+        file_hash = hashlib.sha256(pdf_file.filename.encode()).hexdigest()[:12]
+        
+        print(f"📄 Arquivo: {file_hash}")
         print(f"🔧 Nível de compressão: {compression_level}")
+        print(f"🌐 IP: {get_remote_address()}")
         
         # Salvar PDF temporário
         with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_input:
