@@ -165,7 +165,7 @@ export async function compressPDF(
     onProgress?.(20)
 
     // Enviar para API Python
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5003'
+    const API_URL = process.env.NEXT_PUBLIC_OCR_API_URL || 'http://localhost:5003'
     const response = await fetch(`${API_URL}/compress-pdf`, {
       method: 'POST',
       body: formData,
