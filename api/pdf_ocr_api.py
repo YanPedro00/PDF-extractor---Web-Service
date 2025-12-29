@@ -23,8 +23,25 @@ import base64
 import pandas as pd
 import io
 import re
+import sys
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+
+# Importar dependências críticas no início para detectar erros cedo
+try:
+    import fitz  # PyMuPDF
+    print(f"✅ PyMuPDF {fitz.__version__} carregado", file=sys.stderr, flush=True)
+except ImportError as e:
+    print(f"❌ ERRO CRÍTICO: PyMuPDF não encontrado: {e}", file=sys.stderr, flush=True)
+    sys.exit(1)
+
+try:
+    from img2table.document import PDF as Img2TablePDF
+    from img2table.ocr import PaddleOCR as Img2TableOCR
+    print("✅ img2table carregado", file=sys.stderr, flush=True)
+except ImportError as e:
+    print(f"❌ ERRO CRÍTICO: img2table não encontrado: {e}", file=sys.stderr, flush=True)
+    sys.exit(1)
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "OPTIONS"], "allow_headers": "*"}})
@@ -101,11 +118,6 @@ def process_pdf():
             pdf_path = tmp_file.name
         
         try:
-            # Importar img2table
-            from img2table.document import PDF as Img2TablePDF
-            from img2table.ocr import PaddleOCR as Img2TableOCR
-            import fitz
-            
             # Contar páginas
             pdf_doc = fitz.open(pdf_path)
             num_pages = len(pdf_doc)
@@ -253,8 +265,15 @@ def process_pdf():
     except Exception as e:
         import traceback
         error_msg = str(e)
-        print(f"\n❌ Erro: {error_msg}")
-        print(traceback.format_exc())
+        traceback_str = traceback.format_exc()
+        
+        # Log detalhado para Railway
+        print(f"\n❌ ERRO DETALHADO:", file=sys.stderr, flush=True)
+        print(f"Tipo: {type(e).__name__}", file=sys.stderr, flush=True)
+        print(f"Mensagem: {error_msg}", file=sys.stderr, flush=True)
+        print(f"Traceback:", file=sys.stderr, flush=True)
+        print(traceback_str, file=sys.stderr, flush=True)
+        
         return jsonify({"error": f"Erro ao processar PDF: {error_msg}"}), 500
 
 
@@ -294,8 +313,6 @@ def compress_pdf():
         output_path = tempfile.mktemp(suffix='_compressed.pdf')
         
         try:
-            import fitz  # PyMuPDF
-            
             # Abrir PDF
             doc = fitz.open(input_path)
             original_size = os.path.getsize(input_path)
@@ -352,9 +369,16 @@ def compress_pdf():
                 os.remove(output_path)
         
     except Exception as e:
-        print(f"❌ Erro ao comprimir PDF: {e}")
         import traceback
-        print(traceback.format_exc())
+        traceback_str = traceback.format_exc()
+        
+        # Log detalhado para Railway
+        print(f"\n❌ ERRO NA COMPRESSÃO:", file=sys.stderr, flush=True)
+        print(f"Tipo: {type(e).__name__}", file=sys.stderr, flush=True)
+        print(f"Mensagem: {str(e)}", file=sys.stderr, flush=True)
+        print(f"Traceback:", file=sys.stderr, flush=True)
+        print(traceback_str, file=sys.stderr, flush=True)
+        
         return jsonify({'error': f'Erro ao comprimir PDF: {str(e)}'}), 500
 
 
