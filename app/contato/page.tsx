@@ -9,26 +9,57 @@ export default function ContatoPage() {
   const [assunto, setAssunto] = useState('')
   const [mensagem, setMensagem] = useState('')
   const [enviado, setEnviado] = useState(false)
+  const [enviando, setEnviando] = useState(false)
+  const [erro, setErro] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setEnviando(true)
+    setErro('')
     
-    // Criar mailto link
-    const mailtoLink = `mailto:pdf.utilities00@gmail.com?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(
-      `Nome: ${nome}\nEmail: ${email}\n\nMensagem:\n${mensagem}`
-    )}`
-    
-    window.location.href = mailtoLink
-    setEnviado(true)
-    
-    // Reset form após 3 segundos
-    setTimeout(() => {
-      setNome('')
-      setEmail('')
-      setAssunto('')
-      setMensagem('')
-      setEnviado(false)
-    }, 3000)
+    try {
+      // Usar variável de ambiente do Formspree
+      const formspreeEndpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT
+      
+      if (!formspreeEndpoint) {
+        throw new Error('Formspree não configurado. Configure a variável NEXT_PUBLIC_FORMSPREE_ENDPOINT no Railway.')
+      }
+      
+      const response = await fetch(formspreeEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nome,
+          email,
+          assunto,
+          mensagem,
+          _replyto: email, // Para responder diretamente ao usuário
+          _subject: `[PDF Utilities] ${assunto}`, // Assunto do email
+        }),
+      })
+
+      if (response.ok) {
+        setEnviado(true)
+        
+        // Reset form após 3 segundos
+        setTimeout(() => {
+          setNome('')
+          setEmail('')
+          setAssunto('')
+          setMensagem('')
+          setEnviado(false)
+        }, 5000)
+      } else {
+        throw new Error('Erro ao enviar mensagem')
+      }
+    } catch (error) {
+      console.error('Erro ao enviar:', error)
+      setErro('Erro ao enviar mensagem. Por favor, tente novamente ou envie diretamente para pdf.utilities00@gmail.com')
+    } finally {
+      setEnviando(false)
+    }
   }
 
   return (
@@ -100,7 +131,24 @@ export default function ContatoPage() {
                 
                 {enviado && (
                   <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="text-green-800">Seu cliente de email foi aberto! Complete o envio no seu programa de email.</p>
+                    <div className="flex items-center gap-2">
+                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <p className="text-green-800 font-semibold">Mensagem enviada com sucesso!</p>
+                    </div>
+                    <p className="text-green-700 text-sm mt-1">Responderemos em breve para {email}</p>
+                  </div>
+                )}
+
+                {erro && (
+                  <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-red-800 text-sm">{erro}</p>
+                    </div>
                   </div>
                 )}
 
@@ -173,9 +221,24 @@ export default function ContatoPage() {
 
                   <button
                     type="submit"
-                    className="w-full bg-primary-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-700 transition-colors shadow-lg hover:shadow-xl"
+                    disabled={enviando}
+                    className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl ${
+                      enviando
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-primary-600 text-white hover:bg-primary-700'
+                    }`}
                   >
-                    Enviar Mensagem
+                    {enviando ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Enviando...
+                      </span>
+                    ) : (
+                      'Enviar Mensagem'
+                    )}
                   </button>
 
                   <p className="text-xs text-gray-500 text-center">
