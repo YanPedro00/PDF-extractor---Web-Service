@@ -32,7 +32,7 @@ from flask_limiter.util import get_remote_address
 # Importar dependências críticas no início para detectar erros cedo
 try:
     import fitz  # PyMuPDF
-    print(f"✅ PyMuPDF {fitz.__version__} carregado", file=sys.stderr, flush=True)
+    print(f" PyMuPDF {fitz.__version__} carregado", file=sys.stderr, flush=True)
 except ImportError as e:
     print(f"❌ ERRO CRÍTICO: PyMuPDF não encontrado: {e}", file=sys.stderr, flush=True)
     sys.exit(1)
@@ -40,9 +40,9 @@ except ImportError as e:
 try:
     from img2table.document import PDF as Img2TablePDF
     from img2table.ocr import PaddleOCR as Img2TableOCR
-    print("✅ img2table carregado", file=sys.stderr, flush=True)
+    print(" img2table carregado", file=sys.stderr, flush=True)
 except ImportError as e:
-    print(f"❌ ERRO CRÍTICO: img2table não encontrado: {e}", file=sys.stderr, flush=True)
+    print(f" ERRO CRÍTICO: img2table não encontrado: {e}", file=sys.stderr, flush=True)
     sys.exit(1)
 
 app = Flask(__name__)
@@ -139,9 +139,9 @@ def process_pdf():
         file_hash = hashlib.sha256(file.filename.encode()).hexdigest()[:12]
         
         print(f"\n{'='*60}")
-        print(f"📄 Processando: {file_hash} ({file_size / 1024 / 1024:.2f}MB)")
-        print(f"📂 Tipo: {file.content_type}")
-        print(f"🌐 IP: {get_remote_address()}")
+        print(f" Processando: {file_hash} ({file_size / 1024 / 1024:.2f}MB)")
+        print(f" Tipo: {file.content_type}")
+        print(f" IP: {get_remote_address()}")
         print(f"{'='*60}")
         
         # Salvar temporário
@@ -154,10 +154,10 @@ def process_pdf():
             pdf_doc = fitz.open(pdf_path)
             num_pages = len(pdf_doc)
             pdf_doc.close()
-            print(f"📄 {num_pages} página(s)")
+            print(f" {num_pages} página(s)")
             
             # Processar com img2table
-            print(f"📊 Extraindo tabelas com img2table...")
+            print(f" Extraindo tabelas com img2table...")
             img2table_ocr = Img2TableOCR(lang="pt")
             img2table_doc = Img2TablePDF(src=pdf_path)
             
@@ -169,19 +169,19 @@ def process_pdf():
             )
             
             total_tables = sum(len(tables) for tables in all_tables.values())
-            print(f"✅ {total_tables} tabela(s) detectadas")
+            print(f" {total_tables} tabela(s) detectadas")
             
             # Processar cada página
             all_pages_data = []
             
             for page_num in range(num_pages):
-                print(f"\n📖 Página {page_num + 1}/{num_pages}...")
+                print(f"\n Página {page_num + 1}/{num_pages}...")
                 
                 page_rows = []
                 
                 # Adicionar tabelas desta página
                 if page_num in all_tables and len(all_tables[page_num]) > 0:
-                    print(f"  📊 {len(all_tables[page_num])} tabela(s) nesta página")
+                    print(f"   {len(all_tables[page_num])} tabela(s) nesta página")
                     
                     for table_idx, table in enumerate(all_tables[page_num]):
                         print(f"    Tabela {table_idx + 1}: {table.df.shape[0]} linhas x {table.df.shape[1]} colunas")
@@ -217,15 +217,15 @@ def process_pdf():
                         df[col] = df[col].map(lambda x: clean_text(str(x)) if pd.notna(x) and x != '' else '')
                     
                     all_pages_data.append((page_num + 1, df))
-                    print(f"  ✅ {len(page_rows)} linha(s) extraídas")
+                    print(f"   {len(page_rows)} linha(s) extraídas")
                 else:
                     # Página sem conteúdo
                     df = pd.DataFrame([["Nenhum conteúdo encontrado"]])
                     all_pages_data.append((page_num + 1, df))
-                    print(f"  ⚠️  Nenhuma tabela detectada")
+                    print(f"    Nenhuma tabela detectada")
             
             # Criar Excel com abas por página
-            print(f"\n💾 Gerando Excel com {len(all_pages_data)} aba(s)...")
+            print(f"\n Gerando Excel com {len(all_pages_data)} aba(s)...")
             excel_buffer = io.BytesIO()
             
             try:
@@ -258,9 +258,9 @@ def process_pdf():
                                 index=False,
                                 header=False
                             )
-                            print(f"  ✅ Aba '{sheet_name}' criada")
+                            print(f"   Aba '{sheet_name}' criada")
                         except Exception as e:
-                            print(f"  ⚠️  Erro na página {page_num}: {e}")
+                            print(f"    Erro na página {page_num}: {e}")
                             # Tentar novamente convertendo TUDO para ASCII puro
                             for col in page_df.columns:
                                 page_df[col] = page_df[col].apply(
@@ -272,7 +272,7 @@ def process_pdf():
                                 index=False,
                                 header=False
                             )
-                            print(f"  ✅ Aba '{sheet_name}' criada (modo ASCII)")
+                            print(f"  Aba '{sheet_name}' criada (modo ASCII)")
             except Exception as e:
                 print(f"❌ Erro ao criar Excel: {e}")
                 raise
@@ -281,7 +281,7 @@ def process_pdf():
             excel_base64 = base64.b64encode(excel_buffer.read()).decode('utf-8')
             
             print(f"\n{'='*60}")
-            print(f"✅ Processamento concluído com sucesso!")
+            print(f" Processamento concluído com sucesso!")
             print(f"{'='*60}\n")
             
             return jsonify({
@@ -300,7 +300,7 @@ def process_pdf():
         traceback_str = traceback.format_exc()
         
         # Log detalhado para Railway
-        print(f"\n❌ ERRO DETALHADO:", file=sys.stderr, flush=True)
+        print(f"\n ERRO DETALHADO:", file=sys.stderr, flush=True)
         print(f"Tipo: {type(e).__name__}", file=sys.stderr, flush=True)
         print(f"Mensagem: {error_msg}", file=sys.stderr, flush=True)
         print(f"Traceback:", file=sys.stderr, flush=True)
@@ -322,7 +322,7 @@ def compress_pdf():
     
     try:
         print("\n" + "="*60)
-        print("📦 INICIANDO COMPRESSÃO DE PDF")
+        print(" - INICIANDO COMPRESSÃO DE PDF")
         print("="*60)
         
         # Validar request
@@ -415,7 +415,7 @@ def compress_pdf():
         traceback_str = traceback.format_exc()
         
         # Log detalhado para Railway
-        print(f"\n❌ ERRO NA COMPRESSÃO:", file=sys.stderr, flush=True)
+        print(f"\n ERRO NA COMPRESSÃO:", file=sys.stderr, flush=True)
         print(f"Tipo: {type(e).__name__}", file=sys.stderr, flush=True)
         print(f"Mensagem: {str(e)}", file=sys.stderr, flush=True)
         print(f"Traceback:", file=sys.stderr, flush=True)
@@ -427,12 +427,12 @@ def compress_pdf():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5003))
     print("\n" + "="*60)
-    print("🚀 API OCR SIMPLIFICADA - IMG2TABLE")
+    print("API OCR SIMPLIFICADA - IMG2TABLE")
     print("="*60)
-    print(f"📝 Endpoint OCR: http://0.0.0.0:{port}/process-pdf")
-    print(f"📦 Endpoint Compressão: http://0.0.0.0:{port}/compress-pdf")
-    print(f"🌐 Health: http://0.0.0.0:{port}/health")
-    print("🔧 Engine: img2table (PaddleOCR)")
+    print(f" - Endpoint OCR: http://0.0.0.0:{port}/process-pdf")
+    print(f" - Endpoint Compressão: http://0.0.0.0:{port}/compress-pdf")
+    print(f" - Health: http://0.0.0.0:{port}/health")
+    print(" - Engine: img2table (PaddleOCR)")
     print("="*60 + "\n")
     
     app.run(host='0.0.0.0', port=port, debug=False)

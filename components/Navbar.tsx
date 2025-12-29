@@ -10,7 +10,7 @@ export default function Navbar() {
   
   const tools = [
     { href: '/converter', name: 'PDF para Excel' },
-    { href: '/ocr', name: 'PDF Escaneado' },
+    { href: '/ocr', name: 'PDF para Excel (OCR)' },
     { href: '/juntar', name: 'Juntar PDFs' },
     { href: '/dividir', name: 'Dividir PDF' },
     { href: '/comprimir', name: 'Comprimir PDF' },
