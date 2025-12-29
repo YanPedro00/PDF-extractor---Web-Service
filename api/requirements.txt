@@ -6,6 +6,9 @@ flask-cors==4.0.0
 pandas>=2.1.4
 openpyxl>=3.1.2
 
+# Processamento de imagens (requerido por img2table)
+Pillow>=10.0.0
+
 # PDF e OCR
 PyMuPDF>=1.23.0
 img2table>=1.4.2
