@@ -47,17 +47,11 @@ except ImportError as e:
 
 app = Flask(__name__)
 
-# Configuração de CORS segura
-# Permitir apenas domínios específicos
-ALLOWED_ORIGINS = [
-    'https://*.up.railway.app',  # Railway (wildcard para subdomínios)
-    'http://localhost:3000',      # Desenvolvimento local
-    'http://localhost:5173',      # Vite local
-]
-
+# Configuração de CORS
+# Permitir origens específicas
 CORS(app, resources={
     r"/*": {
-        "origins": ALLOWED_ORIGINS,
+        "origins": "*",  # Temporário: permitir todas as origens
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type"],
         "supports_credentials": False
@@ -439,12 +433,6 @@ if __name__ == '__main__':
     print(f"📦 Endpoint Compressão: http://0.0.0.0:{port}/compress-pdf")
     print(f"🌐 Health: http://0.0.0.0:{port}/health")
     print("🔧 Engine: img2table (PaddleOCR)")
-    print("\n✨ Características:")
-    print("  ✅ Código limpo e simples (~200 linhas)")
-    print("  ✅ Zero duplicação (motor único)")
-    print("  ✅ Ideal para faturas, notas fiscais, listas")
-    print("  ✅ Cada página = 1 aba no Excel")
-    print("  ✅ Compressão real de PDF com PyMuPDF")
     print("="*60 + "\n")
     
     app.run(host='0.0.0.0', port=port, debug=False)
