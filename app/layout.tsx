@@ -23,11 +23,14 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <head>
+        {/* Google AdSense */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1782940009467994"
           crossOrigin="anonymous"
         />
+        
+        {/* Adsterra - Script sera carregado dinamicamente pelos componentes */}
       </head>
       <body className={inter.className}>
         <Navbar />

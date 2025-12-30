@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import GoogleAd from '@/components/GoogleAd'
+import HybridAd from '@/components/HybridAd'
 
 export default function Home() {
   const [contentReady, setContentReady] = useState(false)
@@ -90,14 +90,16 @@ export default function Home() {
             </p>
           </div>
           
-          {/* Google Ad - Header */}
+          {/* Hybrid Ad - Header (Adsterra + Google AdSense) */}
           {contentReady && (
             <div className="mt-6 sm:mt-8 mb-6 sm:mb-8 flex justify-center px-2">
-              <GoogleAd 
-                adSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_1 || '6280286471'} 
+              <HybridAd 
+                googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_1 || '6280286471'}
+                adsterraZoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_1 || ''}
                 adFormat="auto"
                 className="min-h-[100px] w-full max-w-[728px]"
                 shouldRender={contentReady}
+                provider="auto"
               />
             </div>
           )}
@@ -175,14 +177,16 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Google Ad - Footer */}
+        {/* Hybrid Ad - Footer (Adsterra + Google AdSense) */}
         {contentReady && (
           <div className="mt-12 sm:mt-16 mb-6 sm:mb-8 flex justify-center px-2">
-            <GoogleAd 
-              adSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_2 || '4093106837'} 
+            <HybridAd 
+              googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_2 || '4093106837'}
+              adsterraZoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_2 || ''}
               adFormat="auto"
               className="min-h-[100px] w-full max-w-[728px]"
               shouldRender={contentReady}
+              provider="auto"
             />
           </div>
         )}

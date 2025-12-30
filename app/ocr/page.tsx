@@ -2,7 +2,7 @@
 
 import PDFUploader from '@/components/PDFUploader'
 import Link from 'next/link'
-import GoogleAd from '@/components/GoogleAd'
+import HybridAd from '@/components/HybridAd'
 import { useState, useEffect } from 'react'
 
 export default function OCRPage() {
@@ -126,14 +126,16 @@ export default function OCRPage() {
             </div>
           </div>
 
-          {/* Google Ad */}
+          {/* Hybrid Ad (Adsterra + Google AdSense) */}
           {contentReady && (
             <div className="mb-6 flex justify-center">
-              <GoogleAd 
-                adSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_1 || '6280286471'} 
+              <HybridAd 
+                googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_1 || '6280286471'}
+                adsterraZoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_1 || ''}
                 adFormat="auto"
                 className="min-h-[100px] w-full max-w-[728px]"
                 shouldRender={contentReady}
+                provider="auto"
               />
             </div>
           )}
