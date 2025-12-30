@@ -5,17 +5,28 @@ import { usePathname } from 'next/navigation'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false)
   const pathname = usePathname()
   
-  const tools = [
+  // Primeiras 4 ferramentas visíveis na navbar
+  const mainTools = [
     { href: '/converter', name: 'PDF para Excel' },
     { href: '/ocr', name: 'PDF para Excel (OCR)' },
     { href: '/juntar', name: 'Juntar PDFs' },
     { href: '/dividir', name: 'Dividir PDF' },
-    { href: '/comprimir', name: 'Comprimir PDF' },
   ]
 
+  // Ferramentas extras no dropdown "Mais"
+  const moreTools = [
+    { href: '/comprimir', name: 'Comprimir PDF' },
+    { href: '/tiff-to-pdf', name: 'TIFF para PDF' },
+  ]
+
+  // Todas as ferramentas (para mobile)
+  const allTools = [...mainTools, ...moreTools]
+
   const isActive = (href: string) => pathname === href
+  const isMoreActive = moreTools.some(tool => pathname === tool.href)
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -38,12 +49,13 @@ export default function Navbar() {
           </a>
 
           {/* Menu Desktop - Ferramentas */}
-          <div className="hidden md:flex items-center gap-1 lg:gap-3">
-            {tools.map((tool) => (
+          <div className="hidden md:flex items-center gap-1 lg:gap-2">
+            {/* Ferramentas principais */}
+            {mainTools.map((tool) => (
               <a
                 key={tool.href}
                 href={tool.href}
-                className={`px-3 lg:px-4 py-2 rounded-lg transition-colors font-medium text-sm lg:text-base ${
+                className={`px-2 lg:px-3 py-2 rounded-lg transition-colors font-medium text-xs lg:text-sm ${
                   isActive(tool.href)
                     ? 'bg-primary-50 text-primary-600'
                     : 'text-gray-700 hover:bg-primary-50 hover:text-primary-600'
@@ -52,6 +64,54 @@ export default function Navbar() {
                 {tool.name}
               </a>
             ))}
+
+            {/* Dropdown "Mais" */}
+            <div className="relative">
+              <button
+                onMouseEnter={() => setIsMoreMenuOpen(true)}
+                onMouseLeave={() => setIsMoreMenuOpen(false)}
+                className={`px-2 lg:px-3 py-2 rounded-lg transition-colors font-medium text-xs lg:text-sm flex items-center gap-1 ${
+                  isMoreActive
+                    ? 'bg-primary-50 text-primary-600'
+                    : 'text-gray-700 hover:bg-primary-50 hover:text-primary-600'
+                }`}
+              >
+                Mais
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* Dropdown Menu */}
+              {isMoreMenuOpen && (
+                <div
+                  onMouseEnter={() => setIsMoreMenuOpen(true)}
+                  onMouseLeave={() => setIsMoreMenuOpen(false)}
+                  className="absolute top-full right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-2 min-w-[200px] z-50"
+                >
+                  {moreTools.map((tool) => (
+                    <a
+                      key={tool.href}
+                      href={tool.href}
+                      className={`block px-4 py-2 text-sm transition-colors ${
+                        isActive(tool.href)
+                          ? 'bg-primary-50 text-primary-600'
+                          : 'text-gray-700 hover:bg-primary-50 hover:text-primary-600'
+                      }`}
+                    >
+                      {tool.name}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Espaço reservado para Login/Cadastro */}
+            <div className="ml-auto pl-4 flex items-center gap-2">
+              <div className="w-20 h-9 bg-gray-100 rounded-lg flex items-center justify-center">
+                <span className="text-xs text-gray-400">Login</span>
+              </div>
+            </div>
           </div>
 
           {/* Botão Menu Mobile */}
@@ -89,7 +149,7 @@ export default function Navbar() {
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 bg-white">
             <div className="flex flex-col py-2">
-              {tools.map((tool) => (
+              {allTools.map((tool) => (
                 <a
                   key={tool.href}
                   href={tool.href}

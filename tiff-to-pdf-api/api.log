@@ -1,0 +1,12 @@
+INFO:     Started server process [99651]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     127.0.0.1:51795 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51858 - "POST /convert/info HTTP/1.1" 200 OK
+INFO:main:Recebendo arquivo: 'International_Pokémon_logo.svg.tiff'
+INFO:main:Arquivo recebido: 415962 bytes
+INFO:main:TIFF detectado com 1 página(s)
+INFO:main:Convertendo TIFF single-page
+WARNING:img2pdf:Image contains an alpha channel. Computing a separate soft mask (/SMask) image to store transparency in PDF.
+INFO:     127.0.0.1:51858 - "POST /convert?optimize=true HTTP/1.1" 200 OK
