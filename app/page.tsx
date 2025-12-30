@@ -6,10 +6,13 @@ import AdsterraAd from '@/components/AdsterraAd'
 
 export default function Home() {
   const [contentReady, setContentReady] = useState(false)
+  const [adKey, setAdKey] = useState(0)
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setContentReady(true)
+      // Force ad reload on mount
+      setAdKey(Date.now())
     }, 300)
     return () => clearTimeout(timer)
   }, [])
@@ -94,6 +97,7 @@ export default function Home() {
           {contentReady && (
             <div className="mt-6 sm:mt-8 mb-6 sm:mb-8 flex justify-center px-2">
               <AdsterraAd 
+                key={`ad1-${adKey}`}
                 zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_1 || ''}
                 format="native"
                 className="min-h-[100px] w-full max-w-[728px]"
@@ -179,6 +183,7 @@ export default function Home() {
         {contentReady && (
           <div className="mt-12 sm:mt-16 mb-6 sm:mb-8 flex justify-center px-2">
             <AdsterraAd 
+              key={`ad2-${adKey}`}
               zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_2 || ''}
               format="iframe"
               className="min-h-[90px] w-full max-w-[728px]"

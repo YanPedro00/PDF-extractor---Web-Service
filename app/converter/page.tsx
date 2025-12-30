@@ -7,9 +7,10 @@ import { useState, useEffect } from 'react'
 
 export default function ConverterPage() {
   const [contentReady, setContentReady] = useState(false)
+  const [adKey, setAdKey] = useState(0)
 
   useEffect(() => {
-    const timer = setTimeout(() => setContentReady(true), 300)
+    const timer = setTimeout(() => { setContentReady(true); setAdKey(Date.now()) }, 300)
     return () => clearTimeout(timer)
   }, [])
 
@@ -115,7 +116,8 @@ export default function ConverterPage() {
           {/* AD1 - Native Banner */}
           {contentReady && (
             <div className="mb-6 flex justify-center">
-              <AdsterraAd 
+              <AdsterraAd
+                key={`ad-${adKey}`} 
                 zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_1 || ''}
                 format="native"
                 className="min-h-[100px] w-full max-w-[728px]"
