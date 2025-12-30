@@ -85,6 +85,7 @@ export default function AdsterraAd({
 
       return () => clearTimeout(timer)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldRender, zoneId, publisherId, format, adLoaded])
 
   const loadAdScript = () => {
