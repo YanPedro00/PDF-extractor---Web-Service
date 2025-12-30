@@ -1,11 +1,10 @@
-import Link from 'next/link'
 
 export default function TermosPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         <div className="max-w-4xl mx-auto">
-          <Link
+          <a
             href="/"
             className="mb-4 sm:mb-6 text-primary-600 hover:text-primary-700 font-medium flex items-center gap-2 text-sm sm:text-base inline-flex"
           >
@@ -13,7 +12,7 @@ export default function TermosPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Voltar
-          </Link>
+          </a>
 
           <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-6">
@@ -179,7 +178,7 @@ export default function TermosPage() {
                 <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3">14. Contato</h2>
                 <p className="text-gray-700 leading-relaxed">
                   Se você tiver dúvidas sobre estes Termos de Uso, entre em contato conosco através da 
-                  nossa <Link href="/contato" className="text-primary-600 hover:underline">página de contato</Link>.
+                  nossa <a href="/contato" className="text-primary-600 hover:underline">página de contato</a>.
                 </p>
               </section>
             </div>

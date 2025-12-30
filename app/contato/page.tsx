@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
 
 export default function ContatoPage() {
@@ -66,7 +65,7 @@ export default function ContatoPage() {
     <main className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         <div className="max-w-4xl mx-auto">
-          <Link
+          <a
             href="/"
             className="mb-4 sm:mb-6 text-primary-600 hover:text-primary-700 font-medium flex items-center gap-2 text-sm sm:text-base inline-flex"
           >
@@ -74,7 +73,7 @@ export default function ContatoPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Voltar
-          </Link>
+          </a>
 
           <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-6">
@@ -242,7 +241,7 @@ export default function ContatoPage() {
                   </button>
 
                   <p className="text-xs text-gray-500 text-center">
-                    Ao enviar, você concorda com nossa <Link href="/privacidade" className="text-primary-600 hover:underline">Política de Privacidade</Link>
+                    Ao enviar, você concorda com nossa <a href="/privacidade" className="text-primary-600 hover:underline">Política de Privacidade</a>
                   </p>
                 </form>
               </div>
@@ -277,7 +276,7 @@ export default function ContatoPage() {
                   <h3 className="font-semibold text-gray-800 mb-1">Posso usar as ferramentas para fins comerciais?</h3>
                   <p className="text-sm text-gray-600">
                     Sim, nossas ferramentas são gratuitas para uso pessoal e comercial. 
-                    Consulte nossos <Link href="/termos" className="text-primary-600 hover:underline">Termos de Uso</Link> para mais detalhes.
+                    Consulte nossos <a href="/termos" className="text-primary-600 hover:underline">Termos de Uso</a> para mais detalhes.
                   </p>
                 </div>
               </div>

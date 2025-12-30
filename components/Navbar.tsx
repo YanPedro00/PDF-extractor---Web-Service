@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 export default function Navbar() {
@@ -23,7 +22,7 @@ export default function Navbar() {
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Logo e Nome */}
-          <Link 
+          <a 
             href="/"
             className="flex items-center gap-2 sm:gap-3 cursor-pointer hover:opacity-80 transition-opacity"
           >
@@ -36,12 +35,12 @@ export default function Navbar() {
               className="sm:w-10 sm:h-10 object-contain"
             />
             <span className="text-lg sm:text-2xl font-bold text-primary-600">PDFUtilities</span>
-          </Link>
+          </a>
 
           {/* Menu Desktop - Ferramentas */}
           <div className="hidden md:flex items-center gap-1 lg:gap-3">
             {tools.map((tool) => (
-              <Link
+              <a
                 key={tool.href}
                 href={tool.href}
                 className={`px-3 lg:px-4 py-2 rounded-lg transition-colors font-medium text-sm lg:text-base ${
@@ -51,7 +50,7 @@ export default function Navbar() {
                 }`}
               >
                 {tool.name}
-              </Link>
+              </a>
             ))}
           </div>
 
@@ -91,7 +90,7 @@ export default function Navbar() {
           <div className="md:hidden border-t border-gray-200 bg-white">
             <div className="flex flex-col py-2">
               {tools.map((tool) => (
-                <Link
+                <a
                   key={tool.href}
                   href={tool.href}
                   onClick={() => setIsMenuOpen(false)}
@@ -102,7 +101,7 @@ export default function Navbar() {
                   }`}
                 >
                   {tool.name}
-                </Link>
+                </a>
               ))}
             </div>
           </div>

@@ -1,4 +1,3 @@
-import Link from 'next/link'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -14,9 +13,9 @@ export default function Footer() {
               Ferramentas online gratuitas para converter, juntar e dividir arquivos PDF. 
               Simples, rápido e seguro.
             </p>
-            <Link href="/sobre" className="text-sm text-primary-600 hover:underline">
+            <a href="/sobre" className="text-sm text-primary-600 hover:underline">
               Saiba mais →
-            </Link>
+            </a>
           </div>
 
           {/* Ferramentas */}
@@ -24,29 +23,29 @@ export default function Footer() {
             <h3 className="font-semibold text-gray-800 mb-3">Ferramentas</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/converter" className="text-gray-600 hover:text-primary-600 transition-colors">
+                <a href="/converter" className="text-gray-600 hover:text-primary-600 transition-colors">
                   PDF para Excel
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/ocr" className="text-gray-600 hover:text-primary-600 transition-colors">
+                <a href="/ocr" className="text-gray-600 hover:text-primary-600 transition-colors">
                   PDF Escaneado (OCR)
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/juntar" className="text-gray-600 hover:text-primary-600 transition-colors">
+                <a href="/juntar" className="text-gray-600 hover:text-primary-600 transition-colors">
                   Juntar PDFs
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/dividir" className="text-gray-600 hover:text-primary-600 transition-colors">
+                <a href="/dividir" className="text-gray-600 hover:text-primary-600 transition-colors">
                   Dividir PDF
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/comprimir" className="text-gray-600 hover:text-primary-600 transition-colors">
+                <a href="/comprimir" className="text-gray-600 hover:text-primary-600 transition-colors">
                   Comprimir PDF
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -56,14 +55,14 @@ export default function Footer() {
             <h3 className="font-semibold text-gray-800 mb-3">Suporte</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/contato" className="text-gray-600 hover:text-primary-600 transition-colors">
+                <a href="/contato" className="text-gray-600 hover:text-primary-600 transition-colors">
                   Contato
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/sobre" className="text-gray-600 hover:text-primary-600 transition-colors">
+                <a href="/sobre" className="text-gray-600 hover:text-primary-600 transition-colors">
                   Sobre Nós
-                </Link>
+                </a>
               </li>
               <li>
                 <a href="mailto:pdf.utilities00@gmail.com" className="text-gray-600 hover:text-primary-600 transition-colors">
@@ -78,14 +77,14 @@ export default function Footer() {
             <h3 className="font-semibold text-gray-800 mb-3">Legal</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/privacidade" className="text-gray-600 hover:text-primary-600 transition-colors">
+                <a href="/privacidade" className="text-gray-600 hover:text-primary-600 transition-colors">
                   Política de Privacidade
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/termos" className="text-gray-600 hover:text-primary-600 transition-colors">
+                <a href="/termos" className="text-gray-600 hover:text-primary-600 transition-colors">
                   Termos de Uso
-                </Link>
+                </a>
               </li>
             </ul>
           </div>

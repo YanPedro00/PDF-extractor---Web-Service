@@ -1,11 +1,10 @@
-import Link from 'next/link'
 
 export default function SobrePage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         <div className="max-w-4xl mx-auto">
-          <Link
+          <a
             href="/"
             className="mb-4 sm:mb-6 text-primary-600 hover:text-primary-700 font-medium flex items-center gap-2 text-sm sm:text-base inline-flex"
           >
@@ -13,7 +12,7 @@ export default function SobrePage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Voltar
-          </Link>
+          </a>
 
           <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-6">
@@ -199,12 +198,12 @@ export default function SobrePage() {
                 <p className="text-gray-700 leading-relaxed mb-4">
                   Tem sugestões, feedback ou precisa de ajuda? Adoraríamos ouvir você! 
                 </p>
-                <Link 
+                <a 
                   href="/contato"
                   className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
                 >
                   Fale Conosco
-                </Link>
+                </a>
               </section>
             </div>
           </div>
