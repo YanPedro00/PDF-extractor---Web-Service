@@ -24,26 +24,55 @@ import pandas as pd
 import io
 import re
 import sys
+import logging
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
+# Configurar logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger(__name__)
+
 # Importar dependências críticas no início para detectar erros cedo
 try:
     import fitz  # PyMuPDF
-    print(f" PyMuPDF {fitz.__version__} carregado", file=sys.stderr, flush=True)
+    logger.info(f"PyMuPDF {fitz.__version__} carregado")
 except ImportError as e:
-    print(f"❌ ERRO CRÍTICO: PyMuPDF não encontrado: {e}", file=sys.stderr, flush=True)
+    logger.critical(f"ERRO CRITICO: PyMuPDF nao encontrado: {e}")
     sys.exit(1)
 
 try:
     from img2table.document import PDF as Img2TablePDF
     from img2table.ocr import PaddleOCR as Img2TableOCR
-    print(" img2table carregado", file=sys.stderr, flush=True)
+    logger.info("img2table carregado")
 except ImportError as e:
-    print(f" ERRO CRÍTICO: img2table não encontrado: {e}", file=sys.stderr, flush=True)
+    logger.critical(f"ERRO CRITICO: img2table nao encontrado: {e}")
     sys.exit(1)
+
+# Cache global de OCR (Singleton Pattern)
+# Reutiliza instância de OCR para economizar 2-3 segundos por request
+_ocr_instance = None
+
+def get_ocr():
+    """
+    Retorna instância singleton de OCR.
+    Inicializa apenas uma vez e reutiliza nas próximas chamadas.
+    """
+    global _ocr_instance
+    if _ocr_instance is None:
+        logger.info("Inicializando instancia de OCR (PaddleOCR)...")
+        _ocr_instance = Img2TableOCR(lang="pt")
+        logger.info("Instancia de OCR criada e cacheada")
+    else:
+        logger.debug("Reutilizando instancia de OCR cacheada")
+    return _ocr_instance
 
 app = Flask(__name__)
 
@@ -138,11 +167,11 @@ def process_pdf():
         import hashlib
         file_hash = hashlib.sha256(file.filename.encode()).hexdigest()[:12]
         
-        print(f"\n{'='*60}")
-        print(f" Processando: {file_hash} ({file_size / 1024 / 1024:.2f}MB)")
-        print(f" Tipo: {file.content_type}")
-        print(f" IP: {get_remote_address()}")
-        print(f"{'='*60}")
+        logger.info(f"{'='*60}")
+        logger.info(f"Processando arquivo: {file_hash} ({file_size / 1024 / 1024:.2f}MB)")
+        logger.info(f"Tipo: {file.content_type}")
+        logger.info(f"IP: {get_remote_address()}")
+        logger.info(f"{'='*60}")
         
         # Salvar temporário
         with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_file:
@@ -154,11 +183,11 @@ def process_pdf():
             pdf_doc = fitz.open(pdf_path)
             num_pages = len(pdf_doc)
             pdf_doc.close()
-            print(f" {num_pages} página(s)")
+            logger.info(f"PDF possui {num_pages} pagina(s)")
             
-            # Processar com img2table
-            print(f" Extraindo tabelas com img2table...")
-            img2table_ocr = Img2TableOCR(lang="pt")
+            # Processar com img2table usando OCR cacheado
+            logger.info("Extraindo tabelas com img2table...")
+            img2table_ocr = get_ocr()  # Usa instância cacheada (otimização)
             img2table_doc = Img2TablePDF(src=pdf_path)
             
             all_tables = img2table_doc.extract_tables(
@@ -169,22 +198,22 @@ def process_pdf():
             )
             
             total_tables = sum(len(tables) for tables in all_tables.values())
-            print(f" {total_tables} tabela(s) detectadas")
+            logger.info(f"{total_tables} tabela(s) detectadas")
             
             # Processar cada página
             all_pages_data = []
             
             for page_num in range(num_pages):
-                print(f"\n Página {page_num + 1}/{num_pages}...")
+                logger.info(f"Processando pagina {page_num + 1}/{num_pages}...")
                 
                 page_rows = []
                 
                 # Adicionar tabelas desta página
                 if page_num in all_tables and len(all_tables[page_num]) > 0:
-                    print(f"   {len(all_tables[page_num])} tabela(s) nesta página")
+                    logger.info(f"  {len(all_tables[page_num])} tabela(s) nesta pagina")
                     
                     for table_idx, table in enumerate(all_tables[page_num]):
-                        print(f"    Tabela {table_idx + 1}: {table.df.shape[0]} linhas x {table.df.shape[1]} colunas")
+                        logger.debug(f"  Tabela {table_idx + 1}: {table.df.shape[0]} linhas x {table.df.shape[1]} colunas")
                         
                         # Adicionar cada linha da tabela
                         for _, row in table.df.iterrows():
@@ -217,15 +246,15 @@ def process_pdf():
                         df[col] = df[col].map(lambda x: clean_text(str(x)) if pd.notna(x) and x != '' else '')
                     
                     all_pages_data.append((page_num + 1, df))
-                    print(f"   {len(page_rows)} linha(s) extraídas")
+                    logger.info(f"  {len(page_rows)} linha(s) extraidas")
                 else:
                     # Página sem conteúdo
-                    df = pd.DataFrame([["Nenhum conteúdo encontrado"]])
+                    df = pd.DataFrame([["Nenhum conteudo encontrado"]])
                     all_pages_data.append((page_num + 1, df))
-                    print(f"    Nenhuma tabela detectada")
+                    logger.warning(f"  Nenhuma tabela detectada na pagina {page_num + 1}")
             
             # Criar Excel com abas por página
-            print(f"\n Gerando Excel com {len(all_pages_data)} aba(s)...")
+            logger.info(f"Gerando Excel com {len(all_pages_data)} aba(s)...")
             excel_buffer = io.BytesIO()
             
             try:
@@ -258,9 +287,9 @@ def process_pdf():
                                 index=False,
                                 header=False
                             )
-                            print(f"   Aba '{sheet_name}' criada")
+                            logger.debug(f"  Aba '{sheet_name}' criada")
                         except Exception as e:
-                            print(f"    Erro na página {page_num}: {e}")
+                            logger.warning(f"  Erro na pagina {page_num}: {e}")
                             # Tentar novamente convertendo TUDO para ASCII puro
                             for col in page_df.columns:
                                 page_df[col] = page_df[col].apply(
@@ -272,17 +301,17 @@ def process_pdf():
                                 index=False,
                                 header=False
                             )
-                            print(f"  Aba '{sheet_name}' criada (modo ASCII)")
+                            logger.info(f"  Aba '{sheet_name}' criada (modo ASCII)")
             except Exception as e:
-                print(f"❌ Erro ao criar Excel: {e}")
+                logger.error(f"Erro ao criar Excel: {e}")
                 raise
             
             excel_buffer.seek(0)
             excel_base64 = base64.b64encode(excel_buffer.read()).decode('utf-8')
             
-            print(f"\n{'='*60}")
-            print(f" Processamento concluído com sucesso!")
-            print(f"{'='*60}\n")
+            logger.info(f"{'='*60}")
+            logger.info("Processamento concluido com sucesso!")
+            logger.info(f"{'='*60}")
             
             return jsonify({
                 "success": True,
@@ -299,12 +328,11 @@ def process_pdf():
         error_msg = str(e)
         traceback_str = traceback.format_exc()
         
-        # Log detalhado para Railway
-        print(f"\n ERRO DETALHADO:", file=sys.stderr, flush=True)
-        print(f"Tipo: {type(e).__name__}", file=sys.stderr, flush=True)
-        print(f"Mensagem: {error_msg}", file=sys.stderr, flush=True)
-        print(f"Traceback:", file=sys.stderr, flush=True)
-        print(traceback_str, file=sys.stderr, flush=True)
+        # Log detalhado
+        logger.error("ERRO DETALHADO:")
+        logger.error(f"Tipo: {type(e).__name__}")
+        logger.error(f"Mensagem: {error_msg}")
+        logger.error(f"Traceback: {traceback_str}")
         
         return jsonify({"error": f"Erro ao processar PDF: {error_msg}"}), 500
 
@@ -321,9 +349,9 @@ def compress_pdf():
         return '', 204
     
     try:
-        print("\n" + "="*60)
-        print(" - INICIANDO COMPRESSÃO DE PDF")
-        print("="*60)
+        logger.info("="*60)
+        logger.info("INICIANDO COMPRESSAO DE PDF")
+        logger.info("="*60)
         
         # Validar request
         if 'file' not in request.files:
@@ -342,9 +370,9 @@ def compress_pdf():
         import hashlib
         file_hash = hashlib.sha256(pdf_file.filename.encode()).hexdigest()[:12]
         
-        print(f"📄 Arquivo: {file_hash}")
-        print(f"🔧 Nível de compressão: {compression_level}")
-        print(f"🌐 IP: {get_remote_address()}")
+        logger.info(f"Arquivo: {file_hash}")
+        logger.info(f"Nivel de compressao: {compression_level}")
+        logger.info(f"IP: {get_remote_address()}")
         
         # Salvar PDF temporário
         with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_input:
@@ -358,7 +386,7 @@ def compress_pdf():
             # Abrir PDF
             doc = fitz.open(input_path)
             original_size = os.path.getsize(input_path)
-            print(f"📊 Tamanho original: {original_size / 1024:.2f} KB")
+            logger.info(f"Tamanho original: {original_size / 1024:.2f} KB")
             
             # Configurar níveis de compressão
             compression_settings = {
@@ -384,8 +412,8 @@ def compress_pdf():
             compressed_size = os.path.getsize(output_path)
             reduction = ((original_size - compressed_size) / original_size) * 100
             
-            print(f"📊 Tamanho comprimido: {compressed_size / 1024:.2f} KB")
-            print(f"💾 Redução: {reduction:.1f}%")
+            logger.info(f"Tamanho comprimido: {compressed_size / 1024:.2f} KB")
+            logger.info(f"Reducao: {reduction:.1f}%")
             
             # Ler arquivo comprimido
             with open(output_path, 'rb') as f:
@@ -414,25 +442,25 @@ def compress_pdf():
         import traceback
         traceback_str = traceback.format_exc()
         
-        # Log detalhado para Railway
-        print(f"\n ERRO NA COMPRESSÃO:", file=sys.stderr, flush=True)
-        print(f"Tipo: {type(e).__name__}", file=sys.stderr, flush=True)
-        print(f"Mensagem: {str(e)}", file=sys.stderr, flush=True)
-        print(f"Traceback:", file=sys.stderr, flush=True)
-        print(traceback_str, file=sys.stderr, flush=True)
+        # Log detalhado
+        logger.error("ERRO NA COMPRESSAO:")
+        logger.error(f"Tipo: {type(e).__name__}")
+        logger.error(f"Mensagem: {str(e)}")
+        logger.error(f"Traceback: {traceback_str}")
         
         return jsonify({'error': f'Erro ao comprimir PDF: {str(e)}'}), 500
 
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5003))
-    print("\n" + "="*60)
-    print("API OCR SIMPLIFICADA - IMG2TABLE")
-    print("="*60)
-    print(f" - Endpoint OCR: http://0.0.0.0:{port}/process-pdf")
-    print(f" - Endpoint Compressão: http://0.0.0.0:{port}/compress-pdf")
-    print(f" - Health: http://0.0.0.0:{port}/health")
-    print(" - Engine: img2table (PaddleOCR)")
-    print("="*60 + "\n")
+    logger.info("="*60)
+    logger.info("API OCR SIMPLIFICADA - IMG2TABLE")
+    logger.info("="*60)
+    logger.info(f"Endpoint OCR: http://0.0.0.0:{port}/process-pdf")
+    logger.info(f"Endpoint Compressao: http://0.0.0.0:{port}/compress-pdf")
+    logger.info(f"Health: http://0.0.0.0:{port}/health")
+    logger.info("Engine: img2table (PaddleOCR)")
+    logger.info("Otimizacao: Cache de OCR ativado (Singleton Pattern)")
+    logger.info("="*60)
     
     app.run(host='0.0.0.0', port=port, debug=False)

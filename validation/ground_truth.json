@@ -1,0 +1,100 @@
+{
+  "titulo": "Relatório de Materiais",
+  "colunas": [
+    "Código",
+    "Descrição Item",
+    "Valor"
+  ],
+  "linhas": [
+    {
+      "linha_numero": 1,
+      "codigo_completo": "84741-4848  3A",
+      "codigo_base": "84741-4848",
+      "sufixo": "3A",
+      "espacos_no_codigo": 2,
+      "descricao": "Pino cilíndrico 6x30mm",
+      "valor": "R$ 234.17"
+    },
+    {
+      "linha_numero": 2,
+      "codigo_completo": "48301-3488 3A",
+      "codigo_base": "48301-3488",
+      "sufixo": "3A",
+      "espacos_no_codigo": 1,
+      "descricao": "Anel de vedação NBR 20x3",
+      "valor": "R$ 199.65"
+    },
+    {
+      "linha_numero": 3,
+      "codigo_completo": "26443-7833 7A",
+      "codigo_base": "26443-7833",
+      "sufixo": "7A",
+      "espacos_no_codigo": 1,
+      "descricao": "Anel de vedação NBR 20x3",
+      "valor": "R$ 151.11"
+    },
+    {
+      "linha_numero": 4,
+      "codigo_completo": "28027-7795   2A",
+      "codigo_base": "28027-7795",
+      "sufixo": "2A",
+      "espacos_no_codigo": 3,
+      "descricao": "Parafuso cabeça chata M6x15",
+      "valor": "R$ 109.94"
+    },
+    {
+      "linha_numero": 5,
+      "codigo_completo": "34943-6624  3A",
+      "codigo_base": "34943-6624",
+      "sufixo": "3A",
+      "espacos_no_codigo": 2,
+      "descricao": "Bucha plástica S8",
+      "valor": "R$ 17.79"
+    },
+    {
+      "linha_numero": 6,
+      "codigo_completo": "16102-7363   3A",
+      "codigo_base": "16102-7363",
+      "sufixo": "3A",
+      "espacos_no_codigo": 3,
+      "descricao": "Parafuso cabeça chata M6x15",
+      "valor": "R$ 160.91"
+    },
+    {
+      "linha_numero": 7,
+      "codigo_completo": "23514-6082 4A",
+      "codigo_base": "23514-6082",
+      "sufixo": "4A",
+      "espacos_no_codigo": 1,
+      "descricao": "Parafuso sextavado M8x20",
+      "valor": "R$ 120.10"
+    },
+    {
+      "linha_numero": 8,
+      "codigo_completo": "96268-2221 6A",
+      "codigo_base": "96268-2221",
+      "sufixo": "6A",
+      "espacos_no_codigo": 1,
+      "descricao": "Parafuso sextavado M8x20",
+      "valor": "R$ 27.86"
+    },
+    {
+      "linha_numero": 9,
+      "codigo_completo": "96220-3576   7A",
+      "codigo_base": "96220-3576",
+      "sufixo": "7A",
+      "espacos_no_codigo": 3,
+      "descricao": "Rebite de alumínio 4x12mm",
+      "valor": "R$ 96.77"
+    },
+    {
+      "linha_numero": 10,
+      "codigo_completo": "75063-1581  8A",
+      "codigo_base": "75063-1581",
+      "sufixo": "8A",
+      "espacos_no_codigo": 2,
+      "descricao": "Arruela lisa de aço inox",
+      "valor": "R$ 152.36"
+    }
+  ]
+}
