@@ -78,22 +78,31 @@ export default function AdsterraAd({
         setIsReady(true)
 
         // Carregar o script dinamicamente
-        if (!adLoaded) {
-          loadAdScript()
-        }
+        loadAdScript()
       }, 500)
 
-      return () => clearTimeout(timer)
+      return () => {
+        clearTimeout(timer)
+        // Cleanup: remover scripts ao desmontar (navegação SPA)
+        const scripts = document.querySelectorAll(`script[data-zone="${zoneId}"]`)
+        scripts.forEach(script => script.remove())
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shouldRender, zoneId, publisherId, format, adLoaded])
+  }, [shouldRender, zoneId, publisherId, format])
 
   const loadAdScript = () => {
     try {
-      // Verificar se o script ja foi carregado
-      const existingScript = document.querySelector(`script[data-zone="${zoneId}"]`)
-      if (existingScript) {
-        return
+      // Limpar scripts antigos primeiro (para navegação SPA)
+      const oldScripts = document.querySelectorAll(`script[data-zone="${zoneId}"]`)
+      oldScripts.forEach(script => script.remove())
+      
+      // Limpar containers antigos do Native Banner
+      if (format === 'native') {
+        const oldContainer = document.getElementById(`container-${zoneId}`)
+        if (oldContainer) {
+          oldContainer.innerHTML = ''
+        }
       }
 
       // Para iframe, configurar atOptions ANTES de carregar o script
@@ -112,6 +121,7 @@ export default function AdsterraAd({
       const script = document.createElement('script')
       script.type = 'text/javascript'
       script.async = true
+      script.setAttribute('async', 'async')
       script.setAttribute('data-zone', zoneId)
       script.setAttribute('data-cfasync', 'false')
       
