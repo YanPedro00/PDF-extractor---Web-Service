@@ -58,7 +58,6 @@ export default function HybridAd({
   preferredProvider = 'google'
 }: HybridAdProps) {
   const [activeProvider, setActiveProvider] = useState<'google' | 'adsterra' | null>(null)
-  const [userCountry, setUserCountry] = useState<string | null>(null)
 
   useEffect(() => {
     if (!shouldRender) {
@@ -66,82 +65,22 @@ export default function HybridAd({
     }
 
     // Determinar qual provider usar
-    determineProvider()
-
-    // Detectar pais do usuario para otimizacao geografica
-    detectUserCountry()
-  }, [shouldRender, provider, preferredProvider])
-
-  const determineProvider = () => {
-    // Se provider especificado, usar diretamente
     if (provider === 'google' || provider === 'adsterra') {
       setActiveProvider(provider)
-      return
-    }
-
-    // Modo auto: detectar baseado em variaveis de ambiente
-    const envProvider = process.env.NEXT_PUBLIC_ADS_PROVIDER
-
-    if (envProvider === 'google') {
-      setActiveProvider('google')
-    } else if (envProvider === 'adsterra') {
-      setActiveProvider('adsterra')
-    } else if (envProvider === 'hybrid') {
-      // Modo hibrido: usar preferencia ou detectar
-      useHybridStrategy()
     } else {
-      // Fallback: usar preferencia
-      setActiveProvider(preferredProvider)
-    }
-  }
-
-  const useHybridStrategy = () => {
-    // Estrategia 1: Verificar se Google AdSense esta aprovado
-    // (Podemos detectar isso verificando se os anuncios carregam)
-    const googleApproved = checkGoogleApproval()
-
-    if (googleApproved) {
-      // Google aprovado: usar baseado em geografia
-      if (userCountry && isTier1Country(userCountry)) {
-        setActiveProvider('google') // Tier 1: Google (maior CPM)
+      // Modo auto: detectar baseado em variaveis de ambiente
+      const envProvider = process.env.NEXT_PUBLIC_ADS_PROVIDER
+      
+      if (envProvider === 'adsterra' || !envProvider) {
+        setActiveProvider('adsterra')
+      } else if (envProvider === 'google') {
+        setActiveProvider('google')
       } else {
-        setActiveProvider('adsterra') // Tier 2/3: Adsterra (aceita melhor)
+        setActiveProvider('adsterra')
       }
-    } else {
-      // Google nao aprovado: usar Adsterra
-      setActiveProvider('adsterra')
     }
-  }
-
-  const checkGoogleApproval = (): boolean => {
-    // Verificar se temos Publisher ID do Google configurado
-    const googlePublisherId = process.env.NEXT_PUBLIC_GOOGLE_ADS_PUBLISHER_ID
-    
-    // Se nao tiver ID, Google nao esta configurado
-    if (!googlePublisherId) {
-      return false
-    }
-
-    // Podemos adicionar logica mais sofisticada aqui
-    // Por exemplo, fazer uma requisicao de teste
-    // Por enquanto, assumir que se tem ID, pode estar aprovado
-    
-    // TODO: Implementar verificacao real de aprovacao
-    return false // Retornar false ate Google aprovar
-  }
-
-  const detectUserCountry = async () => {
-    try {
-      // Usar API gratuita para detectar pais
-      // Alternativa: usar Cloudflare headers, Vercel geolocation, etc
-      const response = await fetch('https://ipapi.co/json/')
-      const data = await response.json()
-      setUserCountry(data.country_code)
-    } catch (error) {
-      // Fallback: usar preferencia padrao
-      console.log('Nao foi possivel detectar pais do usuario')
-    }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldRender, provider, preferredProvider])
 
   const isTier1Country = (countryCode: string): boolean => {
     const tier1Countries = [
@@ -191,10 +130,24 @@ export default function HybridAd({
 
   // Renderizar Adsterra
   if (activeProvider === 'adsterra' && adsterraZoneId) {
+    // Detectar formato baseado no zoneId
+    let detectedFormat: 'native' | 'banner' | 'social-bar' | 'iframe' = 'banner'
+    
+    if (adsterraZoneId.includes('http')) {
+      // Social Bar (URL completa)
+      detectedFormat = 'social-bar'
+    } else if (adsterraZoneId.startsWith('f9b1fc')) {
+      // Native Banner (ZONE_1)
+      detectedFormat = 'native'
+    } else if (adsterraZoneId.startsWith('678540')) {
+      // iframe Banner (ZONE_2)
+      detectedFormat = 'iframe'
+    }
+    
     return (
       <AdsterraAd
         zoneId={adsterraZoneId}
-        format={adFormat === 'auto' ? 'banner' : 'banner'}
+        format={detectedFormat}
         className={className}
         style={style}
         shouldRender={shouldRender}

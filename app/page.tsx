@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import HybridAd from '@/components/HybridAd'
+import AdsterraAd from '@/components/AdsterraAd'
 
 export default function Home() {
   const [contentReady, setContentReady] = useState(false)
@@ -90,16 +90,14 @@ export default function Home() {
             </p>
           </div>
           
-          {/* Hybrid Ad - Header (Adsterra + Google AdSense) */}
+          {/* AD1 - Native Banner (Header) */}
           {contentReady && (
             <div className="mt-6 sm:mt-8 mb-6 sm:mb-8 flex justify-center px-2">
-              <HybridAd 
-                googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_1 || '6280286471'}
-                adsterraZoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_1 || ''}
-                adFormat="auto"
+              <AdsterraAd 
+                zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_1 || ''}
+                format="native"
                 className="min-h-[100px] w-full max-w-[728px]"
                 shouldRender={contentReady}
-                provider="auto"
               />
             </div>
           )}
@@ -177,29 +175,16 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Hybrid Ad - Footer (Adsterra + Google AdSense) */}
+        {/* AD2 - iframe Banner (Footer) */}
         {contentReady && (
           <div className="mt-12 sm:mt-16 mb-6 sm:mb-8 flex justify-center px-2">
-            <HybridAd 
-              googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_ADS_SLOT_2 || '4093106837'}
-              adsterraZoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_2 || ''}
-              adFormat="auto"
-              className="min-h-[100px] w-full max-w-[728px]"
+            <AdsterraAd 
+              zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_2 || ''}
+              format="iframe"
+              className="min-h-[90px] w-full max-w-[728px]"
               shouldRender={contentReady}
-              provider="auto"
             />
           </div>
-        )}
-
-        {/* Social Bar - Barra fixa no rodape */}
-        {contentReady && (
-          <HybridAd 
-            googleAdSlot=""
-            adsterraZoneId="https://pl28366324.effectivegatecpm.com/ca/97/a2/ca97a289c87f0a0198d36c0ff16763b6.js"
-            adFormat="auto"
-            shouldRender={contentReady}
-            provider="auto"
-          />
         )}
       </div>
     </main>

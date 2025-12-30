@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 
 interface AdsterraAdProps {
   zoneId: string
-  format?: 'banner' | 'popunder' | 'native' | 'social-bar'
+  format?: 'banner' | 'popunder' | 'native' | 'social-bar' | 'iframe'
   width?: number
   height?: number
   className?: string
@@ -64,13 +64,11 @@ export default function AdsterraAd({
     }
 
     if (!zoneId) {
-      console.warn('AdsterraAd: Zone ID nao configurado')
       return
     }
 
-    // Native banners nao precisam de Publisher ID
-    if (format !== 'native' && !publisherId) {
-      console.warn('AdsterraAd: Publisher ID nao configurado')
+    // Native, iframe e social-bar nao precisam de Publisher ID
+    if (format !== 'native' && format !== 'social-bar' && format !== 'iframe' && !publisherId) {
       return
     }
 
@@ -97,6 +95,18 @@ export default function AdsterraAd({
         return
       }
 
+      // Para iframe, configurar atOptions ANTES de carregar o script
+      if (format === 'iframe') {
+        // @ts-ignore
+        window.atOptions = {
+          'key': zoneId,
+          'format': 'iframe',
+          'height': 90,
+          'width': 728,
+          'params': {}
+        }
+      }
+
       // Criar e adicionar o script do Adsterra
       const script = document.createElement('script')
       script.type = 'text/javascript'
@@ -104,14 +114,29 @@ export default function AdsterraAd({
       script.setAttribute('data-zone', zoneId)
       script.setAttribute('data-cfasync', 'false')
       
-      // URL especifica para native banners
+      // URL especifica por formato
       if (format === 'native') {
         script.src = `https://pl28361258.effectivegatecpm.com/${zoneId}/invoke.js`
+      } else if (format === 'iframe') {
+        script.src = `https://www.highperformanceformat.com/${zoneId}/invoke.js`
+      } else if (format === 'social-bar') {
+        script.src = zoneId
       } else {
         script.src = `https://a.magsrv.com/ad-provider.js`
       }
 
-      if (adRef.current) {
+      // Native banner: adicionar no HEAD
+      if (format === 'native') {
+        document.head.appendChild(script)
+        setAdLoaded(true)
+      }
+      // Social Bar e iframe: adicionar no BODY
+      else if (format === 'social-bar' || format === 'iframe') {
+        document.body.appendChild(script)
+        setAdLoaded(true)
+      }
+      // Outros: tentar no adRef
+      else if (adRef.current) {
         adRef.current.appendChild(script)
         setAdLoaded(true)
       }
@@ -125,8 +150,8 @@ export default function AdsterraAd({
     return null
   }
   
-  // Para formatos que nao sejam native, validar Publisher ID
-  if (format !== 'native' && !publisherId) {
+  // Para formatos que nao sejam native, iframe ou social-bar, validar Publisher ID
+  if (format !== 'native' && format !== 'social-bar' && format !== 'iframe' && !publisherId) {
     return null
   }
 
@@ -189,6 +214,11 @@ export default function AdsterraAd({
         </>
       )}
       
+      {/* Container para iframe Banner */}
+      {format === 'iframe' && (
+        <div ref={adRef} style={{ minHeight: '90px', width: '100%', maxWidth: '728px' }} />
+      )}
+      
       {/* Container para Display Banner */}
       {format === 'banner' && (
         <div ref={adRef}>
@@ -213,6 +243,7 @@ export default function AdsterraAd({
 declare global {
   interface Window {
     adsbyadsterra?: any
+    atOptions?: any
   }
 }
 
