@@ -1,7 +1,6 @@
 'use client'
 
 import PDFMerger from '@/components/PDFMerger'
-import Link from 'next/link'
 import AdsterraAd from '@/components/AdsterraAd'
 import { useState, useEffect } from 'react'
 
@@ -18,7 +17,7 @@ export default function JuntarPage() {
     <main className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         <div className="max-w-6xl mx-auto">
-          <Link
+          <a
             href="/"
             className="mb-4 sm:mb-6 text-primary-600 hover:text-primary-700 font-medium flex items-center gap-2 text-sm sm:text-base inline-flex"
           >
@@ -26,7 +25,7 @@ export default function JuntarPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Voltar
-          </Link>
+          </a>
 
           {/* Descrição da ferramenta */}
           <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-6">

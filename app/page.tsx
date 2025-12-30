@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
 import AdsterraAd from '@/components/AdsterraAd'
 
 export default function Home() {
@@ -133,7 +132,7 @@ export default function Home() {
           {/* Grid de Ferramentas */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
             {tools.map((tool) => (
-              <Link
+              <a
                 key={tool.href}
                 href={tool.href}
                 className="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 sm:p-8 border-2 border-transparent hover:border-primary-500"
@@ -149,7 +148,7 @@ export default function Home() {
                     {tool.description}
                   </p>
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
 

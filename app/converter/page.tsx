@@ -1,7 +1,6 @@
 'use client'
 
 import PDFUploader from '@/components/PDFUploader'
-import Link from 'next/link'
 import AdsterraAd from '@/components/AdsterraAd'
 import { useState, useEffect } from 'react'
 
@@ -18,7 +17,7 @@ export default function ConverterPage() {
     <main className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         <div className="max-w-6xl mx-auto">
-          <Link
+          <a
             href="/"
             className="mb-4 sm:mb-6 text-primary-600 hover:text-primary-700 font-medium flex items-center gap-2 text-sm sm:text-base inline-flex"
           >
@@ -26,7 +25,7 @@ export default function ConverterPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Voltar
-          </Link>
+          </a>
 
           {/* Descrição da ferramenta */}
           <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-6">
@@ -99,7 +98,7 @@ export default function ConverterPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
-                  <span>Se o seu PDF é uma <strong>imagem escaneada</strong>, use nossa ferramenta de <Link href="/ocr" className="text-primary-600 hover:underline font-semibold">PDF Escaneado (OCR)</Link>.</span>
+                  <span>Se o seu PDF é uma <strong>imagem escaneada</strong>, use nossa ferramenta de <a href="/ocr" className="text-primary-600 hover:underline font-semibold">PDF Escaneado (OCR)</a>.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
@@ -138,7 +137,7 @@ export default function ConverterPage() {
                 <h3 className="font-semibold text-gray-800 mb-1">Como saber se meu PDF tem texto selecionável?</h3>
                 <p className="text-sm sm:text-base text-gray-600">
                   Abra o PDF e tente selecionar o texto com o cursor do mouse. Se conseguir copiar o texto, use esta ferramenta. 
-                  Se não conseguir (PDF é uma imagem), use nossa ferramenta de <Link href="/ocr" className="text-primary-600 hover:underline">OCR</Link>.
+                  Se não conseguir (PDF é uma imagem), use nossa ferramenta de <a href="/ocr" className="text-primary-600 hover:underline">OCR</a>.
                 </p>
               </div>
               <div>

@@ -1,7 +1,6 @@
 'use client'
 
 import PDFUploader from '@/components/PDFUploader'
-import Link from 'next/link'
 import AdsterraAd from '@/components/AdsterraAd'
 import { useState, useEffect } from 'react'
 
@@ -18,7 +17,7 @@ export default function OCRPage() {
     <main className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         <div className="max-w-6xl mx-auto">
-          <Link
+          <a
             href="/"
             className="mb-4 sm:mb-6 text-primary-600 hover:text-primary-700 font-medium flex items-center gap-2 text-sm sm:text-base inline-flex"
           >
@@ -26,7 +25,7 @@ export default function OCRPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Voltar
-          </Link>
+          </a>
 
           {/* Descrição da ferramenta */}
           <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-6">
@@ -179,7 +178,7 @@ export default function OCRPage() {
                 <h3 className="font-semibold text-gray-800 mb-1">O que fazer se os resultados não estiverem corretos?</h3>
                 <p className="text-sm sm:text-base text-gray-600">
                   Tente escanear o documento novamente com melhor qualidade, garantindo boa iluminação e resolução. 
-                  Se o PDF tem texto selecionável, use nossa <Link href="/converter" className="text-primary-600 hover:underline">ferramenta de conversão direta</Link>.
+                  Se o PDF tem texto selecionável, use nossa <a href="/converter" className="text-primary-600 hover:underline">ferramenta de conversão direta</a>.
                 </p>
               </div>
             </div>
