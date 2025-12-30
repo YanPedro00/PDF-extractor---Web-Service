@@ -190,6 +190,17 @@ export default function Home() {
             />
           </div>
         )}
+
+        {/* Social Bar - Barra fixa no rodape */}
+        {contentReady && (
+          <HybridAd 
+            googleAdSlot=""
+            adsterraZoneId="https://pl28366324.effectivegatecpm.com/ca/97/a2/ca97a289c87f0a0198d36c0ff16763b6.js"
+            adFormat="auto"
+            shouldRender={contentReady}
+            provider="auto"
+          />
+        )}
       </div>
     </main>
   )
