@@ -2,6 +2,7 @@
 
 import PDFCompressor from '@/components/PDFCompressor'
 import AdsterraAd from '@/components/AdsterraAd'
+import PageLayoutWithSidebars from '@/components/PageLayoutWithSidebars'
 import { useState, useEffect } from 'react'
 
 export default function ComprimirPage() {
@@ -14,9 +15,10 @@ export default function ComprimirPage() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
-        <div className="max-w-6xl mx-auto">
+    <PageLayoutWithSidebars>
+      <main className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+          <div className="max-w-6xl mx-auto">
           <a
             href="/"
             className="mb-4 sm:mb-6 text-primary-600 hover:text-primary-700 font-medium flex items-center gap-2 text-sm sm:text-base inline-flex"
@@ -225,9 +227,10 @@ export default function ComprimirPage() {
               />
             </div>
           )}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </PageLayoutWithSidebars>
   )
 }
 

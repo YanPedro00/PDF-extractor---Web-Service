@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import AdsterraAd from '@/components/AdsterraAd'
+import PageLayoutWithSidebars from '@/components/PageLayoutWithSidebars'
 
 export default function Home() {
   const [contentReady, setContentReady] = useState(false)
@@ -81,8 +82,9 @@ export default function Home() {
   ]
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+    <PageLayoutWithSidebars>
+      <main className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Header */}
         <header className="text-center mb-8 sm:mb-12 mt-4 sm:mt-8">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-600 mb-3 sm:mb-4 px-2">
@@ -200,7 +202,8 @@ export default function Home() {
             />
           </div>
         )}
-      </div>
-    </main>
+        </div>
+      </main>
+    </PageLayoutWithSidebars>
   )
 }
