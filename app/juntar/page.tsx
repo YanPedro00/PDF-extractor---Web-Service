@@ -184,14 +184,14 @@ export default function JuntarPage() {
             </div>
           </div>
 
-          {/* AD2 - Banner no rodapé */}
+          {/* AD2 - iframe Banner (Footer) */}
           {contentReady && (
-            <div className="mt-12 mb-8 flex justify-center">
+            <div className="mt-12 sm:mt-16 mb-6 sm:mb-8 flex justify-center px-2">
               <AdsterraAd
                 key={`ad2-${adKey}`}
                 zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_2 || ''}
-                format="banner"
-                className="min-h-[100px] w-full max-w-[728px]"
+                format="iframe"
+                className="min-h-[90px] w-full max-w-[728px]"
                 shouldRender={contentReady}
               />
             </div>
