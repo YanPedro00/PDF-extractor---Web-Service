@@ -220,6 +220,8 @@ export default function ComprimirPage() {
                 key={`ad2-${adKey}`}
                 zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_2 || ''}
                 format="banner"
+                className="min-h-[100px] w-full max-w-[728px]"
+                shouldRender={contentReady}
               />
             </div>
           )}
