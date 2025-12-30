@@ -183,6 +183,17 @@ export default function JuntarPage() {
               </div>
             </div>
           </div>
+
+          {/* AD2 - Banner no rodapé */}
+          {contentReady && (
+            <div className="mt-12 mb-8 flex justify-center">
+              <AdsterraAd
+                key={`ad2-${adKey}`}
+                zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_2 || ''}
+                format="banner"
+              />
+            </div>
+          )}
         </div>
       </div>
     </main>
