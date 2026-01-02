@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://pdfutilities.com'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pdf-utilities.up.railway.app'
   const currentDate = new Date()
 
   return [
@@ -37,6 +37,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/comprimir`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/tiff-to-pdf`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.9,
