@@ -9,6 +9,7 @@ Allow: /ocr
 Allow: /juntar
 Allow: /dividir
 Allow: /comprimir
+Allow: /tiff-to-pdf
 
 # Páginas institucionais
 Allow: /sobre
@@ -17,5 +18,5 @@ Allow: /privacidade
 Allow: /termos
 
 # Sitemap
-Sitemap: https://pdfutilities.com/sitemap.xml
+Sitemap: https://pdf-utilities.up.railway.app/sitemap.xml
 
