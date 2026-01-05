@@ -210,8 +210,8 @@ export default function PDFCompressor() {
                   </p>
                 </div>
                 <div className="flex-shrink-0 text-right">
-                  <div className="text-lg sm:text-xl font-bold text-primary-600">~15%</div>
-                  <div className="text-xs text-gray-500">redução</div>
+                  <div className="text-sm sm:text-base font-semibold text-primary-600">Moderada</div>
+                  <div className="text-xs text-gray-500">compressão</div>
                 </div>
               </div>
             </button>
@@ -250,8 +250,8 @@ export default function PDFCompressor() {
                   </p>
                 </div>
                 <div className="flex-shrink-0 text-right">
-                  <div className="text-lg sm:text-xl font-bold text-green-600">~40%</div>
-                  <div className="text-xs text-gray-500">redução</div>
+                  <div className="text-sm sm:text-base font-semibold text-green-600">Balanceada</div>
+                  <div className="text-xs text-gray-500">compressão</div>
                 </div>
               </div>
             </button>
@@ -287,8 +287,8 @@ export default function PDFCompressor() {
                   </p>
                 </div>
                 <div className="flex-shrink-0 text-right">
-                  <div className="text-lg sm:text-xl font-bold text-orange-600">~60%</div>
-                  <div className="text-xs text-gray-500">redução</div>
+                  <div className="text-sm sm:text-base font-semibold text-orange-600">Agressiva</div>
+                  <div className="text-xs text-gray-500">compressão</div>
                 </div>
               </div>
             </button>

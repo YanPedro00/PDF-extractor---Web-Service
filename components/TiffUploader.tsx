@@ -35,18 +35,28 @@ export default function TiffUploader() {
     setError('')
     setTiffInfo(null)
 
-    // Validar tipo de arquivo
+    // Validar extensão do arquivo
     const validExtensions = ['.tiff', '.tif']
     const fileExtension = selectedFile.name.toLowerCase().match(/\.[^.]+$/)?.[0]
     
     if (!fileExtension || !validExtensions.includes(fileExtension)) {
-      setError('Por favor, selecione um arquivo TIFF (.tiff ou .tif)')
+      setError('❌ Apenas arquivos TIFF são aceitos (.tiff ou .tif)')
+      setFile(null)
+      return
+    }
+
+    // Validar MIME type (dupla validação)
+    const validMimeTypes = ['image/tiff', 'image/tif', 'image/x-tiff']
+    if (selectedFile.type && !validMimeTypes.includes(selectedFile.type)) {
+      setError('❌ Tipo de arquivo inválido. Apenas TIFF é aceito.')
+      setFile(null)
       return
     }
 
     // Validar tamanho (50MB)
     if (selectedFile.size > 50 * 1024 * 1024) {
-      setError('Arquivo muito grande. Tamanho máximo: 50MB')
+      setError('❌ Arquivo muito grande. Tamanho máximo: 50MB')
+      setFile(null)
       return
     }
 
@@ -129,7 +139,7 @@ export default function TiffUploader() {
         <input
           type="file"
           id="tiff-input"
-          accept=".tiff,.tif"
+          accept=".tiff,.tif,image/tiff,image/tif,image/x-tiff"
           onChange={(e) => e.target.files?.[0] && handleFileChange(e.target.files[0])}
           className="hidden"
         />

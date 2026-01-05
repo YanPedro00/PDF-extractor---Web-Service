@@ -199,15 +199,24 @@ async def convert_tiff_to_pdf(
         PDF file
     """
     
-    # Validar tipo de arquivo
+    # Validar nome do arquivo
     if not file.filename:
         raise HTTPException(status_code=400, detail="Nome do arquivo não fornecido")
     
+    # Validar extensão
     file_extension = file.filename.split('.')[-1].lower()
     if file_extension not in SUPPORTED_FORMATS:
         raise HTTPException(
             status_code=400,
-            detail=f"Formato não suportado. Use: {', '.join(SUPPORTED_FORMATS)}"
+            detail=f"❌ Formato não suportado. Apenas TIFF é aceito (.tiff ou .tif)"
+        )
+    
+    # Validar MIME type (se fornecido)
+    valid_mime_types = ['image/tiff', 'image/tif', 'image/x-tiff']
+    if file.content_type and file.content_type not in valid_mime_types:
+        raise HTTPException(
+            status_code=400,
+            detail=f"❌ Tipo de arquivo inválido: {file.content_type}. Apenas TIFF é aceito."
         )
     
     try:
@@ -264,6 +273,26 @@ async def get_tiff_info(file: UploadFile = File(...)):
     Returns:
         JSON com informações do arquivo
     """
+    
+    # Validar nome do arquivo
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Nome do arquivo não fornecido")
+    
+    # Validar extensão
+    file_extension = file.filename.split('.')[-1].lower()
+    if file_extension not in SUPPORTED_FORMATS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"❌ Formato não suportado. Apenas TIFF é aceito (.tiff ou .tif)"
+        )
+    
+    # Validar MIME type (se fornecido)
+    valid_mime_types = ['image/tiff', 'image/tif', 'image/x-tiff']
+    if file.content_type and file.content_type not in valid_mime_types:
+        raise HTTPException(
+            status_code=400,
+            detail=f"❌ Tipo de arquivo inválido: {file.content_type}. Apenas TIFF é aceito."
+        )
     
     try:
         file_bytes = await file.read()

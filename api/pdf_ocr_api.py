@@ -25,6 +25,7 @@ import io
 import re
 import sys
 import logging
+import shutil
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_limiter import Limiter
@@ -337,11 +338,144 @@ def process_pdf():
         return jsonify({"error": f"Erro ao processar PDF: {error_msg}"}), 500
 
 
+def detect_pdf_type(pdf_path):
+    """
+    Detecta se o PDF é escaneado ou tem texto selecionável
+    Retorna: 'scanned' ou 'text'
+    """
+    doc = fitz.open(pdf_path)
+    
+    # Analisar primeiras 5 páginas (ou todas se for menor)
+    pages_to_check = min(5, len(doc))
+    total_text_chars = 0
+    total_images = 0
+    
+    for page_num in range(pages_to_check):
+        page = doc[page_num]
+        
+        # Contar caracteres de texto
+        text = page.get_text().strip()
+        total_text_chars += len(text)
+        
+        # Contar imagens
+        images = page.get_images(full=True)
+        total_images += len(images)
+    
+    doc.close()
+    
+    # Heurística: Se tem muitas imagens E pouco texto, é escaneado
+    avg_text_per_page = total_text_chars / pages_to_check
+    avg_images_per_page = total_images / pages_to_check
+    
+    logger.info(f"Analise: {avg_text_per_page:.0f} chars/pagina, {avg_images_per_page:.1f} imgs/pagina")
+    
+    if avg_images_per_page >= 1 and avg_text_per_page < 500:
+        return 'scanned'
+    else:
+        return 'text'
+
+
+def compress_scanned_pdf_ghostscript(input_path, output_path, compression_level):
+    """
+    Comprime PDF ESCANEADO usando Ghostscript
+    Retorna True se comprimiu, False se ficou maior (usa original)
+    """
+    import subprocess
+    
+    quality_map = {
+        'low': '/printer',
+        'medium': '/ebook',
+        'high': '/screen'
+    }
+    
+    preset = quality_map.get(compression_level, '/ebook')
+    
+    gs_command = [
+        'gs',
+        '-sDEVICE=pdfwrite',
+        '-dCompatibilityLevel=1.4',
+        f'-dPDFSETTINGS={preset}',
+        '-dNOPAUSE',
+        '-dQUIET',
+        '-dBATCH',
+        f'-sOutputFile={output_path}',
+        input_path
+    ]
+    
+    try:
+        result = subprocess.run(
+            gs_command,
+            capture_output=True,
+            text=True,
+            timeout=300,
+            check=True
+        )
+        
+        # Verificar se realmente diminuiu
+        original_size = os.path.getsize(input_path)
+        compressed_size = os.path.getsize(output_path)
+        
+        if compressed_size >= original_size:
+            logger.warning("Ghostscript aumentou o arquivo - usando original")
+            shutil.copy2(input_path, output_path)
+            return False
+        
+        return True
+        
+    except FileNotFoundError:
+        raise Exception("Ghostscript não instalado. Instale com: brew install ghostscript")
+    except subprocess.TimeoutExpired:
+        raise Exception("Timeout de 5 minutos excedido")
+    except subprocess.CalledProcessError as e:
+        raise Exception(f"Ghostscript falhou: {e.stderr}")
+
+
+def compress_text_pdf_pymupdf(input_path, output_path, compression_level):
+    """
+    Comprime PDF COM TEXTO usando PyMuPDF
+    Retorna True se comprimiu, False se ficou maior (usa original)
+    """
+    doc = fitz.open(input_path)
+    
+    garbage_settings = {
+        'low': 1,
+        'medium': 3,
+        'high': 4
+    }
+    
+    garbage_level = garbage_settings.get(compression_level, 3)
+    
+    # Salvar com compressão
+    doc.save(
+        output_path,
+        garbage=garbage_level,
+        deflate=True,
+        deflate_images=True,
+        deflate_fonts=True,
+        clean=True
+    )
+    doc.close()
+    
+    # Verificar se realmente diminuiu
+    original_size = os.path.getsize(input_path)
+    compressed_size = os.path.getsize(output_path)
+    
+    if compressed_size >= original_size:
+        logger.warning("PyMuPDF aumentou o arquivo - usando original")
+        shutil.copy2(input_path, output_path)
+        return False
+    
+    return True
+
+
 @app.route('/compress-pdf', methods=['POST', 'OPTIONS'])
 @limiter.limit("20 per hour")  # Máximo 20 compressões por hora por IP
 def compress_pdf():
     """
     Comprime um PDF reduzindo o tamanho do arquivo
+    SOLUÇÃO HÍBRIDA:
+    - PDFs Escaneados: Ghostscript (melhor para imagens)
+    - PDFs com Texto: PyMuPDF (melhor para texto selecionável)
     
     Rate Limit: 20 requisições por hora por IP
     """
@@ -350,7 +484,7 @@ def compress_pdf():
     
     try:
         logger.info("="*60)
-        logger.info("INICIANDO COMPRESSAO DE PDF")
+        logger.info("INICIANDO COMPRESSAO DE PDF (HIBRIDA)")
         logger.info("="*60)
         
         # Validar request
@@ -383,37 +517,33 @@ def compress_pdf():
         output_path = tempfile.mktemp(suffix='_compressed.pdf')
         
         try:
-            # Abrir PDF
-            doc = fitz.open(input_path)
             original_size = os.path.getsize(input_path)
-            logger.info(f"Tamanho original: {original_size / 1024:.2f} KB")
+            logger.info(f"Tamanho original: {original_size / 1024 / 1024:.2f} MB")
             
-            # Configurar níveis de compressão
-            compression_settings = {
-                'low': {'deflate': 1, 'garbage': 1},
-                'medium': {'deflate': 4, 'garbage': 3},
-                'high': {'deflate': 9, 'garbage': 4}
-            }
+            # Detectar tipo de PDF
+            pdf_type = detect_pdf_type(input_path)
+            logger.info(f"Tipo detectado: {pdf_type.upper()}")
             
-            settings = compression_settings.get(compression_level, compression_settings['medium'])
-            
-            # Salvar com compressão
-            doc.save(
-                output_path,
-                garbage=settings['garbage'],
-                deflate=True,
-                deflate_images=True,
-                deflate_fonts=True,
-                clean=True
-            )
-            doc.close()
+            # Comprimir usando técnica apropriada
+            if pdf_type == 'scanned':
+                logger.info("Usando Ghostscript (PDF escaneado)")
+                compression_worked = compress_scanned_pdf_ghostscript(input_path, output_path, compression_level)
+            else:
+                logger.info("Usando PyMuPDF (PDF com texto)")
+                compression_worked = compress_text_pdf_pymupdf(input_path, output_path, compression_level)
             
             # Verificar redução
             compressed_size = os.path.getsize(output_path)
             reduction = ((original_size - compressed_size) / original_size) * 100
             
-            logger.info(f"Tamanho comprimido: {compressed_size / 1024:.2f} KB")
-            logger.info(f"Reducao: {reduction:.1f}%")
+            if not compression_worked:
+                logger.info(f"Tamanho final: {compressed_size / 1024 / 1024:.2f} MB")
+                logger.info("Reducao: 0% (PDF ja estava otimizado)")
+                logger.info("="*60)
+            else:
+                logger.info(f"Tamanho comprimido: {compressed_size / 1024 / 1024:.2f} MB")
+                logger.info(f"Reducao total: {reduction:.1f}%")
+                logger.info("="*60)
             
             # Ler arquivo comprimido
             with open(output_path, 'rb') as f:
@@ -428,7 +558,8 @@ def compress_pdf():
                 'filename': pdf_file.filename.replace('.pdf', '_comprimido.pdf'),
                 'original_size': original_size,
                 'compressed_size': compressed_size,
-                'reduction_percentage': round(reduction, 1)
+                'reduction_percentage': round(reduction, 1),
+                'pdf_type': pdf_type
             })
             
         finally:

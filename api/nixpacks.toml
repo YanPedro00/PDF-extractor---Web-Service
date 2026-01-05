@@ -1,6 +1,6 @@
 [phases.setup]
 nixPkgs = ["python313"]
-aptPkgs = ["libgl1-mesa-glx", "libglib2.0-0", "libsm6", "libxext6", "libxrender-dev"]
+aptPkgs = ["libgl1-mesa-glx", "libglib2.0-0", "libsm6", "libxext6", "libxrender-dev", "ghostscript"]
 
 [phases.install]
 cmds = [

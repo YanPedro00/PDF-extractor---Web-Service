@@ -84,9 +84,9 @@ export default function ComprimirPage() {
                   <div>
                     <strong>Escolha o nível de compressão:</strong>
                     <ul className="mt-2 space-y-1 ml-4">
-                      <li>• <strong>Baixa Compressão (Alta Qualidade):</strong> ~15% de redução - Mantém máxima qualidade visual</li>
-                      <li>• <strong>Compressão Recomendada (Balanceada):</strong> ~40% de redução - Boa qualidade e boa compressão</li>
-                      <li>• <strong>Extrema Compressão (Máxima Redução):</strong> ~60% de redução - Prioriza menor tamanho</li>
+                      <li>• <strong>Baixa Compressão (Alta Qualidade):</strong> Mantém máxima qualidade visual</li>
+                      <li>• <strong>Compressão Recomendada (Balanceada):</strong> Equilíbrio entre qualidade e tamanho</li>
+                      <li>• <strong>Extrema Compressão (Máxima Redução):</strong> Prioriza menor tamanho possível</li>
                     </ul>
                   </div>
                 </li>
@@ -114,7 +114,7 @@ export default function ComprimirPage() {
               <ul className="space-y-2 text-sm sm:text-base text-gray-700">
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
-                  <span><strong>PDFs com muitas imagens:</strong> Geralmente têm melhor taxa de compressão, podendo reduzir até 70-80%.</span>
+                  <span><strong>PDFs com muitas imagens:</strong> Geralmente têm melhor taxa de compressão.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
@@ -122,7 +122,7 @@ export default function ComprimirPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
-                  <span><strong>Teste primeiro:</strong> Use compressão média primeiro. Se o arquivo ainda for grande, tente alta compressão.</span>
+                  <span><strong>Teste primeiro:</strong> Comece com compressão recomendada. Se precisar de mais redução, tente extrema.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
@@ -130,11 +130,11 @@ export default function ComprimirPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
-                  <span><strong>PDFs já otimizados:</strong> Alguns PDFs já estão comprimidos - nesses casos a redução será menor.</span>
+                  <span><strong>PDFs já otimizados:</strong> Alguns PDFs já estão no tamanho ideal e não podem ser comprimidos mais.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-600 mt-1 flex-shrink-0">•</span>
-                  <span><strong>Processamento local:</strong> Tudo acontece no seu navegador - seus arquivos não são enviados para nenhum servidor.</span>
+                  <span><strong>Privacidade:</strong> Seus arquivos são processados de forma segura e descartados imediatamente após a compressão.</span>
                 </li>
               </ul>
             </div>
@@ -164,8 +164,9 @@ export default function ComprimirPage() {
               <div>
                 <h3 className="font-semibold text-gray-800 mb-1">Quanto posso reduzir o tamanho do meu PDF?</h3>
                 <p className="text-sm sm:text-base text-gray-600">
-                  Depende do conteúdo do PDF. PDFs com muitas imagens em alta resolução podem ser reduzidos em 50-70%. 
-                  PDFs com muito texto terão menor taxa de compressão (10-30%). Nossa ferramenta mostra a redução exata após o processo.
+                  Depende muito do conteúdo do PDF. PDFs escaneados e com muitas imagens podem ter redução significativa. 
+                  PDFs com muito texto ou já otimizados terão menor redução. Alguns PDFs já estão no tamanho ideal e não podem ser comprimidos. 
+                  Nossa ferramenta mostra a redução exata após o processo.
                 </p>
               </div>
               <div>
@@ -192,10 +193,10 @@ export default function ComprimirPage() {
               <div>
                 <h3 className="font-semibold text-gray-800 mb-1">Qual nível de compressão devo escolher?</h3>
                 <p className="text-sm sm:text-base text-gray-600">
-                  Para a maioria dos casos, recomendamos a <strong>Compressão Recomendada</strong> - oferece excelente redução de tamanho (40%) 
-                  mantendo boa qualidade visual. Use <strong>Baixa Compressão</strong> para apresentações e documentos profissionais onde 
-                  qualidade é essencial. Use <strong>Extrema Compressão</strong> quando você precisa do menor tamanho possível, como para 
-                  limites de upload ou envio de muitos arquivos.
+                  Para a maioria dos casos, recomendamos a <strong>Compressão Recomendada</strong> - oferece bom equilíbrio entre 
+                  tamanho e qualidade visual. Use <strong>Baixa Compressão</strong> para apresentações e documentos profissionais onde 
+                  qualidade é essencial. Use <strong>Extrema Compressão</strong> quando você precisa do menor tamanho possível, 
+                  ideal para limites de upload ou envio de muitos arquivos.
                 </p>
               </div>
               <div>
@@ -208,8 +209,8 @@ export default function ComprimirPage() {
               <div>
                 <h3 className="font-semibold text-gray-800 mb-1">Meus dados estão seguros?</h3>
                 <p className="text-sm sm:text-base text-gray-600">
-                  Sim! Todo o processamento acontece localmente no seu navegador. Seus arquivos nunca são enviados 
-                  para nenhum servidor, garantindo total privacidade.
+                  Sim! Seus arquivos são processados de forma segura e descartados imediatamente após a compressão. 
+                  Não armazenamos nenhum arquivo ou informação pessoal, garantindo total privacidade.
                 </p>
               </div>
             </div>
