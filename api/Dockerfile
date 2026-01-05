@@ -1,11 +1,12 @@
 # Dockerfile para API OCR com Ghostscript
 FROM python:3.13-slim
 
-# Instalar dependências do sistema (incluindo Ghostscript)
+# Instalar dependências do sistema (incluindo Ghostscript e OpenMP)
 RUN apt-get update && apt-get install -y \
     ghostscript \
     libgl1 \
     libglib2.0-0 \
+    libgomp1 \
     libsm6 \
     libxext6 \
     libxrender1 \
