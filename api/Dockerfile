@@ -4,11 +4,11 @@ FROM python:3.13-slim
 # Instalar dependências do sistema (incluindo Ghostscript)
 RUN apt-get update && apt-get install -y \
     ghostscript \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
-    libxrender-dev \
+    libxrender1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Definir diretório de trabalho
