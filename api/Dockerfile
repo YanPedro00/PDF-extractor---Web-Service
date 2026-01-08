@@ -1,12 +1,11 @@
 # Dockerfile para API OCR com Ghostscript
 FROM python:3.13-slim
 
-# Instalar dependências do sistema (incluindo Ghostscript e OpenMP)
+# Instalar dependências do sistema (incluindo Ghostscript)
 RUN apt-get update && apt-get install -y \
     ghostscript \
     libgl1 \
     libglib2.0-0 \
-    libgomp1 \
     libsm6 \
     libxext6 \
     libxrender1 \
@@ -40,5 +39,5 @@ ENV PORT=8080 \
 # Expor porta
 EXPOSE 8080
 
-# Comando de start
-CMD ["python3", "pdf_ocr_api.py"]
+# Comando de start com Gunicorn (modo threads para economizar memória)
+CMD ["gunicorn", "--config", "gunicorn_conf.py", "pdf_ocr_api:app"]

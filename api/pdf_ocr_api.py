@@ -26,6 +26,9 @@ import re
 import sys
 import logging
 import shutil
+import gc
+import time
+import threading
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_limiter import Limiter
@@ -57,23 +60,86 @@ except ImportError as e:
     logger.critical(f"ERRO CRITICO: img2table nao encontrado: {e}")
     sys.exit(1)
 
-# Cache global de OCR (Singleton Pattern)
-# Reutiliza instância de OCR para economizar 2-3 segundos por request
+# ============================================================================
+# OTIMIZAÇÃO DE MEMÓRIA: Lazy Loading + Auto-unload do OCR
+# ============================================================================
 _ocr_instance = None
+_ocr_last_used = None
+_ocr_lock = threading.Lock()
+_ocr_unload_timer = None
+
+# Tempo de inatividade antes de descarregar OCR (em segundos)
+OCR_UNLOAD_TIMEOUT = 300  # 5 minutos de inatividade
+
+def _unload_ocr():
+    """
+    Descarrega instância OCR para liberar memória (~700MB-1GB).
+    Chamado automaticamente após período de inatividade.
+    """
+    global _ocr_instance, _ocr_last_used
+    with _ocr_lock:
+        if _ocr_instance is not None:
+            current_time = time.time()
+            if _ocr_last_used and (current_time - _ocr_last_used) >= OCR_UNLOAD_TIMEOUT:
+                logger.info("⚡ Descarregando OCR por inatividade (liberando ~700MB-1GB RAM)...")
+                _ocr_instance = None
+                _ocr_last_used = None
+                # Forçar garbage collection agressivo
+                gc.collect()
+                gc.collect()  # Duas vezes para garantir
+                logger.info("✅ OCR descarregado, memória liberada")
+
+def _schedule_ocr_unload():
+    """Agenda descarregamento do OCR após timeout"""
+    global _ocr_unload_timer
+    if _ocr_unload_timer:
+        _ocr_unload_timer.cancel()
+    _ocr_unload_timer = threading.Timer(OCR_UNLOAD_TIMEOUT, _unload_ocr)
+    _ocr_unload_timer.daemon = True
+    _ocr_unload_timer.start()
 
 def get_ocr():
     """
-    Retorna instância singleton de OCR.
-    Inicializa apenas uma vez e reutiliza nas próximas chamadas.
+    Retorna instância singleton de OCR com lazy loading otimizado.
+    
+    OTIMIZAÇÕES:
+    - Lazy loading: carrega apenas quando necessário
+    - Auto-unload: descarrega após 5 minutos de inatividade
+    - Parâmetros otimizados para baixo consumo de memória
+    - Thread-safe com lock
     """
-    global _ocr_instance
-    if _ocr_instance is None:
-        logger.info("Inicializando instancia de OCR (PaddleOCR)...")
-        _ocr_instance = Img2TableOCR(lang="pt")
-        logger.info("Instancia de OCR criada e cacheada")
-    else:
-        logger.debug("Reutilizando instancia de OCR cacheada")
-    return _ocr_instance
+    global _ocr_instance, _ocr_last_used
+    
+    with _ocr_lock:
+        if _ocr_instance is None:
+            logger.info("🚀 Inicializando PaddleOCR OTIMIZADO (baixa memória)...")
+            
+            # CONFIGURAÇÃO OTIMIZADA:
+            # - enable_mkldnn=False: desabilita Intel MKL-DNN (~150MB economia)
+            # - use_angle_cls=False: desabilita classificação de ângulo (~100MB economia)
+            # - rec_batch_num=1: processa 1 linha por vez (menos memória)
+            # - use_gpu=False: garante uso de CPU apenas
+            # - show_log=False: reduz overhead de logging
+            
+            _ocr_instance = Img2TableOCR(
+                lang="pt",
+                enable_mkldnn=False,      # Desabilita Intel MKL-DNN
+                use_angle_cls=False,      # Desabilita classificação de ângulo
+                rec_batch_num=1,          # Batch size = 1 (menos memória)
+                use_gpu=False,            # CPU apenas
+                show_log=False            # Reduz overhead
+            )
+            logger.info("✅ PaddleOCR inicializado (modo baixa memória)")
+        else:
+            logger.debug("♻️  Reutilizando instância OCR cacheada")
+        
+        # Atualizar timestamp de último uso
+        _ocr_last_used = time.time()
+        
+        # Agendar descarregamento automático
+        _schedule_ocr_unload()
+        
+        return _ocr_instance
 
 app = Flask(__name__)
 
@@ -103,6 +169,11 @@ def after_request(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'DENY'
     response.headers['X-XSS-Protection'] = '1; mode=block'
+    
+    # OTIMIZAÇÃO: Garbage collection agressivo após cada request
+    # Libera memória de objetos temporários (PDFs, imagens, DataFrames)
+    gc.collect()
+    
     return response
 
 
@@ -156,13 +227,14 @@ def process_pdf():
         if file.filename == '' or not file.filename.lower().endswith('.pdf'):
             return jsonify({"error": "Arquivo deve ser PDF"}), 400
         
-        # Validar tamanho
+        # Validar tamanho (reduzido para economizar memória)
         file.seek(0, 2)
         file_size = file.tell()
         file.seek(0)
         
-        if file_size > 50 * 1024 * 1024:
-            return jsonify({"error": f"Arquivo muito grande. Máximo: 50MB"}), 400
+        MAX_FILE_SIZE = 20 * 1024 * 1024  # 20MB (reduzido de 50MB)
+        if file_size > MAX_FILE_SIZE:
+            return jsonify({"error": f"Arquivo muito grande. Máximo: 20MB"}), 400
         
         # Anonimizar nome do arquivo nos logs por segurança
         import hashlib

@@ -15,8 +15,9 @@ source venv/bin/activate
 # Instalar dependências
 pip install -r requirements.txt
 
-# Iniciar servidor
+# Iniciar servidor com Gunicorn (modo baixa memória)
 echo "✅ Dependências instaladas"
-echo "🌐 Iniciando servidor em http://localhost:5000"
-python pdf_ocr_api.py
+echo "🌐 Iniciando servidor Gunicorn em http://localhost:5003"
+echo "⚡ Modo: 1 worker + 2 threads (baixa memória)"
+gunicorn --config gunicorn_conf.py pdf_ocr_api:app
 
