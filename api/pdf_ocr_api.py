@@ -112,24 +112,17 @@ def get_ocr():
     
     with _ocr_lock:
         if _ocr_instance is None:
-            logger.info("🚀 Inicializando PaddleOCR OTIMIZADO (baixa memória)...")
+            logger.info("🚀 Inicializando PaddleOCR com lazy loading...")
             
-            # CONFIGURAÇÃO OTIMIZADA:
-            # - enable_mkldnn=False: desabilita Intel MKL-DNN (~150MB economia)
-            # - use_angle_cls=False: desabilita classificação de ângulo (~100MB economia)
-            # - rec_batch_num=1: processa 1 linha por vez (menos memória)
-            # - use_gpu=False: garante uso de CPU apenas
-            # - show_log=False: reduz overhead de logging
+            # NOTA: Img2TableOCR é um wrapper que aceita apenas parâmetros básicos
+            # Otimizações de memória vêm de:
+            # - Lazy loading (carrega sob demanda)
+            # - Auto-unload após 5min inatividade
+            # - 1 worker + threads (não duplica memória)
+            # - Garbage collection agressivo
             
-            _ocr_instance = Img2TableOCR(
-                lang="pt",
-                enable_mkldnn=False,      # Desabilita Intel MKL-DNN
-                use_angle_cls=False,      # Desabilita classificação de ângulo
-                rec_batch_num=1,          # Batch size = 1 (menos memória)
-                use_gpu=False,            # CPU apenas
-                show_log=False            # Reduz overhead
-            )
-            logger.info("✅ PaddleOCR inicializado (modo baixa memória)")
+            _ocr_instance = Img2TableOCR(lang="pt")
+            logger.info("✅ PaddleOCR inicializado com lazy loading")
         else:
             logger.debug("♻️  Reutilizando instância OCR cacheada")
         
