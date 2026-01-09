@@ -1,5 +1,6 @@
 # Dockerfile para API OCR com Ghostscript
-FROM python:3.13-slim
+# Python 3.11 é mais estável com PaddlePaddle no ARM64
+FROM python:3.11-slim
 
 # Instalar dependências do sistema (incluindo Ghostscript)
 RUN apt-get update && apt-get install -y \
@@ -10,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libxrender1 \
     libgomp1 \
+    wget \
     && rm -rf /var/lib/apt/lists/*
 
 # Definir diretório de trabalho
@@ -35,7 +37,14 @@ ENV PORT=8080 \
     OPENCV_HEADLESS=1 \
     OPENCV_AVOID_OPENGL=1 \
     OPENCV_SKIP_OPENCL=1 \
-    DISPLAY=:99
+    DISPLAY=:99 \
+    PADDLE_DISABLE_SIGNAL_HANDLER=1 \
+    FLAGS_use_mkldnn=0 \
+    FLAGS_use_cudnn=0 \
+    OMP_NUM_THREADS=2 \
+    OPENBLAS_NUM_THREADS=2 \
+    MKL_NUM_THREADS=2 \
+    DISABLE_MODEL_SOURCE_CHECK=True
 
 # Expor porta
 EXPOSE 8080

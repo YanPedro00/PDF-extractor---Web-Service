@@ -1,38 +1,34 @@
 #!/usr/bin/env python3
 """
-Configuração do Gunicorn OTIMIZADA para baixo consumo de memória
+Configuração do Gunicorn para VM com recursos abundantes
 
 ESTRATÉGIA:
-- 1 worker (processo) ao invés de múltiplos
-- 2-4 threads por worker (compartilham memória)
-- Reduz duplicação de memória em ~60-70%
+- 3 workers (processos) para aproveitar 4 OCPUs
+- 4 threads por worker para processamento paralelo
+- Com 24GB RAM, memória não é limitação
 
-COMPARAÇÃO:
-- ANTES: 4 workers × 1.5GB = 6GB total
-- DEPOIS: 1 worker × 1.5GB = 1.5GB total (4 threads compartilham)
+RECURSOS:
+- VM: 4 OCPUs, 24GB RAM
+- Workers: 3 × ~1.5GB = ~4.5GB
+- Threads: 4 por worker = 12 conexões simultâneas
 """
 import os
 import multiprocessing
 
-# Porta (Railway usa PORT env var)
+# Porta
 port = os.environ.get('PORT', '8080')
 bind = f"0.0.0.0:{port}"
 
 # ============================================================================
-# OTIMIZAÇÃO DE MEMÓRIA: 1 WORKER + MÚLTIPLAS THREADS
+# CONFIGURAÇÃO PARA ALTA PERFORMANCE
 # ============================================================================
 # 
-# Workers = processos separados (cada um com cópia completa da memória)
-# Threads = threads dentro do mesmo processo (compartilham memória)
+# VM tem 4 OCPUs e 24GB RAM - podemos usar mais recursos!
 #
-# 1 worker + 4 threads usa ~1.5GB
-# 4 workers + 1 thread usa ~6GB
-#
-workers = 1  # APENAS 1 processo (economiza memória)
+workers = 3  # 3 processos (deixa 1 OCPU livre pro sistema)
 
-# Threads por worker (compartilham memória do processo)
-# Railway: 2-4 threads é suficiente para tráfego moderado
-threads = 2  # 2 threads compartilham os 1.5GB do worker
+# Threads por worker (processamento paralelo)
+threads = 4  # 4 threads × 3 workers = 12 conexões simultâneas
 
 # Worker class: sync com threads
 worker_class = 'gthread'  # Gunicorn com threads
@@ -85,14 +81,14 @@ worker_tmp_dir = '/dev/shm' if os.path.exists('/dev/shm') else None
 def on_starting(server):
     """Callback quando servidor inicia"""
     print("=" * 70)
-    print("🚀 INICIANDO API OCR COM GUNICORN (MODO BAIXA MEMÓRIA)")
+    print("🚀 INICIANDO API OCR COM GUNICORN (MODO ALTA PERFORMANCE)")
     print("=" * 70)
     print(f"📍 Bind: {bind}")
     print(f"👷 Workers: {workers} (processos)")
     print(f"🧵 Threads: {threads} por worker")
-    print(f"💾 Memória esperada: ~1.5GB total")
-    print(f"⚡ Lazy loading OCR: Ativo (carrega sob demanda)")
-    print(f"🔄 Auto-unload OCR: Ativo (libera após 5min inatividade)")
+    print(f"⚡ Capacidade: {workers * threads} conexões simultâneas")
+    print(f"💾 Memória esperada: ~{workers * 1.5:.1f}GB total")
+    print(f"🖥️  VM: 4 OCPUs, 24GB RAM (ARM64)")
     print("=" * 70)
 
 def on_exit(server):

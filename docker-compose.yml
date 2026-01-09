@@ -47,6 +47,13 @@ services:
       - OPENCV_AVOID_OPENGL=1
       - OPENCV_SKIP_OPENCL=1
       - DISPLAY=:99
+      - PADDLE_DISABLE_SIGNAL_HANDLER=1
+      - FLAGS_use_mkldnn=0
+      - FLAGS_use_cudnn=0
+      - OMP_NUM_THREADS=2
+      - OPENBLAS_NUM_THREADS=2
+      - MKL_NUM_THREADS=2
+      - DISABLE_MODEL_SOURCE_CHECK=True
     networks:
       - app-network
     healthcheck:
