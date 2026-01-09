@@ -13,14 +13,63 @@ services:
     environment:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
-      # Variáveis de ambiente para APIs (apontando para Railway por enquanto)
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-https://pdf-ocr-api-production.up.railway.app}
-      - NEXT_PUBLIC_TIFF_API_URL=${NEXT_PUBLIC_TIFF_API_URL:-https://tiff-to-pdf-api-production.up.railway.app}
-      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      # Variáveis de ambiente para APIs (agora apontando para serviços locais via Nginx)
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://129.80.198.250/api}
+      - NEXT_PUBLIC_TIFF_API_URL=${NEXT_PUBLIC_TIFF_API_URL:-http://129.80.198.250/tiff-api}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-http://129.80.198.250}
+    networks:
+      - app-network
+    depends_on:
+      - ocr-api
+      - tiff-api
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # API OCR (Flask)
+  ocr-api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: pdf-utilities-ocr-api
+    restart: unless-stopped
+    expose:
+      - "8080"
+    environment:
+      - PORT=8080
+      - OPENCV_IO_ENABLE_OPENEXR=0
+      - QT_QPA_PLATFORM=offscreen
+      - OPENCV_HEADLESS=1
+      - OPENCV_AVOID_OPENGL=1
+      - OPENCV_SKIP_OPENCL=1
+      - DISPLAY=:99
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # API TIFF to PDF (FastAPI)
+  tiff-api:
+    build:
+      context: ./tiff-to-pdf-api
+      dockerfile: Dockerfile
+    container_name: pdf-utilities-tiff-api
+    restart: unless-stopped
+    expose:
+      - "8001"
+    environment:
+      - PORT=8001
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8001/health"]
       interval: 30s
       timeout: 10s
       retries: 3
