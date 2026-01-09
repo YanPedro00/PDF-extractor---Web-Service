@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # Serviço Next.js (Web App)
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pdf-utilities-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      # Variáveis de ambiente para APIs (apontando para Railway por enquanto)
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-https://pdf-ocr-api-production.up.railway.app}
+      - NEXT_PUBLIC_TIFF_API_URL=${NEXT_PUBLIC_TIFF_API_URL:-https://tiff-to-pdf-api-production.up.railway.app}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Nginx como Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: pdf-utilities-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro  # Para certificados SSL (opcional)
+    depends_on:
+      - web
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  app-network:
+    driver: bridge
+
