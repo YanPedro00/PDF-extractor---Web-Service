@@ -15,7 +15,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Diretório do projeto
-PROJECT_DIR="/home/opc/pdf-utilities"
+PROJECT_DIR="/home/ubuntu/pdf-utilities"
 BRANCH="oracle-oci-deploy"
 
 echo -e "${BLUE}========================================${NC}"
