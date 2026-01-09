@@ -14,6 +14,7 @@ services:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
       # Variáveis de ambiente para APIs (agora apontando para serviços locais via Nginx)
+      - NEXT_PUBLIC_OCR_API_URL=${NEXT_PUBLIC_OCR_API_URL:-http://129.80.198.250/api}
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://129.80.198.250/api}
       - NEXT_PUBLIC_TIFF_API_URL=${NEXT_PUBLIC_TIFF_API_URL:-http://129.80.198.250/tiff-api}
       - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-http://129.80.198.250}
