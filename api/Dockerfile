@@ -1,6 +1,7 @@
 # Dockerfile para API OCR com Ghostscript
-# Python 3.11 é mais estável com PaddlePaddle no ARM64
-FROM python:3.11-slim
+# FORÇAR x86_64/AMD64 (PaddleOCR não funciona em ARM64 nativo)
+# Railway usa x86_64, aqui emulamos no ARM64 via QEMU
+FROM --platform=linux/amd64 python:3.13-slim
 
 # Instalar dependências do sistema (incluindo Ghostscript)
 RUN apt-get update && apt-get install -y \

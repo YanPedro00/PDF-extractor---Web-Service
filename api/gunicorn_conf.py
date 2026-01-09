@@ -3,14 +3,14 @@
 Configuração do Gunicorn para VM com recursos abundantes
 
 ESTRATÉGIA:
-- 3 workers (processos) para aproveitar 4 OCPUs
+- 4 workers (processos) para aproveitar 4 OCPUs
 - 4 threads por worker para processamento paralelo
 - Com 24GB RAM, memória não é limitação
 
 RECURSOS:
 - VM: 4 OCPUs, 24GB RAM
-- Workers: 3 × ~1.5GB = ~4.5GB
-- Threads: 4 por worker = 12 conexões simultâneas
+- Workers: 4 × ~1.5GB = ~6GB
+- Threads: 4 por worker = 16 conexões simultâneas
 """
 import os
 import multiprocessing
@@ -23,12 +23,12 @@ bind = f"0.0.0.0:{port}"
 # CONFIGURAÇÃO PARA ALTA PERFORMANCE
 # ============================================================================
 # 
-# VM tem 4 OCPUs e 24GB RAM - podemos usar mais recursos!
+# VM tem 4 OCPUs e 24GB RAM - podemos usar todos os recursos!
 #
-workers = 3  # 3 processos (deixa 1 OCPU livre pro sistema)
+workers = 4  # 4 processos = 1 por OCPU
 
 # Threads por worker (processamento paralelo)
-threads = 4  # 4 threads × 3 workers = 12 conexões simultâneas
+threads = 4  # 4 threads × 4 workers = 16 conexões simultâneas
 
 # Worker class: sync com threads
 worker_class = 'gthread'  # Gunicorn com threads
@@ -88,7 +88,8 @@ def on_starting(server):
     print(f"🧵 Threads: {threads} por worker")
     print(f"⚡ Capacidade: {workers * threads} conexões simultâneas")
     print(f"💾 Memória esperada: ~{workers * 1.5:.1f}GB total")
-    print(f"🖥️  VM: 4 OCPUs, 24GB RAM (ARM64)")
+    print(f"🖥️  VM: 4 OCPUs, 24GB RAM")
+    print(f"🔧 Arquitetura: x86_64 emulado (QEMU) no ARM64")
     print("=" * 70)
 
 def on_exit(server):
