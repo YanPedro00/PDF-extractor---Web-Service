@@ -23,14 +23,14 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Instalar EasyOCR + dependências
-# opencv-contrib-python: OpenCV com módulos extras (ximgproc, etc)
-# img2table[easyocr]: Instala easyocr, torch, torchvision
-# EasyOCR usa PyTorch (100% compatível ARM64, zero segfaults)
+# IMPORTANTE: opencv-contrib-python DEPOIS do img2table para não ser sobrescrito
+# img2table[easyocr] instala opencv-python, então forçamos reinstall do contrib
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir opencv-contrib-python && \
     pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir img2table[easyocr]>=1.4.2 && \
-    pip install --no-cache-dir easyocr>=1.7.0
+    pip install --no-cache-dir easyocr>=1.7.0 && \
+    pip uninstall -y opencv-python opencv-python-headless && \
+    pip install --no-cache-dir opencv-contrib-python
 
 # Copiar código da aplicação
 COPY . .
