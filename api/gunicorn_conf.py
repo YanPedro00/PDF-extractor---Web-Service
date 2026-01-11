@@ -91,7 +91,7 @@ def on_starting(server):
     print(f"🖥️  VM: 4 OCPUs ARM64, 24GB RAM")
     print(f"🔧 Arquitetura: ARM64 nativo (SEM emulação)")
     print(f"🐍 Python: 3.11 (estável ARM64)")
-    print(f"📚 OCR: PaddlePaddle 2.6.2 + PaddleOCR")
+    print(f"📚 OCR: PaddlePaddle 3.2.2 + PaddleOCR")
     print(f"✨ Qualidade: 95-98% (superior a Tesseract)")
     print("=" * 70)
 

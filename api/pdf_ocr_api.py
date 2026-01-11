@@ -652,7 +652,7 @@ if __name__ == '__main__':
     logger.info(f"Endpoint Compressao: http://0.0.0.0:{port}/compress-pdf")
     logger.info(f"Health: http://0.0.0.0:{port}/health")
     logger.info("Engine: img2table + PaddleOCR (ARM64 nativo)")
-    logger.info("Versao: Python 3.11 + PaddlePaddle 2.6.2")
+    logger.info("Versao: Python 3.11 + PaddlePaddle 3.2.2")
     logger.info("Otimizacao: Cache de OCR ativado (Singleton Pattern)")
     logger.info("="*60)
     
