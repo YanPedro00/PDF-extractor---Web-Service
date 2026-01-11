@@ -44,7 +44,16 @@ ENV PORT=8080 \
     OPENCV_SKIP_OPENCL=1 \
     DISPLAY=:99 \
     OMP_NUM_THREADS=4 \
-    PYTORCH_ENABLE_MPS_FALLBACK=1
+    PYTORCH_ENABLE_MPS_FALLBACK=1 \
+    TORCH_DEVICE=cpu \
+    CUDA_VISIBLE_DEVICES=""
+
+# PRÉ-DOWNLOAD DOS MODELOS SURYA (~1.5GB)
+# Baixa durante build para evitar delay na primeira execução
+# Economiza 2-3 minutos no primeiro request
+RUN echo "📦 Baixando modelos Surya OCR..." && \
+    python3 download_surya_models.py && \
+    echo "✅ Modelos cached na imagem Docker!"
 
 # Expor porta
 EXPOSE 8080
