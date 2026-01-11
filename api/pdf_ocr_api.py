@@ -54,8 +54,8 @@ except ImportError as e:
 
 try:
     from img2table.document import PDF as Img2TablePDF
-    from img2table.ocr import TesseractOCR as Img2TableOCR
-    logger.info("img2table + Tesseract carregado")
+    from img2table.ocr import PaddleOCR as Img2TableOCR
+    logger.info("img2table + PaddleOCR carregado")
 except ImportError as e:
     logger.critical(f"ERRO CRITICO: img2table nao encontrado: {e}")
     sys.exit(1)
@@ -105,19 +105,20 @@ def get_ocr():
     OTIMIZAÇÕES:
     - Lazy loading: carrega apenas quando necessário
     - Auto-unload: descarrega após 5 minutos de inatividade
-    - Tesseract ARM64 nativo (rápido e estável)
+    - PaddleOCR ARM64 nativo (Python 3.11 + versões corretas)
     - Thread-safe com lock
     """
     global _ocr_instance, _ocr_last_used
     
     with _ocr_lock:
         if _ocr_instance is None:
-            logger.info("🚀 Inicializando Tesseract OCR (ARM64 nativo)...")
+            logger.info("🚀 Inicializando PaddleOCR (ARM64 nativo - Python 3.11)...")
             
-            # TesseractOCR: engine leve, rápido e 100% compatível com ARM64
-            # Configuração para português (por)
-            _ocr_instance = Img2TableOCR(lang="por")
-            logger.info("✅ Tesseract OCR inicializado (ARM64 nativo)")
+            # PaddleOCR com configuração ARM64 otimizada
+            # lang="pt" para português
+            # Img2TableOCR é wrapper simplificado (sem parâmetros avançados)
+            _ocr_instance = Img2TableOCR(lang="pt")
+            logger.info("✅ PaddleOCR inicializado (ARM64 nativo)")
         else:
             logger.debug("♻️  Reutilizando instância OCR cacheada")
         
@@ -645,12 +646,13 @@ def compress_pdf():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5003))
     logger.info("="*60)
-    logger.info("API OCR SIMPLIFICADA - IMG2TABLE + TESSERACT")
+    logger.info("API OCR SIMPLIFICADA - IMG2TABLE + PADDLEOCR")
     logger.info("="*60)
     logger.info(f"Endpoint OCR: http://0.0.0.0:{port}/process-pdf")
     logger.info(f"Endpoint Compressao: http://0.0.0.0:{port}/compress-pdf")
     logger.info(f"Health: http://0.0.0.0:{port}/health")
-    logger.info("Engine: img2table + Tesseract OCR (ARM64 nativo)")
+    logger.info("Engine: img2table + PaddleOCR (ARM64 nativo)")
+    logger.info("Versao: Python 3.11 + PaddlePaddle 2.6.0 + PaddleOCR 2.7.0.3")
     logger.info("Otimizacao: Cache de OCR ativado (Singleton Pattern)")
     logger.info("="*60)
     

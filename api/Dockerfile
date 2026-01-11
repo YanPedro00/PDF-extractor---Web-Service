@@ -1,18 +1,18 @@
-# Dockerfile para API OCR com Ghostscript e Tesseract
-# ARM64 NATIVO - Tesseract é 100% compatível com arquitetura ARM64
-# Build rápido (~5 min vs 40 min do PaddleOCR emulado)
-FROM python:3.13-slim
+# Dockerfile para API OCR com PaddleOCR ARM64 NATIVO
+# Python 3.11 é CRÍTICO - 3.13 tem bugs com PaddlePaddle em ARM64
+# Solução baseada em issues do GitHub e fóruns da comunidade
+FROM python:3.11-slim
 
-# Instalar dependências do sistema (incluindo Ghostscript e Tesseract)
+# Instalar dependências do sistema (incluindo Ghostscript)
+# PaddleOCR requer: OpenCV deps, Ghostscript para compressão
 RUN apt-get update && apt-get install -y \
     ghostscript \
-    tesseract-ocr \
-    tesseract-ocr-por \
     libgl1 \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
     libxrender1 \
+    libgomp1 \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
@@ -22,14 +22,19 @@ WORKDIR /app
 # Copiar requirements
 COPY requirements.txt .
 
-# Instalar dependências Python
+# Instalar dependências Python COM VERSÕES ESPECÍFICAS ARM64
+# PaddlePaddle 2.6.0 é a última versão estável confirmada para ARM64
+# PaddleOCR 2.7.0.3 é compatível com PaddlePaddle 2.6.0
 RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir paddlepaddle==2.6.0 && \
+    pip install --no-cache-dir paddleocr==2.7.0.3 && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copiar código da aplicação
 COPY . .
 
-# Variáveis de ambiente
+# Variáveis de ambiente OTIMIZADAS PARA ARM64
+# Baseado em issues do GitHub e testes da comunidade
 ENV PORT=8080 \
     OPENCV_IO_ENABLE_OPENEXR=0 \
     QT_QPA_PLATFORM=offscreen \
@@ -37,8 +42,15 @@ ENV PORT=8080 \
     OPENCV_AVOID_OPENGL=1 \
     OPENCV_SKIP_OPENCL=1 \
     DISPLAY=:99 \
-    TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata \
-    OMP_NUM_THREADS=4
+    PADDLE_DISABLE_SIGNAL_HANDLER=1 \
+    FLAGS_use_mkldnn=0 \
+    FLAGS_use_cudnn=0 \
+    FLAGS_fraction_of_gpu_memory_to_use=0.1 \
+    OPENBLAS_CORETYPE=ARMV8 \
+    OMP_NUM_THREADS=4 \
+    OPENBLAS_NUM_THREADS=4 \
+    MKL_NUM_THREADS=1 \
+    DISABLE_MODEL_SOURCE_CHECK=True
 
 # Expor porta
 EXPOSE 8080

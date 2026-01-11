@@ -13,11 +13,12 @@ Pillow>=10.0.0
 
 # PDF e OCR
 PyMuPDF>=1.23.0
-img2table[tesseract]>=1.4.2
-pytesseract>=0.3.10
+img2table>=1.4.2
 
-# Nota: img2table[tesseract] automaticamente instala:
-# - pytesseract
-# - opencv-python
-# - pillow
-# O [tesseract] garante compatibilidade com Tesseract OCR (ARM64 nativo)
+# NOTA IMPORTANTE:
+# PaddlePaddle e PaddleOCR são instalados com VERSÕES FIXAS no Dockerfile
+# para garantir compatibilidade ARM64:
+# - paddlepaddle==2.6.0 (última versão estável ARM64)
+# - paddleocr==2.7.0.3 (compatível com 2.6.0)
+# 
+# NÃO adicionar aqui para evitar conflitos de versão!
