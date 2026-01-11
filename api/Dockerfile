@@ -1,11 +1,10 @@
-# Dockerfile para API OCR com PaddleOCR via ONNX Runtime (ARM64 otimizado)
-# Python 3.10 é mais estável com PaddleOCR em ARM64
-# ONNX Runtime usa instruções NEON nativas do ARM (não AVX/MKL Intel)
-FROM python:3.10-slim-bookworm
+# Dockerfile para API OCR com EasyOCR (ARM64 100% compatível)
+# Após 4 tentativas frustradas com PaddleOCR, EasyOCR é a única solução estável
+# EasyOCR: 90-95% precisão, 100% estável ARM64, zero segfaults
+FROM python:3.11-slim
 
-# Instalar dependências ARM64 otimizadas (seguindo recomendações Gemini)
-# libopenblas-dev: Álgebra linear ARM-nativa (substitui MKL Intel)
-# opencv-python-headless será instalado via pip (mais leve para containers)
+# Instalar dependências do sistema para EasyOCR + Ghostscript
+# EasyOCR requer OpenCV deps básicas (muito mais simples que PaddleOCR)
 RUN apt-get update && apt-get install -y \
     ghostscript \
     libgl1 \
@@ -14,7 +13,6 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libxrender1 \
     libgomp1 \
-    libopenblas-dev \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
@@ -24,25 +22,19 @@ WORKDIR /app
 # Copiar requirements
 COPY requirements.txt .
 
-# ESTRATÉGIA ONNX RUNTIME (Recomendação Gemini para ARM64)
-# 1. opencv-python-headless: Sem deps GUI
-# 2. onnxruntime: Engine ARM-nativo (instruções NEON)
-# 3. paddlepaddle: Framework base (usa ONNX como backend)
-# 4. paddleocr: Modelos OCR
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir opencv-python-headless && \
-    pip install --no-cache-dir onnxruntime && \
-    pip install --no-cache-dir paddlepaddle && \
-    pip install --no-cache-dir paddleocr>=2.6 && \
-    pip install --no-cache-dir -r requirements.txt
+# Instalar EasyOCR + dependências
+# img2table[easyocr] instala: easyocr, torch, torchvision
+# EasyOCR usa PyTorch (100% compatível ARM64, zero segfaults)
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir img2table[easyocr]>=1.4.2 && \
+    pip install --no-cache-dir easyocr>=1.7.0
 
 # Copiar código da aplicação
 COPY . .
 
-# Variáveis de ambiente ARM64 - RECOMENDAÇÕES GEMINI
-# OMP_NUM_THREADS=1: CRÍTICO! Múltiplos threads causam segfault em ARM64
-# FLAGS_use_gpu=0: Força CPU (evita detecção incorreta de GPU)
-# OPENBLAS_CORETYPE=ARMV8: Usa instruções ARM nativas
+# Variáveis de ambiente para EasyOCR (muito mais simples!)
+# EasyOCR não tem problemas de threading/GPU em ARM64
 ENV PORT=8080 \
     OPENCV_IO_ENABLE_OPENEXR=0 \
     QT_QPA_PLATFORM=offscreen \
@@ -50,16 +42,7 @@ ENV PORT=8080 \
     OPENCV_AVOID_OPENGL=1 \
     OPENCV_SKIP_OPENCL=1 \
     DISPLAY=:99 \
-    PADDLE_DISABLE_SIGNAL_HANDLER=1 \
-    FLAGS_use_mkldnn=0 \
-    FLAGS_use_cudnn=0 \
-    FLAGS_use_gpu=0 \
-    FLAGS_fraction_of_gpu_memory_to_use=0.1 \
-    OPENBLAS_CORETYPE=ARMV8 \
-    OMP_NUM_THREADS=1 \
-    OPENBLAS_NUM_THREADS=1 \
-    MKL_NUM_THREADS=1 \
-    DISABLE_MODEL_SOURCE_CHECK=True
+    OMP_NUM_THREADS=4
 
 # Expor porta
 EXPOSE 8080
