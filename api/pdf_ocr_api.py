@@ -54,8 +54,9 @@ except ImportError as e:
 
 try:
     from img2table.document import PDF as Img2TablePDF
-    from img2table.ocr import SuryaOCR as Img2TableOCR
-    logger.info("img2table + Surya OCR carregado")
+    # Importar FixedSuryaOCR (wrapper corrigido para Surya 0.17.0)
+    from FixedSuryaOCR import FixedSuryaOCR as Img2TableOCR
+    logger.info("img2table + FixedSuryaOCR carregado")
 except ImportError as e:
     logger.critical(f"ERRO CRITICO: img2table ou Surya nao encontrado: {e}")
     sys.exit(1)
@@ -117,12 +118,13 @@ def get_ocr():
         if _ocr_instance is None:
             logger.info("🚀 Inicializando Surya OCR (especializado em documentos)...")
             
-            # Surya OCR requer langs como LISTA (não pode ser None)
+            # FixedSuryaOCR - Wrapper corrigido para Surya 0.17.0
             # PyTorch backend + especializado em layout de documentos
             # NOTA: Na primeira execução, baixa modelos (~500MB-1GB)
-            # Suporta português (pt) + inglês (en) para documentos mistos
+            # Surya 0.17.0 faz AUTO-DETECÇÃO de idiomas (não precisa especificar)
+            # Parâmetro langs é aceito mas ignorado (compatibilidade com img2table)
             _ocr_instance = Img2TableOCR(langs=["pt", "en"])
-            logger.info("✅ Surya OCR inicializado (ARM64 nativo, PT+EN)")
+            logger.info("✅ Surya OCR inicializado (ARM64 nativo, auto-detect idiomas)")
         else:
             logger.debug("♻️  Reutilizando instância OCR cacheada")
         
