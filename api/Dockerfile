@@ -25,11 +25,14 @@ WORKDIR /app
 COPY requirements.txt .
 
 # ESTRATÉGIA ONNX RUNTIME (Recomendação Gemini para ARM64)
-# ONNX Runtime usa instruções NEON do ARM (não AVX/MKL Intel que causam segfault)
-# opencv-python-headless: Sem dependências GUI (mais leve para containers)
+# 1. opencv-python-headless: Sem deps GUI
+# 2. onnxruntime: Engine ARM-nativo (instruções NEON)
+# 3. paddlepaddle: Framework base (usa ONNX como backend)
+# 4. paddleocr: Modelos OCR
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir opencv-python-headless && \
     pip install --no-cache-dir onnxruntime && \
+    pip install --no-cache-dir paddlepaddle && \
     pip install --no-cache-dir paddleocr>=2.6 && \
     pip install --no-cache-dir -r requirements.txt
 

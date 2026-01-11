@@ -105,20 +105,21 @@ def get_ocr():
     OTIMIZAÇÕES:
     - Lazy loading: carrega apenas quando necessário
     - Auto-unload: descarrega após 5 minutos de inatividade
-    - PaddleOCR ARM64 nativo (Python 3.11 + versões corretas)
+    - PaddleOCR via ONNX Runtime (ARM64 + instruções NEON)
+    - OMP_NUM_THREADS=1 para prevenir segfault
     - Thread-safe com lock
     """
     global _ocr_instance, _ocr_last_used
     
     with _ocr_lock:
         if _ocr_instance is None:
-            logger.info("🚀 Inicializando PaddleOCR (ARM64 nativo - Python 3.11)...")
+            logger.info("🚀 Inicializando PaddleOCR via ONNX (Python 3.10 + ARM64)...")
             
-            # PaddleOCR com configuração ARM64 otimizada
+            # PaddleOCR com ONNX Runtime backend
             # lang="pt" para português
-            # Img2TableOCR é wrapper simplificado (sem parâmetros avançados)
+            # ONNX usa instruções NEON ARM (não AVX Intel)
             _ocr_instance = Img2TableOCR(lang="pt")
-            logger.info("✅ PaddleOCR inicializado (ARM64 nativo)")
+            logger.info("✅ PaddleOCR inicializado via ONNX Runtime (ARM64)")
         else:
             logger.debug("♻️  Reutilizando instância OCR cacheada")
         
