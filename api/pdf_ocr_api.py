@@ -117,11 +117,12 @@ def get_ocr():
         if _ocr_instance is None:
             logger.info("🚀 Inicializando Surya OCR (especializado em documentos)...")
             
-            # Surya OCR com suporte português
+            # Surya OCR - API diferente, sem parâmetro de idioma na inicialização
             # PyTorch backend + especializado em layout de documentos
             # NOTA: Na primeira execução, baixa modelos (~500MB-1GB)
-            _ocr_instance = Img2TableOCR(langs=["pt"])
-            logger.info("✅ Surya OCR inicializado (ARM64 nativo, especializado em layout)")
+            # Surya detecta idiomas automaticamente (multilíngue)
+            _ocr_instance = Img2TableOCR()
+            logger.info("✅ Surya OCR inicializado (ARM64 nativo, detecção automática de idiomas)")
         else:
             logger.debug("♻️  Reutilizando instância OCR cacheada")
         
