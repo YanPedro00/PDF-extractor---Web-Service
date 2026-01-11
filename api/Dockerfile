@@ -23,11 +23,11 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Instalar dependências Python COM VERSÕES ESPECÍFICAS ARM64
-# PaddlePaddle 2.6.0 é a última versão estável confirmada para ARM64
-# PaddleOCR 2.7.0.3 é compatível com PaddlePaddle 2.6.0
+# PaddlePaddle 2.6.2 é a versão disponível mais estável para ARM64
+# Deixar PaddleOCR sem versão fixa para compatibilidade automática
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir paddlepaddle==2.6.0 && \
-    pip install --no-cache-dir paddleocr==2.7.0.3 && \
+    pip install --no-cache-dir paddlepaddle==2.6.2 && \
+    pip install --no-cache-dir paddleocr && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copiar código da aplicação
