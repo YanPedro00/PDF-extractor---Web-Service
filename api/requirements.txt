@@ -13,11 +13,11 @@ Pillow>=10.0.0
 
 # PDF e OCR
 PyMuPDF>=1.23.0
-img2table[paddle]>=1.4.2
+img2table[tesseract]>=1.4.2
+pytesseract>=0.3.10
 
-# Nota: img2table[paddle] automaticamente instala:
-# - paddleocr
-# - paddlepaddle
+# Nota: img2table[tesseract] automaticamente instala:
+# - pytesseract
 # - opencv-python
 # - pillow
-# O [paddle] garante que todas as dependências do PaddleOCR sejam instaladas
+# O [tesseract] garante compatibilidade com Tesseract OCR (ARM64 nativo)

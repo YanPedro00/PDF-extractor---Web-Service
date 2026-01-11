@@ -81,15 +81,16 @@ worker_tmp_dir = '/dev/shm' if os.path.exists('/dev/shm') else None
 def on_starting(server):
     """Callback quando servidor inicia"""
     print("=" * 70)
-    print("🚀 INICIANDO API OCR COM GUNICORN (MODO ALTA PERFORMANCE)")
+    print("🚀 INICIANDO API OCR COM GUNICORN (TESSERACT ARM64 NATIVO)")
     print("=" * 70)
     print(f"📍 Bind: {bind}")
     print(f"👷 Workers: {workers} (processos)")
     print(f"🧵 Threads: {threads} por worker")
     print(f"⚡ Capacidade: {workers * threads} conexões simultâneas")
-    print(f"💾 Memória esperada: ~{workers * 1.5:.1f}GB total")
-    print(f"🖥️  VM: 4 OCPUs, 24GB RAM")
-    print(f"🔧 Arquitetura: x86_64 emulado (QEMU) no ARM64")
+    print(f"💾 Memória esperada: ~{workers * 0.5:.1f}GB total (Tesseract é leve!)")
+    print(f"🖥️  VM: 4 OCPUs ARM64, 24GB RAM")
+    print(f"🔧 Arquitetura: ARM64 nativo (sem emulação)")
+    print(f"📚 OCR Engine: Tesseract (rápido e estável)")
     print("=" * 70)
 
 def on_exit(server):

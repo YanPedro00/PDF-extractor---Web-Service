@@ -1,4 +1,4 @@
-version: '3.8'
+# Docker Compose para PDF Utilities (ARM64 otimizado com Tesseract)
 
 services:
   # Serviço Next.js (Web App)
@@ -30,7 +30,7 @@ services:
       retries: 3
       start_period: 40s
 
-  # API OCR (Flask)
+  # API OCR (Flask) - Tesseract ARM64 nativo
   ocr-api:
     build:
       context: ./api
@@ -47,13 +47,8 @@ services:
       - OPENCV_AVOID_OPENGL=1
       - OPENCV_SKIP_OPENCL=1
       - DISPLAY=:99
-      - PADDLE_DISABLE_SIGNAL_HANDLER=1
-      - FLAGS_use_mkldnn=0
-      - FLAGS_use_cudnn=0
-      - OMP_NUM_THREADS=2
-      - OPENBLAS_NUM_THREADS=2
-      - MKL_NUM_THREADS=2
-      - DISABLE_MODEL_SOURCE_CHECK=True
+      - TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata
+      - OMP_NUM_THREADS=4
     networks:
       - app-network
     healthcheck:
