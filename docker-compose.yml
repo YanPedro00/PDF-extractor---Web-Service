@@ -30,13 +30,14 @@ services:
       retries: 3
       start_period: 40s
 
-  # API OCR (Flask) - PaddleOCR ARM64 nativo
+  # API OCR (Flask) - PaddleOCR via ONNX Runtime (ARM64 otimizado)
   ocr-api:
     build:
       context: ./api
       dockerfile: Dockerfile
     container_name: pdf-utilities-ocr-api
     restart: unless-stopped
+    shm_size: '2gb'
     expose:
       - "8080"
     environment:
@@ -50,10 +51,11 @@ services:
       - PADDLE_DISABLE_SIGNAL_HANDLER=1
       - FLAGS_use_mkldnn=0
       - FLAGS_use_cudnn=0
+      - FLAGS_use_gpu=0
       - FLAGS_fraction_of_gpu_memory_to_use=0.1
       - OPENBLAS_CORETYPE=ARMV8
-      - OMP_NUM_THREADS=4
-      - OPENBLAS_NUM_THREADS=4
+      - OMP_NUM_THREADS=1
+      - OPENBLAS_NUM_THREADS=1
       - MKL_NUM_THREADS=1
       - DISABLE_MODEL_SOURCE_CHECK=True
     networks:

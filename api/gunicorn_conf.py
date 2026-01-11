@@ -81,18 +81,19 @@ worker_tmp_dir = '/dev/shm' if os.path.exists('/dev/shm') else None
 def on_starting(server):
     """Callback quando servidor inicia"""
     print("=" * 70)
-    print("🚀 INICIANDO API OCR COM GUNICORN (PADDLEOCR ARM64 NATIVO)")
+    print("🚀 PADDLEOCR VIA ONNX RUNTIME (ESTRATÉGIA GEMINI)")
     print("=" * 70)
     print(f"📍 Bind: {bind}")
     print(f"👷 Workers: {workers} (processos)")
     print(f"🧵 Threads: {threads} por worker")
     print(f"⚡ Capacidade: {workers * threads} conexões simultâneas")
-    print(f"💾 Memória esperada: ~{workers * 1.2:.1f}GB total")
+    print(f"💾 Memória esperada: ~{workers * 1.0:.1f}GB total")
     print(f"🖥️  VM: 4 OCPUs ARM64, 24GB RAM")
-    print(f"🔧 Arquitetura: ARM64 nativo (SEM emulação)")
-    print(f"🐍 Python: 3.11 (estável ARM64)")
-    print(f"📚 OCR: PaddlePaddle 3.2.2 + PaddleOCR")
-    print(f"✨ Qualidade: 95-98% (superior a Tesseract)")
+    print(f"🔧 Arquitetura: ARM64 nativo (ONNX + NEON)")
+    print(f"🐍 Python: 3.10 (estável)")
+    print(f"📚 OCR: PaddleOCR + ONNX Runtime + OpenBLAS ARM")
+    print(f"🔥 OMP_NUM_THREADS=1 (anti-segfault)")
+    print(f"✨ Qualidade: 95-98%")
     print("=" * 70)
 
 def on_exit(server):

@@ -1,10 +1,11 @@
-# Dockerfile para API OCR com PaddleOCR ARM64 NATIVO
-# Python 3.11 é CRÍTICO - 3.13 tem bugs com PaddlePaddle em ARM64
-# Solução baseada em issues do GitHub e fóruns da comunidade
-FROM python:3.11-slim
+# Dockerfile para API OCR com PaddleOCR via ONNX Runtime (ARM64 otimizado)
+# Python 3.10 é mais estável com PaddleOCR em ARM64
+# ONNX Runtime usa instruções NEON nativas do ARM (não AVX/MKL Intel)
+FROM python:3.10-slim-bookworm
 
-# Instalar dependências do sistema (incluindo Ghostscript)
-# PaddleOCR requer: OpenCV deps, Ghostscript para compressão
+# Instalar dependências ARM64 otimizadas (seguindo recomendações Gemini)
+# libopenblas-dev: Álgebra linear ARM-nativa (substitui MKL Intel)
+# opencv-python-headless será instalado via pip (mais leve para containers)
 RUN apt-get update && apt-get install -y \
     ghostscript \
     libgl1 \
@@ -13,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libxrender1 \
     libgomp1 \
+    libopenblas-dev \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
@@ -22,19 +24,22 @@ WORKDIR /app
 # Copiar requirements
 COPY requirements.txt .
 
-# Instalar dependências Python COM VERSÕES RECENTES ARM64
-# PaddlePaddle 3.2.2 é a versão mais recente estável (necessária para PaddleOCR moderno)
-# PaddleOCR requer PaddlePaddle 3.0+ para funcionar corretamente
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir paddlepaddle==3.2.2 && \
-    pip install --no-cache-dir paddleocr && \
+# ESTRATÉGIA ONNX RUNTIME (Recomendação Gemini para ARM64)
+# ONNX Runtime usa instruções NEON do ARM (não AVX/MKL Intel que causam segfault)
+# opencv-python-headless: Sem dependências GUI (mais leve para containers)
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir opencv-python-headless && \
+    pip install --no-cache-dir onnxruntime && \
+    pip install --no-cache-dir paddleocr>=2.6 && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copiar código da aplicação
 COPY . .
 
-# Variáveis de ambiente OTIMIZADAS PARA ARM64
-# Baseado em issues do GitHub e testes da comunidade
+# Variáveis de ambiente ARM64 - RECOMENDAÇÕES GEMINI
+# OMP_NUM_THREADS=1: CRÍTICO! Múltiplos threads causam segfault em ARM64
+# FLAGS_use_gpu=0: Força CPU (evita detecção incorreta de GPU)
+# OPENBLAS_CORETYPE=ARMV8: Usa instruções ARM nativas
 ENV PORT=8080 \
     OPENCV_IO_ENABLE_OPENEXR=0 \
     QT_QPA_PLATFORM=offscreen \
@@ -45,10 +50,11 @@ ENV PORT=8080 \
     PADDLE_DISABLE_SIGNAL_HANDLER=1 \
     FLAGS_use_mkldnn=0 \
     FLAGS_use_cudnn=0 \
+    FLAGS_use_gpu=0 \
     FLAGS_fraction_of_gpu_memory_to_use=0.1 \
     OPENBLAS_CORETYPE=ARMV8 \
-    OMP_NUM_THREADS=4 \
-    OPENBLAS_NUM_THREADS=4 \
+    OMP_NUM_THREADS=1 \
+    OPENBLAS_NUM_THREADS=1 \
     MKL_NUM_THREADS=1 \
     DISABLE_MODEL_SOURCE_CHECK=True
 

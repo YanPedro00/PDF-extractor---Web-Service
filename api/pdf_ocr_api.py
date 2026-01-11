@@ -646,14 +646,14 @@ def compress_pdf():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5003))
     logger.info("="*60)
-    logger.info("API OCR SIMPLIFICADA - IMG2TABLE + PADDLEOCR")
+    logger.info("API OCR - IMG2TABLE + PADDLEOCR VIA ONNX")
     logger.info("="*60)
     logger.info(f"Endpoint OCR: http://0.0.0.0:{port}/process-pdf")
     logger.info(f"Endpoint Compressao: http://0.0.0.0:{port}/compress-pdf")
     logger.info(f"Health: http://0.0.0.0:{port}/health")
-    logger.info("Engine: img2table + PaddleOCR (ARM64 nativo)")
-    logger.info("Versao: Python 3.11 + PaddlePaddle 3.2.2")
-    logger.info("Otimizacao: Cache de OCR ativado (Singleton Pattern)")
+    logger.info("Engine: img2table + PaddleOCR (ONNX Runtime ARM64)")
+    logger.info("Versao: Python 3.10 + ONNX Runtime + OpenBLAS ARM")
+    logger.info("Otimizacao: Cache de OCR ativado + Single-thread ARM64")
     logger.info("="*60)
     
     app.run(host='0.0.0.0', port=port, debug=False)
