@@ -13,7 +13,7 @@ services:
     environment:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
-      # Variáveis de ambiente para APIs (usando subdomínio api sem proxy Cloudflare)
+      # Variáveis de ambiente para APIs (usando subdomínio api com SSL Let's Encrypt)
       - NEXT_PUBLIC_OCR_API_URL=${NEXT_PUBLIC_OCR_API_URL:-https://api.pdf-utilities.com.br/api}
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-https://api.pdf-utilities.com.br/api}
       - NEXT_PUBLIC_TIFF_API_URL=${NEXT_PUBLIC_TIFF_API_URL:-https://api.pdf-utilities.com.br/tiff-api}
