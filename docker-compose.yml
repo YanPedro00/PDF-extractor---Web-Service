@@ -39,8 +39,12 @@ services:
     restart: unless-stopped
     expose:
       - "8080"
+    volumes:
+      # Volume mount para modelos - persiste entre rebuilds
+      - /home/ubuntu/surya-models:/root/.cache/huggingface:rw
     environment:
       - PORT=8080
+      - HF_HOME=/root/.cache/huggingface
       - OPENCV_IO_ENABLE_OPENEXR=0
       - QT_QPA_PLATFORM=offscreen
       - OPENCV_HEADLESS=1

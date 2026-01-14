@@ -62,77 +62,38 @@ except ImportError as e:
     sys.exit(1)
 
 # ============================================================================
-# OTIMIZAÇÃO DE MEMÓRIA: Lazy Loading + Auto-unload do OCR
+# GERENCIAMENTO DE MODELO OCR - Singleton Simples
 # ============================================================================
+# Com 24GB RAM, mantemos modelo sempre carregado para performance consistente
+# Modelos persistem em volume mount (/home/ubuntu/surya-models)
 _ocr_instance = None
-_ocr_last_used = None
 _ocr_lock = threading.Lock()
-_ocr_unload_timer = None
-
-# Tempo de inatividade antes de descarregar OCR (em segundos)
-OCR_UNLOAD_TIMEOUT = 300  # 5 minutos de inatividade
-
-def _unload_ocr():
-    """
-    Descarrega instância OCR para liberar memória (~700MB-1GB).
-    Chamado automaticamente após período de inatividade.
-    """
-    global _ocr_instance, _ocr_last_used
-    with _ocr_lock:
-        if _ocr_instance is not None:
-            current_time = time.time()
-            if _ocr_last_used and (current_time - _ocr_last_used) >= OCR_UNLOAD_TIMEOUT:
-                logger.info("⚡ Descarregando OCR por inatividade (liberando ~700MB-1GB RAM)...")
-                _ocr_instance = None
-                _ocr_last_used = None
-                # Forçar garbage collection agressivo
-                gc.collect()
-                gc.collect()  # Duas vezes para garantir
-                logger.info("✅ OCR descarregado, memória liberada")
-
-def _schedule_ocr_unload():
-    """Agenda descarregamento do OCR após timeout"""
-    global _ocr_unload_timer
-    if _ocr_unload_timer:
-        _ocr_unload_timer.cancel()
-    _ocr_unload_timer = threading.Timer(OCR_UNLOAD_TIMEOUT, _unload_ocr)
-    _ocr_unload_timer.daemon = True
-    _ocr_unload_timer.start()
 
 def get_ocr():
     """
-    Retorna instância singleton de OCR com lazy loading otimizado.
+    Retorna instância singleton de OCR (sempre ativa em RAM).
     
     SURYA OCR - ESPECIALIZADO EM DOCUMENTOS/TABELAS:
-    - Lazy loading: carrega apenas quando necessário
-    - Auto-unload: descarrega após 5 minutos de inatividade
-    - PyTorch nativo ARM64 (mesma base do EasyOCR)
-    - Zero segmentation faults
-    - 95%+ precisão (igual PaddleOCR)
-    - Especializado em LAYOUT de documentos (tabelas, bordas, células)
+    - Carregado no primeiro uso
+    - Permanece em RAM (~1GB) para performance consistente
+    - Modelos salvos em volume da VM (rápido, persiste entre rebuilds)
+    - PyTorch nativo ARM64
+    - 95%+ precisão, especializado em layout de documentos
     - Thread-safe com lock
     """
-    global _ocr_instance, _ocr_last_used
+    global _ocr_instance
     
     with _ocr_lock:
         if _ocr_instance is None:
-            logger.info("🚀 Inicializando Surya OCR (especializado em documentos)...")
+            logger.info("🚀 Carregando Surya OCR na RAM...")
+            logger.info("📁 Modelos carregados do volume: /root/.cache/huggingface")
             
             # FixedSuryaOCR - Wrapper corrigido para Surya 0.17.0
-            # PyTorch backend + especializado em layout de documentos
-            # NOTA: Na primeira execução, baixa modelos (~500MB-1GB)
-            # Surya 0.17.0 faz AUTO-DETECÇÃO de idiomas (não precisa especificar)
-            # Parâmetro langs é aceito mas ignorado (compatibilidade com img2table)
+            # Modelos carregados do volume mount (rápido, já estão baixados)
+            # Auto-detecção de idiomas
             _ocr_instance = Img2TableOCR(langs=["pt", "en"])
-            logger.info("✅ Surya OCR inicializado (ARM64 nativo, auto-detect idiomas)")
-        else:
-            logger.debug("♻️  Reutilizando instância OCR cacheada")
-        
-        # Atualizar timestamp de último uso
-        _ocr_last_used = time.time()
-        
-        # Agendar descarregamento automático
-        _schedule_ocr_unload()
+            
+            logger.info("✅ Surya OCR pronto (permanece em RAM para melhor performance)")
         
         return _ocr_instance
 
@@ -156,10 +117,6 @@ def after_request(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'DENY'
     response.headers['X-XSS-Protection'] = '1; mode=block'
-    
-    # OTIMIZAÇÃO: Garbage collection agressivo após cada request
-    # Libera memória de objetos temporários (PDFs, imagens, DataFrames)
-    gc.collect()
     
     return response
 
@@ -682,15 +639,15 @@ def compress_pdf():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5003))
     logger.info("="*60)
-    logger.info("API OCR - IMG2TABLE + SURYA OCR")
+    logger.info("API OCR - IMG2TABLE + SURYA OCR (OTIMIZADO)")
     logger.info("="*60)
     logger.info(f"Endpoint OCR: http://0.0.0.0:{port}/process-pdf")
     logger.info(f"Endpoint Compressao: http://0.0.0.0:{port}/compress-pdf")
     logger.info(f"Health: http://0.0.0.0:{port}/health")
     logger.info("Engine: img2table + Surya OCR (PyTorch ARM64)")
-    logger.info("Versao: Python 3.11 + PyTorch + Surya")
-    logger.info("Especializacao: Layout de documentos + tabelas")
-    logger.info("Precisao: 95%+ (igual PaddleOCR)")
+    logger.info("Modelos: Volume mount (persiste entre rebuilds)")
+    logger.info("RAM: Modelo sempre ativo (~1GB) para performance consistente")
+    logger.info("Precisao: 95%+")
     logger.info("Estabilidade: 100% (zero segfaults, PyTorch nativo)")
     logger.info("="*60)
     
