@@ -30,7 +30,7 @@ import gc
 import time
 import threading
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+# from flask_cors import CORS  # CORS gerenciado pelo Nginx
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
@@ -138,16 +138,8 @@ def get_ocr():
 
 app = Flask(__name__)
 
-# Configuração de CORS
-# Permitir origens específicas
-CORS(app, resources={
-    r"/*": {
-        "origins": "*",  # Temporário: permitir todas as origens
-        "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type"],
-        "supports_credentials": False
-    }
-})
+# CORS gerenciado pelo Nginx (não configurar aqui para evitar duplicação)
+# O Nginx já adiciona os headers corretos no reverse proxy
 
 # Rate Limiting para prevenir abuso
 limiter = Limiter(
