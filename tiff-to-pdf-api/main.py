@@ -5,7 +5,7 @@ Suporta TIFF single e multi-página
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse, JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.middleware.cors import CORSMiddleware  # CORS gerenciado pelo Nginx
 import io
 import logging
 from PIL import Image
@@ -26,14 +26,8 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configurar CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# CORS gerenciado pelo Nginx (não configurar aqui para evitar duplicação)
+# O Nginx já adiciona os headers corretos no reverse proxy
 
 # Configurações
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
