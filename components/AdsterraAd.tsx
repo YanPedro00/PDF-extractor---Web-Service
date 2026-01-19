@@ -127,7 +127,7 @@ export default function AdsterraAd({
       
       // URL especifica por formato
       if (format === 'native') {
-        script.src = `https://pl28361258.effectivegatecpm.com/${zoneId}/invoke.js`
+        script.src = `https://pl28516146.effectivegatecpm.com/${zoneId}/invoke.js`
       } else if (format === 'iframe') {
         script.src = `https://www.highperformanceformat.com/${zoneId}/invoke.js`
       } else if (format === 'social-bar') {

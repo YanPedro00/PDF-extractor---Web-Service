@@ -136,7 +136,7 @@ export default function JuntarPage() {
             <div className="mb-6 flex justify-center">
               <AdsterraAd
                 key={`ad-${adKey}`} 
-                zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_1 || ''}
+                zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_1 || 'c5c308581c81c52e1c3dd23a5003bbc2'}
                 format="native"
                 className="min-h-[100px] w-full max-w-[728px]"
                 shouldRender={contentReady}
@@ -191,7 +191,7 @@ export default function JuntarPage() {
             <div className="mt-12 sm:mt-16 mb-6 sm:mb-8 flex justify-center px-2">
               <AdsterraAd
                 key={`ad2-${adKey}`}
-                zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_2 || ''}
+                zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_2 || 'af1affa46dfd1faad47dd03560010a2e'}
                 format="iframe"
                 className="min-h-[90px] w-full max-w-[728px]"
                 shouldRender={contentReady}

@@ -261,12 +261,12 @@ Os ads são exibidos de forma responsiva e não prejudicam a experiência do usu
 **Frontend Next.js:**
 ```bash
 # Variáveis de ambiente necessárias:
-NEXT_PUBLIC_ADSTERRA_ZONE_1=xxxxx          # AD1
-NEXT_PUBLIC_ADSTERRA_ZONE_2=xxxxx          # AD2
-NEXT_PUBLIC_ADSTERRA_ZONE_3=xxxxx          # AD3
-NEXT_PUBLIC_ADSTERRA_ZONE_4=xxxxx          # AD4
-NEXT_PUBLIC_SITE_URL=https://pdf-utilities.up.railway.app
-NEXT_PUBLIC_TIFF_API_URL=https://sua-api-tiff.railway.app
+NEXT_PUBLIC_ADSTERRA_ZONE_1=c5c308581c81c52e1c3dd23a5003bbc2  # Native Banner
+NEXT_PUBLIC_ADSTERRA_ZONE_2=af1affa46dfd1faad47dd03560010a2e  # Banner 728x90
+NEXT_PUBLIC_ADSTERRA_ZONE_3=924213682326bfedd01d92b57944caaa  # Sidebar 160x600
+NEXT_PUBLIC_ADSTERRA_ZONE_4=b5c327689ccc6f9ceb052baf673ad19d  # Sidebar 160x300
+NEXT_PUBLIC_SITE_URL=https://pdf-utilities.com.br
+NEXT_PUBLIC_TIFF_API_URL=https://api.pdf-utilities.com.br/tiff-api
 NEXT_PUBLIC_OCR_API_URL=https://sua-api-ocr.railway.app
 ```
 

@@ -17,7 +17,7 @@ export default function PageLayoutWithSidebars({ children }: PageLayoutWithSideb
         <aside className="hidden xl:block flex-shrink-0">
           <StickySidebarAd
             position="left"
-            zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_3 || '5f42fa3205352653220b3168bb8dc406'}
+            zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_3 || '924213682326bfedd01d92b57944caaa'}
             width={160}
             height={600}
           />
@@ -32,7 +32,7 @@ export default function PageLayoutWithSidebars({ children }: PageLayoutWithSideb
         <aside className="hidden xl:block flex-shrink-0">
           <StickySidebarAd
             position="right"
-            zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_4 || '83f3195196d37b08d5c56a8f389d4a30'}
+            zoneId={process.env.NEXT_PUBLIC_ADSTERRA_ZONE_4 || 'b5c327689ccc6f9ceb052baf673ad19d'}
             width={160}
             height={300}
           />
