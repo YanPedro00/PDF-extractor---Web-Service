@@ -1,0 +1,32 @@
+# Modelos (copiar manualmente via SCP)
+translator-model/
+!translator-model/requirements.txt
+!translator-model/README.md
+
+# Credenciais Google Cloud
+credentials/google_credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+*.egg-info/
+
+# Arquivos temporários
+temp/
+output/
+*.pdf
+*.json.tmp
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+

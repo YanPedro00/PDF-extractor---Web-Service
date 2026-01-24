@@ -1,133 +1,149 @@
-'use client'
+'use client';
 
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import TranslatorPDFUploader from '@/components/TranslatorPDFUploader';
 
 export default function TradutorTecnicoPage() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
-    if (status === 'loading') return
-
-    if (!session) {
-      router.push('/auth/login')
-      return
+    // Redirecionar se não autenticado ou não for admin
+    if (status === 'loading') return;
+    
+    if (!session || session.user.role !== 'admin') {
+      router.push('/auth/login');
     }
+  }, [session, status, router]);
 
-    if ((session.user as any)?.role !== 'admin') {
-      router.push('/')
-    }
-  }, [session, status, router])
-
+  // Mostrar loading enquanto verifica autenticação
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Carregando...</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+          <p className="text-gray-600">Carregando...</p>
         </div>
       </div>
-    )
+    );
   }
 
-  if (!session || (session.user as any)?.role !== 'admin') {
-    return null
+  // Se não for admin, não renderizar nada (redirecionamento já aconteceu)
+  if (!session || session.user.role !== 'admin') {
+    return null;
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
-          <a
-            href="/"
-            className="mb-6 text-purple-600 hover:text-purple-700 font-medium flex items-center gap-2 text-sm sm:text-base inline-flex"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Voltar
-          </a>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text mb-4">
+            <h1 className="text-4xl md:text-5xl font-extrabold">
+              🔧 Tradutor Técnico
+            </h1>
+          </div>
+          <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            Tradução especializada de PDFs técnicos usando <strong>IA Gemma 2 2B</strong>
+          </p>
+          <p className="text-sm text-gray-600 mt-2">
+            Ferramenta exclusiva para administradores • Logado como: <strong>{session.user.email}</strong>
+          </p>
+        </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="bg-purple-100 p-3 rounded-lg">
-                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-800">Tradutor Técnico</h1>
-                <p className="text-purple-600 font-medium">Ferramenta Admin</p>
-              </div>
-            </div>
+        {/* Badge Admin */}
+        <div className="flex justify-center mb-8">
+          <div className="inline-flex items-center px-4 py-2 bg-purple-100 border border-purple-300 rounded-full">
+            <span className="text-purple-700 font-semibold text-sm">
+              🔐 Acesso Administrativo
+            </span>
+          </div>
+        </div>
 
-            <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
-              <div className="flex items-start gap-3">
-                <svg className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+        {/* Card Principal */}
+        <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12">
+          {/* Descrição da Ferramenta */}
+          <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              ⚡ Como Funciona
+            </h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                  1
+                </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-800 mb-2">
-                    Em Desenvolvimento
-                  </h2>
-                  <p className="text-gray-600">
-                    Esta ferramenta está sendo desenvolvida e em breve estará disponível.
-                    Apenas administradores têm acesso a esta página.
+                  <h3 className="font-semibold text-gray-900 mb-1">Extração</h3>
+                  <p className="text-sm text-gray-600">
+                    Google Vision API extrai texto com precisão mantendo posições
                   </p>
-                  <div className="mt-4 p-4 bg-white rounded border border-purple-200">
-                    <p className="text-sm text-gray-700">
-                      <strong>Usuário logado:</strong> {session.user?.email}
-                    </p>
-                    <p className="text-sm text-gray-700 mt-1">
-                      <strong>Perfil:</strong> <span className="text-purple-600 font-semibold">Administrador</span>
-                    </p>
-                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-6 bg-gray-50 rounded-lg border border-gray-200">
-                <h3 className="font-semibold text-gray-800 mb-2">Funcionalidades Planejadas</h3>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-600">•</span>
-                    <span>Tradução de termos técnicos especializados</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-600">•</span>
-                    <span>Glossário personalizado</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-600">•</span>
-                    <span>Histórico de traduções</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-600">•</span>
-                    <span>Suporte a múltiplos idiomas</span>
-                  </li>
-                </ul>
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold">
+                  2
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Tradução</h3>
+                  <p className="text-sm text-gray-600">
+                    Modelo Gemma 2 2B traduz termos técnicos com alta precisão
+                  </p>
+                </div>
               </div>
 
-              <div className="p-6 bg-gray-50 rounded-lg border border-gray-200">
-                <h3 className="font-semibold text-gray-800 mb-2">Acesso Restrito</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Esta ferramenta é exclusiva para administradores do sistema e não aparece para usuários comuns.
-                </p>
-                <div className="flex items-center gap-2 text-sm">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                  <span className="text-gray-700 font-medium">Acesso autorizado</span>
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+                  3
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Reconstrução</h3>
+                  <p className="text-sm text-gray-600">
+                    PDF é reconstruído mantendo layout e formatação originais
+                  </p>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Componente de Upload */}
+          <TranslatorPDFUploader />
+
+          {/* Estatísticas/Features */}
+          <div className="mt-12 grid md:grid-cols-2 gap-6">
+            <div className="bg-green-50 rounded-xl p-6 border border-green-200">
+              <h3 className="font-semibold text-green-900 mb-3 flex items-center">
+                <span className="text-2xl mr-2">🎯</span>
+                Precisão Especializada
+              </h3>
+              <p className="text-sm text-green-800">
+                Modelo treinado especificamente para terminologia técnica de 
+                peças de motocicleta, garantindo traduções precisas e contextualizadas.
+              </p>
+            </div>
+
+            <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
+              <h3 className="font-semibold text-purple-900 mb-3 flex items-center">
+                <span className="text-2xl mr-2">🔒</span>
+                100% Privado
+              </h3>
+              <p className="text-sm text-purple-800">
+                O modelo roda localmente no servidor. Seus documentos não são 
+                enviados para serviços externos (exceto Google Vision para OCR).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Info */}
+        <div className="mt-8 text-center text-sm text-gray-600">
+          <p>
+            Dúvidas ou problemas? Entre em contato com o administrador do sistema.
+          </p>
         </div>
       </div>
-    </main>
-  )
+    </div>
+  );
 }
-
