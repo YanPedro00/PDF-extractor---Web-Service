@@ -56,6 +56,7 @@ sudo certbot certonly --standalone -d pdf-utilities.com.br -d www.pdf-utilities.
 ```
 
 **Durante o processo:**
+
 - Digite seu email quando solicitado
 - Aceite os Termos de Serviço (Y)
 - Escolha se quer compartilhar email (N ou Y, sua escolha)
@@ -121,6 +122,7 @@ Certificados Let's Encrypt duram 90 dias e renovam automaticamente a cada 60 dia
 ## 🆘 Troubleshooting
 
 ### Erro: "Port 80 already in use"
+
 ```bash
 # Parar nginx antes de rodar certbot
 docker-compose stop nginx
@@ -129,6 +131,7 @@ docker-compose up -d nginx
 ```
 
 ### Erro: "Connection refused" no navegador
+
 ```bash
 # Verificar se nginx está rodando
 docker-compose ps
@@ -141,6 +144,7 @@ docker-compose exec nginx nginx -t
 ```
 
 ### Erro: "Certificate files not found"
+
 ```bash
 # Verificar se os certificados foram copiados
 ls -la ssl/
@@ -152,7 +156,7 @@ docker-compose exec nginx ls -la /etc/nginx/ssl/
 ## 📝 Resumo
 
 1. ✅ Push das alterações
-2. ✅ SSH no servidor  
+2. ✅ SSH no servidor
 3. ✅ Instalar Certbot
 4. ✅ Parar nginx
 5. ✅ Obter certificado
@@ -161,4 +165,3 @@ docker-compose exec nginx ls -la /etc/nginx/ssl/
 8. ✅ Testar
 
 **Tempo estimado: 10-15 minutos** ⏱️
-
