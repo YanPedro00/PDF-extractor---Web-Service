@@ -12,19 +12,19 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error('Email e senha são obrigatórios')
+          return null
         }
 
         const user = userDb.findByEmail(credentials.email)
 
         if (!user) {
-          throw new Error('Usuário não encontrado')
+          return null
         }
 
         const isValidPassword = userDb.verifyPassword(user, credentials.password)
 
         if (!isValidPassword) {
-          throw new Error('Senha incorreta')
+          return null
         }
 
         return {
@@ -39,15 +39,15 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role
+        token.role = user.role
         token.id = user.id
       }
       return token
     },
     async session({ session, token }) {
-      if (session.user) {
-        (session.user as any).role = token.role
-        (session.user as any).id = token.id
+      if (session?.user && token) {
+        session.user.role = token.role
+        session.user.id = token.id
       }
       return session
     }
@@ -63,4 +63,3 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET || 'pdf-utilities-secret-key-change-in-production',
 }
-
