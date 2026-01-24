@@ -56,9 +56,9 @@ RUN mkdir -p /app/temp /app/output && \
 # Expor porta
 EXPOSE 8082
 
-# Health check
-HEALTHCHECK --interval=60s --timeout=30s --start-period=120s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8082/health || exit 1
+# Health check (usar GET em vez de HEAD)
+HEALTHCHECK --interval=60s --timeout=30s --start-period=180s --retries=3 \
+    CMD wget --no-verbose --tries=1 -O /dev/null http://localhost:8082/health || exit 1
 
 # Comando de inicialização
 CMD ["gunicorn", "--config", "gunicorn_conf.py", "main:app"]

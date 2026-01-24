@@ -16,9 +16,9 @@ worker_class = "uvicorn.workers.UvicornWorker"
 threads = 2
 
 # Timeouts
-timeout = 600  # 10 minutos (tradução pode demorar)
+timeout = 1800  # 30 minutos (tradução pode demorar muito em CPU)
 keepalive = 5
-graceful_timeout = 30
+graceful_timeout = 120
 
 # Logging
 accesslog = "-"
