@@ -7,33 +7,25 @@ Executa os 3 passos em sequência
 import sys
 from pathlib import Path
 
-# Importar os módulos
-from extract_vision import extract_with_vision
-from translate_json import translate_json
-from rebuild_pdf import rebuild_pdf
+# Importar os módulos usando imports relativos
+from .extract_vision import extract_with_vision
+from .translate_json import translate_json
+from .rebuild_pdf import rebuild_pdf
 
 
-def run_full_pipeline(pdf_path, credentials_path, start_page, end_page, output_pdf_path=None):
+def run_full_pipeline(pdf_path, credentials_path, model_dir, output_dir, final_output_pdf_path, start_page, end_page):
     """Executa pipeline completa em 3 etapas."""
     
-    base_dir = Path(__file__).parent.parent
-    
-    # Definir caminhos
-    extracted_json = base_dir / "output" / "vision_extracted.json"
-    translated_json = base_dir / "output" / "vision_translated.json"
-    
-    # Usar output_pdf_path se fornecido, senão usar padrão
-    if output_pdf_path:
-        output_pdf = Path(output_pdf_path)
-    else:
-        output_pdf = base_dir / "output" / "translated_pdf_final.pdf"
+    # Definir caminhos de saída intermediários dentro do output_dir fornecido
+    extracted_json = Path(output_dir) / "vision_extracted.json"
+    translated_json = Path(output_dir) / "vision_translated.json"
     
     print("\n" + "=" * 70)
     print("🚀 PIPELINE DE TRADUÇÃO DE PDF")
     print("=" * 70)
     print(f"PDF: {pdf_path}")
     print(f"Páginas: {start_page}-{end_page}")
-    print(f"Saída: {output_pdf}")
+    print(f"Saída: {final_output_pdf_path}")
     print("=" * 70)
     
     try:
@@ -51,21 +43,21 @@ def run_full_pipeline(pdf_path, credentials_path, start_page, end_page, output_p
         # STEP 2: Tradução
         print("\n[2/3] TRADUÇÃO DO JSON")
         print("-" * 70)
-        success = translate_json(str(extracted_json), str(translated_json))
+        success = translate_json(str(extracted_json), str(translated_json), model_dir)
         if not success:
             return False
         
         # STEP 3: Reconstrução
         print("\n[3/3] RECONSTRUÇÃO DO PDF")
         print("-" * 70)
-        success = rebuild_pdf(str(pdf_path), str(translated_json), str(output_pdf))
+        success = rebuild_pdf(str(pdf_path), str(translated_json), str(final_output_pdf_path))
         if not success:
             return False
         
         print("\n" + "=" * 70)
         print("✅ PIPELINE CONCLUÍDA COM SUCESSO!")
         print("=" * 70)
-        print(f"\n📄 PDF traduzido: {output_pdf}")
+        print(f"\n📄 PDF traduzido: {final_output_pdf_path}")
         print(f"📊 Arquivos intermediários:")
         print(f"   - {extracted_json}")
         print(f"   - {translated_json}")
@@ -92,16 +84,22 @@ def main():
     
     pdf_path = base_dir / "database" / "pdf_teste.pdf"
     credentials_path = base_dir / "credentials" / "google_credentials.json"
+    model_dir = base_dir / "translator-model" / "final_model_gemma_sft"
+    output_dir = base_dir / "output"
+    final_output_pdf_path = output_dir / "translated_pdf_final.pdf"
     
     # Configurar páginas (pdf_teste.pdf tem 2 páginas)
     start_page = 1
     end_page = 2
     
     success = run_full_pipeline(
-        str(pdf_path),
-        str(credentials_path),
-        start_page,
-        end_page
+        pdf_path=pdf_path,
+        credentials_path=credentials_path,
+        model_dir=model_dir,
+        output_dir=output_dir,
+        final_output_pdf_path=final_output_pdf_path,
+        start_page=start_page,
+        end_page=end_page
     )
     
     if not success:
