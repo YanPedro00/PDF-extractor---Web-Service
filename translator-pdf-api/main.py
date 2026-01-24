@@ -44,13 +44,14 @@ app.add_middleware(
 
 # Configurações
 BASE_DIR = Path(__file__).parent
-TEMP_DIR = BASE_DIR / "temp"
-OUTPUT_DIR = BASE_DIR / "output"
-CREDENTIALS_PATH = BASE_DIR / "credentials" / "google_credentials.json"
+TEMP_DIR = Path(os.getenv("TEMP_DIR", str(BASE_DIR / "temp")))
+OUTPUT_DIR = Path(os.getenv("OUTPUT_DIR", str(BASE_DIR / "output")))
+CREDENTIALS_PATH = Path(os.getenv("GOOGLE_APPLICATION_CREDENTIALS", str(BASE_DIR / "credentials" / "google_credentials.json")))
+MODEL_DIR = Path(os.getenv("GEMMA_MODEL_DIR", str(BASE_DIR / "translator-model" / "final_model_gemma_sft")))
 
 # Criar diretórios se não existirem
-TEMP_DIR.mkdir(exist_ok=True)
-OUTPUT_DIR.mkdir(exist_ok=True)
+TEMP_DIR.mkdir(exist_ok=True, parents=True)
+OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 
 # Validar credenciais Google
 if not CREDENTIALS_PATH.exists():
@@ -66,7 +67,8 @@ async def health_check():
         "service": "translator-pdf-api",
         "version": "1.0.0",
         "timestamp": datetime.utcnow().isoformat(),
-        "credentials_found": CREDENTIALS_PATH.exists()
+        "credentials_found": CREDENTIALS_PATH.exists(),
+        "model_found": MODEL_DIR.exists()
     }
 
 
@@ -133,6 +135,8 @@ async def translate_pdf(
     # Caminhos temporários
     input_pdf_path = TEMP_DIR / f"{job_id}_input.pdf"
     output_pdf_path = OUTPUT_DIR / f"{job_id}_translated.pdf"
+    job_output_dir = TEMP_DIR / f"{job_id}_work"
+    job_output_dir.mkdir(exist_ok=True, parents=True)
     
     try:
         logger.info(f"📥 Recebendo PDF: {file.filename}")
@@ -157,9 +161,11 @@ async def translate_pdf(
         success = run_full_pipeline(
             pdf_path=str(input_pdf_path),
             credentials_path=str(CREDENTIALS_PATH),
+            model_dir=str(MODEL_DIR),
+            output_dir=str(job_output_dir),
+            final_output_pdf_path=str(output_pdf_path),
             start_page=start_page,
-            end_page=actual_end_page,
-            output_pdf_path=str(output_pdf_path)
+            end_page=actual_end_page
         )
         
         if not success:
@@ -202,13 +208,17 @@ async def translate_pdf(
         )
     
     finally:
-        # Limpeza: remover arquivo de entrada (mas manter output por um tempo)
+        # Limpeza: remover arquivo de entrada e diretório de trabalho (mas manter output por um tempo)
         try:
             if input_pdf_path.exists():
                 input_pdf_path.unlink()
                 logger.info(f"🗑️  Arquivo temporário removido: {input_pdf_path.name}")
+            
+            if job_output_dir.exists():
+                shutil.rmtree(job_output_dir)
+                logger.info(f"🗑️  Diretório de trabalho removido: {job_output_dir.name}")
         except Exception as e:
-            logger.warning(f"⚠️  Erro ao remover arquivo temporário: {e}")
+            logger.warning(f"⚠️  Erro ao remover arquivos temporários: {e}")
 
 
 @app.delete("/cleanup")

@@ -10,25 +10,30 @@ from pathlib import Path
 import time
 
 # Importar o tradutor customizado Gemma 2 2B
-from gemma_translator import GemmaTranslator
+from .gemma_translator import GemmaTranslator
+import os
 
 # Inicializar tradutor (lazy loading - só carrega quando necessário)
 _translator = None
 
-def get_translator():
+def get_translator(model_dir=None):
     """Obtém instância do tradutor (singleton)"""
     global _translator
     if _translator is None:
-        _translator = GemmaTranslator()
+        # Usar model_dir do parâmetro, env var, ou padrão
+        if model_dir is None:
+            model_dir = os.environ.get('GEMMA_MODEL_DIR', None)
+        _translator = GemmaTranslator(model_dir=model_dir)
     return _translator
 
 
-def translate_text(text, source_lang='en', target_lang='pt'):
+def translate_text(text, model_dir=None, source_lang='en', target_lang='pt'):
     """
     Traduz texto usando Gemma 2 2B fine-tuned.
     
     Args:
         text: Texto em inglês para traduzir
+        model_dir: Diretório do modelo (opcional)
         source_lang: Idioma de origem (não usado, mantido por compatibilidade)
         target_lang: Idioma de destino (não usado, mantido por compatibilidade)
     
@@ -40,7 +45,7 @@ def translate_text(text, source_lang='en', target_lang='pt'):
             return text
         
         # Usar modelo Gemma 2 2B treinado
-        translator = get_translator()
+        translator = get_translator(model_dir)
         return translator.translate(text)
         
     except Exception as e:
@@ -48,7 +53,7 @@ def translate_text(text, source_lang='en', target_lang='pt'):
         return text
 
 
-def add_translations(vision_data):
+def add_translations(vision_data, model_dir=None):
     """Adiciona traduções aos parágrafos do JSON."""
     print("\n" + "=" * 70)
     print("TRADUÇÃO DE TEXTO")
@@ -73,7 +78,7 @@ def add_translations(vision_data):
                 total_paragraphs += 1
                 
                 # Traduzir
-                texto_traduzido = translate_text(texto_original)
+                texto_traduzido = translate_text(texto_original, model_dir)
                 
                 # Adicionar ao parágrafo
                 paragraph['original_text'] = texto_original
@@ -86,13 +91,14 @@ def add_translations(vision_data):
     return vision_data
 
 
-def translate_json(input_path, output_path):
+def translate_json(input_path, output_path, model_dir=None):
     """Traduz JSON extraído e salva novo JSON."""
     print("\n" + "=" * 70)
     print("TRADUÇÃO DE JSON")
     print("=" * 70)
     print(f"Input: {input_path}")
     print(f"Output: {output_path}")
+    print(f"Model: {model_dir or os.environ.get('GEMMA_MODEL_DIR', 'default')}")
     print("=" * 70)
     print()
     
@@ -107,12 +113,12 @@ def translate_json(input_path, output_path):
     print(f"✓ Carregado: {len(vision_data['pages'])} páginas\n")
     
     # Adicionar traduções
-    vision_data = add_translations(vision_data)
+    vision_data = add_translations(vision_data, model_dir)
     
     # Adicionar informação de tradução
     vision_data['translation_method'] = "Gemma 2 2B LoRA Fine-tuned"
     vision_data['translation_note'] = "Modelo treinado para tradução técnica de peças de motocicleta (EN→PT)"
-    vision_data['model_path'] = "translator-model/final_model_gemma_sft"
+    vision_data['model_path'] = model_dir or os.environ.get('GEMMA_MODEL_DIR', 'translator-model/final_model_gemma_sft')
     
     # Salvar JSON traduzido
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
