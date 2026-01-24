@@ -3,6 +3,7 @@
 Classe de tradução usando Gemma 2 2B treinado com LoRA
 """
 
+import os
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import PeftModel
@@ -14,20 +15,29 @@ class GemmaTranslator:
     Tradutor técnico EN→PT usando Gemma 2 2B fine-tuned
     """
     
-    def __init__(self, model_dir=None):
+    def __init__(self, model_dir=None, base_model_dir=None):
         """
         Inicializa o tradutor.
         
         Args:
             model_dir: Caminho para o diretório do modelo LoRA treinado
+            base_model_dir: Caminho para o diretório do modelo base (local)
         """
         if model_dir is None:
             # Caminho padrão relativo ao diretório do script
             base_dir = Path(__file__).parent.parent
             model_dir = base_dir / "translator-model" / "final_model_gemma_sft"
         
+        if base_model_dir is None:
+            # Tentar pegar de variável de ambiente
+            base_model_dir = os.environ.get('GEMMA_BASE_MODEL_DIR', None)
+            if base_model_dir is None:
+                # Caminho padrão local
+                base_dir = Path(__file__).parent.parent
+                base_model_dir = base_dir / "translator-model" / "gemma-2-2b-base"
+        
         self.model_dir = str(model_dir)
-        self.base_model_name = 'google/gemma-2-2b-it'
+        self.base_model_dir = str(base_model_dir)
         
         self.model = None
         self.tokenizer = None
@@ -39,26 +49,36 @@ class GemmaTranslator:
             return
         
         print(f"🔧 Carregando modelo de tradução...")
-        print(f"   Base: {self.base_model_name}")
-        print(f"   LoRA: {self.model_dir}")
+        print(f"   Base Model: {self.base_model_dir}")
+        print(f"   LoRA Adapter: {self.model_dir}")
         print(f"   ⚠️  Isso pode demorar alguns segundos...")
         
-        # Carregar tokenizer
+        # Verificar se modelo base existe
+        if not Path(self.base_model_dir).exists():
+            raise FileNotFoundError(
+                f"Modelo base não encontrado em: {self.base_model_dir}\n"
+                f"Baixe o modelo base com: hf download google/gemma-2-2b-it --local-dir {self.base_model_dir}"
+            )
+        
+        # Carregar tokenizer do LoRA adapter (tem tokenizer customizado)
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.model_dir,
             trust_remote_code=True
         )
         
-        # Carregar modelo base
+        # Carregar modelo base do caminho LOCAL
+        print(f"   📥 Carregando modelo base de: {self.base_model_dir}")
         base_model = AutoModelForCausalLM.from_pretrained(
-            self.base_model_name,
+            self.base_model_dir,  # ✅ Caminho local, não online
             torch_dtype=torch.float32,
             device_map='cpu',
             trust_remote_code=True,
             low_cpu_mem_usage=True,
+            local_files_only=True  # ✅ Forçar usar apenas arquivos locais
         )
         
         # Carregar adaptadores LoRA
+        print(f"   🔧 Carregando adapter LoRA de: {self.model_dir}")
         self.model = PeftModel.from_pretrained(base_model, self.model_dir)
         self.model.eval()
         
