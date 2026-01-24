@@ -33,14 +33,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS (será gerenciado pelo Nginx, mas manter para desenvolvimento)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# CORS gerenciado pelo Nginx - não adicionar aqui para evitar duplicação
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 # Configurações
 BASE_DIR = Path(__file__).parent
